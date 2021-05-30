@@ -1,0 +1,25 @@
+import { drake } from '../deps.js'
+const { sh } = drake
+
+export default {
+  name: 'docker'
+, desc: 'run in docker'
+, deps: []
+, do: async function() {
+
+    await sh(
+      [
+        'podman run --rm -ti'
+      ,     '--name=deno'
+      ,     '-p 3000:3000'
+      ,     '-p 8080:8080'
+      ,     '-p 10086:10086'
+      ,     '-p 1234:1234'
+      ,     '-v $(pwd):/root/deno'
+      ,   'mooxe/deno'
+      ,     '/bin/bash'
+      ].join(' ')
+    )
+
+  }
+}
