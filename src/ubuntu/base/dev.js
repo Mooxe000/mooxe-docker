@@ -84,8 +84,8 @@ const dockerfile = () =>
 
   .run`
     echo "
-      set fish_greeting '' \\n
-      set -gx LC_ALL en_US.UTF-8 \\n
+      set fish_greeting ''\\n
+      set -gx LC_ALL en_US.UTF-8\\n
       set -gx LC_CTYPE en_US.UTF-8
     " > ~/.config/fish/config.fish
   `
