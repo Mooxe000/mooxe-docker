@@ -9,8 +9,6 @@ const DockerFile = (cmds) =>
         ? [ e ]
         : e
 
-        // console.log(_e)
-
         const _cmds = [
           ...(
               cmds
@@ -19,23 +17,23 @@ const DockerFile = (cmds) =>
           )
         , `${k.toUpperCase()} \\\n${
             _e.map(
-              (s, i) => {
-                return s
-                .split('\n')
-                .map(
-                  c => c.trim()
-                )
-                .filter(
-                  c =>
-                    c === ''
-                    ? false
-                    : true
-                )
-                .join(' \\\n  ')
+
+              (c, i) => {
+                const flag = c.match(/^\n {2,}/)
+                return `  ${
+                    flag === null
+                  ? c
+                  : c
+                  .split(flag[0])
+                  .filter(
+                    e => 
+                      e.trim() === ''
+                      ? false
+                      : true
+                  )
+                  .join(' \\\n  ')
+                }`
               }
-            )
-            .map(
-              c => `  ${c}`
             )
           }`
         ]
