@@ -19,7 +19,7 @@ const dockerfile = () =>
 
   .run(snippets.update)
 
-  .run(snippets.install()([
+  .run(snippets.install`get`([
     'aria2'
   , 'wget'
   , 'apt-fast'
@@ -28,17 +28,12 @@ const dockerfile = () =>
   .run(snippets.update)
 
   .run(
-    snippets.install('fast')
+    snippets.install()
     `git`
   )
 
   .run(
-    snippets.install('fast')
-    `git`
-  )
-
-  .run(
-    snippets.install('fast')([
+    snippets.install()([
       'zsh'
     , 'fish'
     ])

@@ -15,7 +15,7 @@ const dockerfile = () =>
       \${SOURCES_FILE}
   `
   .run(snippets.update)
-  .run(snippets.install()([
+  .run(snippets.install`get`([
     'curl'
   , 'apt-utils'
   , 'locales'

@@ -24,14 +24,14 @@ const DockerFile = (cmds) =>
                     flag === null
                   ? c
                   : c
-                  .split(flag[0])
-                  .filter(
-                    e => 
-                      e.trim() === ''
-                      ? false
-                      : true
-                  )
-                  .join(' \\\n  ')
+                    .split(flag[0])
+                    .filter(
+                      e => 
+                        e.trim() === ''
+                        ? false
+                        : true
+                    )
+                    .join(' \\\n  ')
                 }`
               }
             )

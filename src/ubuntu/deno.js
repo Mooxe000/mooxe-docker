@@ -6,15 +6,15 @@ const dockerfile = () =>
   DockerFile()
   .from`mooxe/node`
 
-  .run`
-    apt install -y unzip &&
+  .run(`
+    ${snippets.install()`unzip`} &&
     curl -fsSL https://deno.land/x/install/install.sh | sh
-  `
+  `)
 
   .run`
     echo "
-      export DENO_INSTALL=\\"\$HOME/.deno\\"\\n
-      export PATH=\\"\$DENO_INSTALL/bin:\$PATH\\"\\n
+      export DENO_INSTALL=\\"\\$HOME/.deno\\"\\n
+      export PATH=\\"\\$DENO_INSTALL/bin:\\$PATH\\"\\n
     " >> $HOME/.bashrc
   `
   ()

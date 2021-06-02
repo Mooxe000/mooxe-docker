@@ -10,7 +10,7 @@ const dockerfile = () =>
 
   .run(
     snippets
-    .install`fast`([
+    .install()([
       'make'
     , 'g++'
     ])
@@ -34,8 +34,8 @@ const dockerfile = () =>
   // git clone https://github.com/passcod/nvm-fish-wrapper.git ~/.config/fish/nvm-wrapper &&
   // echo ". ~/.config/fish/nvm-wrapper/nvm.fish" >> ~/.config/fish/config.fish
 
-  .env`NODE_VERSION_LTS 14.16.1`
-  .env`NODE_VERSION 16.1.0`
+  .env`NODE_VERSION_LTS 14.17.0`
+  .env`NODE_VERSION 16.2.0`
   .run`
     cp -f ~/.nvm/nvm.sh ~/.nvm/nvm-tmp.sh &&
     echo "nvm install v$NODE_VERSION_LTS" >> ~/.nvm/nvm-tmp.sh &&

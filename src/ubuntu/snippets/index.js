@@ -8,7 +8,7 @@ export default {
     apt-get clean &&
     rm -rf /var/lib/apt/lists/*
   `
-, install: (installer = 'get') =>
+, install: (installer = 'fast') =>
     soft =>
       `apt-${installer} install -y ${
         Array.isArray(soft)
