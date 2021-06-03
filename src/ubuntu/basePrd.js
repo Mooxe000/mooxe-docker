@@ -1,5 +1,5 @@
-import DockerFile from '../../Docker_file.js'
-import snippets from '../snippets/index.js'
+import DockerFile from '../Docker_file.js'
+import snippets from './snippets/index.js'
 
 const dockerfile = () =>
   DockerFile()

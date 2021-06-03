@@ -15,7 +15,7 @@ const dockerfile = () =>
     , 'g++'
     ])
   )
-  .env`NVM_VERSION 0.37.0`
+  .env`NVM_VERSION 0.38.0`
   .run`
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v\${NVM_VERSION}/install.sh | bash &&
     echo 'export NVM_DIR="$([ -z "\${XDG_CONFIG_HOME-}" ] && printf %s "\${HOME}/.nvm" || printf %s "\${XDG_CONFIG_HOME}/nvm")"' >> ~/.profile &&
@@ -92,4 +92,3 @@ const dockerfile = () =>
   ()
 
 export default dockerfile
-

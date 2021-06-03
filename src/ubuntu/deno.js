@@ -15,7 +15,15 @@ const dockerfile = () =>
     echo "
       export DENO_INSTALL=\\"\\$HOME/.deno\\"\\n
       export PATH=\\"\\$DENO_INSTALL/bin:\\$PATH\\"\\n
-    " >> $HOME/.bashrc
+    " >> $HOME/.bashrc &&
+    echo "
+      export DENO_INSTALL=\\"\\$HOME/.deno\\"\\n
+      export PATH=\\"\\$DENO_INSTALL/bin:\\$PATH\\"\\n
+    " >> $HOME/.config/fish/config.fish
+  `
+
+  .run`
+    /bin/fish -lc "deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts"
   `
   ()
 

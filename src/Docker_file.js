@@ -27,11 +27,13 @@ const DockerFile = (cmds) =>
                     .split(flag[0])
                     .filter(
                       e => 
-                        e.trim() === ''
-                        ? false
-                        : true
+                            ( e.trim() === '' )
+                        ||  ( e.trim() === '\n' )
+                        ?   false
+                        :   true
                     )
                     .join(' \\\n  ')
+                    .replace(/\n {2,}$/, '')
                 }`
               }
             )
