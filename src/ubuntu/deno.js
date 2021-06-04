@@ -22,9 +22,18 @@ const dockerfile = () =>
     " >> $HOME/.config/fish/config.fish
   `
 
-  .run`
-    /bin/fish -lc "deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts"
-  `
+  .run(
+    [
+      // velociraptor
+      'deno install -qAn vr https://deno.land/x/velociraptor@1.0.0/cli.ts'
+    , // dzx 0.2.3
+      'deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts'
+    , // trex
+      'deno install -A --unstable --import-map=https://deno.land/x/trex/import_map.json -n trex --no-check https://deno.land/x/trex/cli.ts'
+    ]
+    .map( c => `/bin/fish -lc "${c}"` )
+    .join(" && ")
+  )
   ()
 
 export default dockerfile

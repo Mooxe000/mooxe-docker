@@ -7,10 +7,12 @@ const {
 
 import hello from './tasks/hello.js'
 import docker from './tasks/docker.js'
+import build from './tasks/build.js'
 
 [
   hello
 , docker
+, build
 ]
 .forEach(
   (t) => {
