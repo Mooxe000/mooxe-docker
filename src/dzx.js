@@ -3,10 +3,16 @@
 
 import Denomander from "https://deno.land/x/denomander/mod.ts"
 import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.2.3/mod.ts"
-import DockerFileObj from 'file:///root/deno/src/ubuntu/index.js'
+
+const __dirname = path.dirname(import.meta.url);
+
+// import DockerFileObj from 'file:/root/deno/src/ubuntu/index.js'
+import DockerFileObj from 'file:/home/footearth/WorkSpace/Docker/mooxe-docker/src/ubuntu/index.js'
+
+const getPath = _path => _path.replace(/^file:\/\//, '')
 
 $.verbose = true
-$.shell = "/usr/local/env bash"
+$.shell = "/usr/bin/bash"
 
 console.log(`Hello from ${$.blue.bold("dzx")}!`)
 
@@ -16,27 +22,52 @@ const program = new Denomander({
 , app_version: '0.0.0'
 })
 
-
 program
 // globalOption
 // baseOption
 .globalOption('-n --name', 'build docker name')
 
 .command('build', 'build docker images')
-.option('-l --layers', 'build with layers mode')
-.option('-nc --no-cache', 'build with no-cache mode')
-.action( () => {
-
-  console.log(program.name)
+.option('-m --mode', `
+  build with layers/no-cache mode.
+  default mode: no-cache
+`)
+.action( async () => {
 
   if (program.name) {
 
-    fs.ensureDir("./tmp")
-    Deno.writeFile(
-      './tmp/Dockerfile'
-    , DockerFileObj[program.name].file
+    const DockerFiles = DockerFileObj()
+
+    const tmpDir = getPath(path.join(__dirname, './tmp'))
+
+    await fs.ensureDir(tmpDir)
+
+    await Deno.writeTextFile(
+      `${tmpDir}/Dockerfile`
+    , DockerFiles[program.name].file
     )
-    $`buildah bud --no-cache -t mooxe/deno`
+
+    cd(tmpDir)
+
+    $.stdout = "inherit"
+    $.stderr = "inherit"
+
+    await $`buildah bud --${
+        program.mode
+      ? [
+          'no-cache'
+        , 'layers'
+        ].includes(program.mode)
+      ? program.mode
+      : 'layers'
+      : 'no-cache'
+    } -t ${
+      DockerFiles[program.name].imgName
+    }`
+
+    cd(getPath(__dirname))
+
+    await Deno.remove(tmpDir, { recursive: true })
 
   }
 })
