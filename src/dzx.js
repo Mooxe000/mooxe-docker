@@ -6,8 +6,8 @@ import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.2.3/mod.ts"
 
 const __dirname = path.dirname(import.meta.url);
 
-// import DockerFileObj from 'file:/root/deno/src/ubuntu/index.js'
-import DockerFileObj from 'file:/home/footearth/WorkSpace/Docker/mooxe-docker/src/ubuntu/index.js'
+// Use hs/serve to run http server, use port 8080 in the project root path 
+import DockerFileObj from 'http://localhost:8080/src/ubuntu/index.js'
 
 const getPath = _path => _path.replace(/^file:\/\//, '')
 
