@@ -1,5 +1,4 @@
-import { drake } from '../deps.js'
-const { sh } = drake
+import { sh } from 'drake'
 
 export default {
   name: 'build'

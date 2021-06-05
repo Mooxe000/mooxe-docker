@@ -1,9 +1,8 @@
-import { drake } from './deps.js'
-const {
+import {
   desc
 , task
 , run
-} = drake
+} from 'drake'
 
 import getTaskName from './utils/taskName.js'
 

@@ -1,7 +1,7 @@
-#!/usr/bin/env dzx
+#!/usr/bin/env -S deno run -A --unstable --import-map=import_map.json https://deno.land/x/dzx@0.2.3/dzx.ts
 /// <reference path="https://deno.land/x/dzx@0.2.3/types.d.ts" />
 
-import Denomander from "https://deno.land/x/denomander/mod.ts"
+import Denomander from 'denomander'
 import DockerFileObj from './src/ubuntu/index.js'
 const DockerFiles = DockerFileObj()
 

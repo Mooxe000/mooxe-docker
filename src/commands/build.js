@@ -1,4 +1,4 @@
-import { $, cd, fs, io, log, path } from "https://deno.land/x/dzx@0.2.3/mod.ts"
+import { $, cd, fs, io, log, path } from 'dzx'
 const __dirname = path.dirname(import.meta.url);
 
 import { getPath } from '../util.js'
