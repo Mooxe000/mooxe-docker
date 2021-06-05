@@ -18,6 +18,12 @@ curl -fsSL https://deno.land/x/install/install.sh | sh
 deno install -qAn vr https://deno.land/x/velociraptor@1.0.0/cli.ts
 ```
 
+#### Deno:dzx
+
+```bash
+deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts
+```
+
 ### Usage
 
 #### docker:build
