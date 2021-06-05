@@ -1,16 +1,5 @@
-const drakeRun = e =>
-  e.reduce(
-    (r, c) => ({
-      ...r
-    , [c]: `deno run -A --unstable ./drakefile.js ${c}`
-    })
-  , {}
-  )
-
 export default {
-  scripts: drakeRun([
-    'hello'
-  , 'docker'
-  , 'build'
-  ])
+  scripts: {
+    [Deno.args[0]]: `deno run -A --unstable ./drakefile.js ${Deno.args[0]}`
+  }
 }

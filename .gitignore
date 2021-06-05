@@ -6,4 +6,6 @@ npm-debug.log
 .tmp
 trash
 
+/.drake.cache.json
+
 Dockerfile
