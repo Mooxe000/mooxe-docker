@@ -13,8 +13,6 @@ export default {
       ,     '--name=deno'
       ,     '-p 3000:3000'
       ,     '-p 8080:8080'
-      ,     '-p 10086:10086'
-      ,     '-p 1234:1234'
       ,     '-v $(pwd):/root/deno'
       ,   'mooxe/deno'
       ,     '/bin/bash'
