@@ -8,7 +8,7 @@ const dockerfile = () =>
 
   .run(`
     ${snippets.install()`unzip`} &&
-    curl -fsSL https://deno.land/x/install/install.sh | sh
+    curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.10.3
   `)
 
   .run`
@@ -26,9 +26,11 @@ const dockerfile = () =>
     [
       // velociraptor
       'deno install -qAn vr https://deno.land/x/velociraptor@1.0.0/cli.ts'
-    , // dzx 0.2.3
+      // dzx 0.2.3
+    ,
       'deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts'
-    , // trex
+      // trex
+    ,
       'deno install -A --unstable --import-map=https://deno.land/x/trex/import_map.json -n trex --no-check https://deno.land/x/trex/cli.ts'
     ]
     .map( c => `/bin/fish -lc "${c}"` )

@@ -75,6 +75,7 @@ const dockerfile = () =>
 
   //  /bin/bash -lc 'yarn global add node-inspector'
   .run`/bin/bash -lc 'yarn global add pnpm npm-check'`
+  .run`/bin/bash -lc 'pnpm add -g pnpm'`
 
   // /bin/bash -lc 'yarn global add coffeescript'
   // /bin/bash -lc 'yarn global add rollup gulp-cli'
