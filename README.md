@@ -4,12 +4,12 @@
 
 #### Deno
 
-Make sure your deno's version ```>= 1.10.3```
+Make sure your deno's version ```= 1.10.3```
 
 You can install the newest version in your system
 
 ```bash
-curl -fsSL https://deno.land/x/install/install.sh | sh
+curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.10.3
 ```
 
 #### Deno:vr
