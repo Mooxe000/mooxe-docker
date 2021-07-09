@@ -34,8 +34,8 @@ const dockerfile = () =>
   // git clone https://github.com/passcod/nvm-fish-wrapper.git ~/.config/fish/nvm-wrapper &&
   // echo ". ~/.config/fish/nvm-wrapper/nvm.fish" >> ~/.config/fish/config.fish
 
-  .env`NODE_VERSION_LTS 14.17.0`
-  .env`NODE_VERSION 16.3.0`
+  .env`NODE_VERSION_LTS 14.17.3`
+  .env`NODE_VERSION 16.4.2`
   .run`
     cp -f ~/.nvm/nvm.sh ~/.nvm/nvm-tmp.sh &&
     echo "nvm install v$NODE_VERSION_LTS" >> ~/.nvm/nvm-tmp.sh &&
