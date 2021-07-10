@@ -1,5 +1,7 @@
 import { sh } from 'drake'
 
+const name = 'calcit_cirru'
+
 export default {
   name: 'docker'
 , desc: 'run in docker'
@@ -9,11 +11,11 @@ export default {
     await sh(
       [
         'podman run --rm -ti'
-      ,     '--name=deno'
+      ,     `--name=${name}`
       ,     '-p 3000:3000'
       ,     '-p 8080:8080'
-      ,     '-v $(pwd):/root/deno'
-      ,   'mooxe/deno'
+      ,     `-v $(pwd):/root/${name}`
+      ,   `mooxe/${name}`
       ,     '/bin/bash'
       ].join(' ')
     )

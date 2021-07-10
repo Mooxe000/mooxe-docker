@@ -1,0 +1,30 @@
+import DockerFile from '../Docker_file.js'
+import snippets from './snippets/index.js'
+
+const dockerfile = () =>
+
+  DockerFile()
+  .from`mooxe/deno`
+
+  .run(`
+    ${snippets.install()`axel`}
+  `)
+
+  .run(
+    [
+      'bundle_calcit'
+    , 'calcit_runner'
+    , 'cr'
+    ].reduce(
+      (r, c) => [
+        ...r
+      , `axel -o $HOME/.deno/bin http://apis.calcit-lang.org/binaries/linux/${c}`
+      ]
+    , []
+    )
+    .join(' && ')
+  )
+
+  ()
+  
+export default dockerfile

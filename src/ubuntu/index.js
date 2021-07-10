@@ -2,6 +2,7 @@ import fBasePrd from './basePrd.js'
 import fBaseDev from './baseDev.js'
 import fNode from './node.js'
 import fDeno from './deno.js'
+import fCalcitCirru from './calcit_cirru.js'
 
 export default () => (
   {
@@ -20,6 +21,10 @@ export default () => (
   , deno: {
       imgName: 'mooxe/deno'
     , file: fDeno()
+    }
+  , calcitCirru: {
+      imgName: 'mooxe/calcit_cirru'
+    , file: fCalcitCirru()
     }
   }
 )
