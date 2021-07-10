@@ -25,6 +25,10 @@ const dockerfile = () =>
     .join(' && ')
   )
 
+  .run(`
+    chmod +x $HOME/.deno/bin/*
+  `)
+
   ()
   
 export default dockerfile
