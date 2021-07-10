@@ -49,11 +49,11 @@ const dockerfile = () =>
     echo '. ~/.nvm/nvm.sh' >> /etc/profile
   `
 
-  .run`
-    bash -lc "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -" &&
-    bash -lc "echo 'deb https://dl.yarnpkg.com/debian/ stable main' | tee /etc/apt/sources.list.d/yarn.list" &&
-    apt-fast install -y apt-transport-https
-  `
+  // .run`
+  //   bash -lc "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -" &&
+  //   bash -lc "echo 'deb https://dl.yarnpkg.com/debian/ stable main' | tee /etc/apt/sources.list.d/yarn.list" &&
+  //   apt-fast install -y apt-transport-https
+  // `
 
   .run`/bin/bash -lc 'nvm use default'`
   .run`/bin/bash -lc 'npm i -g npm'`
