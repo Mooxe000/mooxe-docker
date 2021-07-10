@@ -1,6 +1,6 @@
 import { sh } from 'drake'
 
-const name = 'calcit_cirru'
+const name = 'rescript'
 
 export default {
   name: 'docker'
