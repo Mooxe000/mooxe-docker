@@ -29,6 +29,10 @@ const dockerfile = () =>
     chmod +x $HOME/.deno/bin/*
   `)
 
+  .run(`
+    fish -lc 'pnpm i -g calcit-editor'
+  `)
+
   ()
   
 export default dockerfile
