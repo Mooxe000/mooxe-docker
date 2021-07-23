@@ -35,6 +35,13 @@ const dockerfile = () =>
 
   .run(
     snippets.install()([
+      'neovim'
+    , 'axel'
+    ])
+  )
+
+  .run(
+    snippets.install()([
       'zsh'
     , 'fish'
     ])
