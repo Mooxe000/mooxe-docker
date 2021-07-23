@@ -2,6 +2,7 @@ import DockerFile from '../Docker_file.js'
 import snippets from './snippets/index.js'
 
 const dockerfile = () =>
+
   DockerFile()
   .from`localhost/mooxe/base:prd`
 
@@ -77,14 +78,14 @@ const dockerfile = () =>
     fish -lc "omf install robbyrussell"
   `
 
-  .run`
-    echo "
-      set fish_greeting ''\\n
-      set -gx LC_ALL en_US.UTF-8\\n
-      set -gx LC_CTYPE en_US.UTF-8
-    " > ~/.config/fish/config.fish
-  `
-
+  .run((
+    conf => `echo "${conf}" > ~/.config/fish/config.fish`
+  )([
+    "set fish_greeting ''\\n"
+  , "set -gx LC_ALL en_US.UTF-8\\n"
+  , "set -gx LC_CTYPE en_US.UTF-8"
+  ].join('')))
+    
   .run(snippets.clean)
   ()
 

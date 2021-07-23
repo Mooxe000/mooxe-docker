@@ -1,13 +1,7 @@
-import DockerFile from '../Docker_file.js'
-import snippets from './snippets/index.js'
+import snippets from '../snippets/index.js'
+import VSENV from './versions.js'
 
-const dockerfile = () =>
-
-  DockerFile()
-  .from`localhost/mooxe/base:dev`
-  .workdir`/root`
-  .run(snippets.update)
-
+export default DF => DF
   .run(
     snippets
     .install()([
@@ -15,7 +9,9 @@ const dockerfile = () =>
     , 'g++'
     ])
   )
-  .env`NVM_VERSION 0.38.0`
+
+  .pipe(VSENV.nvm)
+
   .run`
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v\${NVM_VERSION}/install.sh | bash &&
     echo 'export NVM_DIR="$([ -z "\${XDG_CONFIG_HOME-}" ] && printf %s "\${HOME}/.nvm" || printf %s "\${XDG_CONFIG_HOME}/nvm")"' >> ~/.profile &&
@@ -34,8 +30,8 @@ const dockerfile = () =>
   // git clone https://github.com/passcod/nvm-fish-wrapper.git ~/.config/fish/nvm-wrapper &&
   // echo ". ~/.config/fish/nvm-wrapper/nvm.fish" >> ~/.config/fish/config.fish
 
-  .env`NODE_VERSION_LTS 14.17.3`
-  .env`NODE_VERSION 16.4.2`
+  .pipe(VSENV.node)
+
   .run`
     cp -f ~/.nvm/nvm.sh ~/.nvm/nvm-tmp.sh &&
     echo "nvm install v$NODE_VERSION_LTS" >> ~/.nvm/nvm-tmp.sh &&
@@ -56,40 +52,3 @@ const dockerfile = () =>
   // `
 
   .run`/bin/bash -lc 'nvm use default'`
-  .run`/bin/bash -lc 'npm i -g npm'`
-  .run`/bin/bash -lc 'npm i -g yarn'`
-
-  // -- npm root -g
-  // -- yarn global bin
-  // -- yarn global dir
-  // /bin/bash -lc "yarn config set prefix $(npm root -g)/../../"
-  // echo "--global-folder \"$(bash -lc 'npm root -g')/../\"" \
-  //    >> ~/.yarnrc
-
-  // /bin/bash -lc 'yarn global add yrm'
-  .run`/bin/bash -lc 'yarn global add nnrm'`
-  .run`/bin/bash -lc 'nnrm use taobao'`
-
-  .run`/bin/bash -lc 'yarn global add npm yarn'`
-  .run`/bin/bash -lc 'yarn global add node-gyp'`
-
-  //  /bin/bash -lc 'yarn global add node-inspector'
-  .run`/bin/bash -lc 'yarn global add pnpm npm-check'`
-  .run`/bin/bash -lc 'pnpm add -g pnpm'`
-
-  // /bin/bash -lc 'yarn global add coffeescript'
-  // /bin/bash -lc 'yarn global add rollup gulp-cli'
-  // yarn global add harp
-
-  .run`/bin/bash -lc 'yarn global add supervisor nodemon forever pm2'`
-  .run`/bin/bash -lc 'yarn global add serve http-server'`
-  // /bin/bash -lc 'yarn global add lerna autod'
-
-  // /bin/bash -lc 'yarn global add json-server'
-  // /bin/bash -lc 'yarn global add now'
-
-  .run`echo "unsafe-perm = true" >> ~/.npmrc`
-
-  ()
-
-export default dockerfile

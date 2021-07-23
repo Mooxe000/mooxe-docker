@@ -4,6 +4,10 @@ const DockerFile = (cmds) =>
   , {
       get: (t, k, r) => (e) => {
 
+        if (k === 'pipe') {
+          return e(DockerFile(cmds)) 
+        }
+
         const _e =
           typeof e === 'string'
         ? [ e ]
