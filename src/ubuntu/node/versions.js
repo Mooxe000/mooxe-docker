@@ -10,8 +10,8 @@ export {
 
 export default {
   nvm: DF => DF
-    .env`NVM_VERSION ${VERSIONS.nvm}`
+    .env(`NVM_VERSION ${VERSIONS.nvm}`)
 , node: DF => DF
-    .env`NODE_VERSION_LTS ${VERSIONS.node_lts}`
-    .env`NODE_VERSION ${VERSIONS.node}`
+    .env(`NODE_VERSION_LTS ${VERSIONS.node_lts}`)
+    .env(`NODE_VERSION ${VERSIONS.node}`)
 }

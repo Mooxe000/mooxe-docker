@@ -1,6 +1,31 @@
 import snippets from '../snippets/index.js'
 import VSENV from './versions.js'
 
+const nvmRun = cmd => `bash -lc "${
+  (
+      Array.isArray(cmd)
+  &&  cmd.length === 1 
+  &&  typeof cmd[0] === 'string'
+  ?   cmd[0]
+  :   cmd
+  )
+  .split('\n')
+  .filter(
+    t =>
+        t.trim() === ''
+      ? false
+      : true
+  )
+  .map(
+    t => t.trim()
+  )
+  .join('')
+}"`
+
+export {
+  nvmRun
+}
+
 export default DF => DF
   .run(
     snippets
