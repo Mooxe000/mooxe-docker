@@ -2,8 +2,11 @@ import fBasePrd from './basePrd.js'
 import fBaseDev from './baseDev.js'
 import fNode from './node/index.js'
 import fDeno from './deno.js'
+
 import fRescript from './rescript.js'
 import fCalcitCirru from './calcit_cirru.js'
+
+import fRust from './rust.js'
 
 export default () => (
   {
@@ -23,6 +26,7 @@ export default () => (
       imgName: 'mooxe/deno'
     , file: fDeno()
     }
+
   , rescript: {
       imgName: 'mooxe/rescript'
     , file: fRescript()
@@ -31,5 +35,12 @@ export default () => (
       imgName: 'mooxe/calcit_cirru'
     , file: fCalcitCirru()
     }
+
+  , rust: {
+      imgName: 'mooxe/rust'
+    , file: fRust()
+    }
+
   }
+
 )
