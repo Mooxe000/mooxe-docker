@@ -38,7 +38,7 @@ const dockerfile = () =>
     )
     (
       [
-        'PATH=\$HOME/.cargo/bin:\$PATH'
+        'PATH=\\$HOME/.cargo/bin:\\$PATH'
       , 'RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup'
       ].join('\\n')
     )
