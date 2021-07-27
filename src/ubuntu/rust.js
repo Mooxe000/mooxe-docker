@@ -86,6 +86,7 @@ const dockerfile = () =>
   //   ].join(' ')}
   // `)
 
+  // https://github.com/denoland/deno_lint
   .run(`
     $HOME/.cargo/bin/cargo install dprint &&
     $HOME/.cargo/bin/cargo install rslint_cli
