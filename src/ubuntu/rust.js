@@ -72,8 +72,6 @@ const dockerfile = () =>
     $HOME/.cargo/bin/rustup completions fish > ~/.config/fish/completions/rustup.fish
   `)
 
-  
-
   // .run(`
   //   $HOME/.cargo/bin/cargo install --force
   //   ${[
