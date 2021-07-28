@@ -25,7 +25,8 @@ const dockerfile = () =>
   `)
 
   .run(`
-    sed -i '$d' $HOME/.bash_profile
+    sed -i '$d' $HOME/.bash_profile &&
+    cp $HOME/.bash_profile $HOME/.bash_profile.bk
   `)
 
   .run(
@@ -34,12 +35,13 @@ const dockerfile = () =>
         [
           `echo "${env}" >> $HOME/.bashrc`
         , `echo "${env}" >> $HOME/.zshrc`
+        , `echo "${env}" >> $HOME/.config/fish/config.fish`
         ].join(' && ')
     )
     (
       [
-        'PATH=\\$HOME/.cargo/bin:\\$PATH'
-      , 'RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup'
+        'export PATH=\\$HOME/.cargo/bin:\\$PATH'
+      , 'export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup'
       ].join('\\n')
     )
   )
@@ -94,6 +96,10 @@ const dockerfile = () =>
   .run(`
     $HOME/.cargo/bin/cargo install cargo-script runner &&
     $HOME/.cargo/bin/cargo install --git https://github.com/faern/rustscript
+  `)
+
+  .run(`
+    mv $HOME/.bash_profile.bk $HOME/.bash_profile
   `)
 
   ()

@@ -39,7 +39,7 @@ export default DF => DF
       file => (
         conf => `echo "${conf}" >> ${file}`
       )([
-        'export PATH=$HOME/.fnm:$PATH'
+        'export PATH=\\$HOME/.fnm:\\$PATH'
       , `eval ${
           file.includes('fish')
           ? '(fnm env)'
