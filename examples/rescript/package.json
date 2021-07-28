@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "build": "rescript",
+    "start": "deno run -A ./lib/es6/src/index.js",
+    "watch": "rescript build -w"
+  }
+}

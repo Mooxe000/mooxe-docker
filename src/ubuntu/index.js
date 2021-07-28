@@ -4,6 +4,7 @@ import fNode from './node/index.js'
 import fDeno from './deno.js'
 
 import fRescript from './rescript.js'
+import fPurescript from './purescript.js'
 import fCalcitCirru from './calcit_cirru.js'
 
 import fRust from './rust.js'
@@ -30,6 +31,10 @@ export default () => (
   , rescript: {
       imgName: 'mooxe/rescript'
     , file: fRescript()
+    }
+  , purescript: {
+      imgName: 'mooxe/purescript'
+    , file: fPurescript()
     }
   , calcitCirru: {
       imgName: 'mooxe/calcit_cirru'

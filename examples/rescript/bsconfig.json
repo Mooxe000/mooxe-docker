@@ -1,0 +1,17 @@
+{
+  "name": "my-rescript",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": false
+    }
+  ],
+  "suffix": ".js",
+  "bs-dependencies": []
+}
