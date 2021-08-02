@@ -18,7 +18,8 @@ var people = [
   )
 ]
 
-for person in people:
+for person in people
+:
   # Type-safe string interpolation.
   echo(
     fmt"{person.name} is {person.age} years old"

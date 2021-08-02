@@ -1,6 +1,6 @@
 import { sh } from 'drake'
 
-const name = 'zig'
+const name = 'nim'
 
 export default {
   name: 'docker'
