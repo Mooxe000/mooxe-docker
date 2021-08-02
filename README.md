@@ -15,7 +15,7 @@ curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.10.3
 #### Deno:vr
 
 ```bash
-deno install -qAn vr https://deno.land/x/velociraptor@1.0.1/cli.ts
+deno install -qAn vr https://deno.land/x/velociraptor@1.0.2/cli.ts
 ```
 
 #### Deno:dzx

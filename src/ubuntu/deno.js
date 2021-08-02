@@ -1,7 +1,7 @@
 import DockerFile from '../Docker_file.js'
 // import snippets from './snippets/index.js'
 
-const version = '1.12.1'
+const version = '1.12.2'
 
 const dvmRun = cmd => `
   bash -lc "${cmd}"
@@ -51,7 +51,7 @@ const dockerfile = () =>
   .run(
     [
       // velociraptor
-      'deno install -qAn vr https://deno.land/x/velociraptor@1.0.1/cli.ts'
+      'deno install -qAn vr https://deno.land/x/velociraptor@1.0.2/cli.ts'
       // dzx 0.2.3
     ,
       'deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts'
