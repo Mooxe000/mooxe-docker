@@ -7,6 +7,7 @@ import fRescript from './rescript.js'
 import fPurescript from './purescript.js'
 import fCalcitCirru from './calcit_cirru.js'
 
+import fV from './v.js'
 import fRust from './rust.js'
 
 export default () => (
@@ -41,6 +42,10 @@ export default () => (
     , file: fCalcitCirru()
     }
 
+  , v: {
+      imgName: 'mooxe/v'
+    , file: fV()
+    }
   , rust: {
       imgName: 'mooxe/rust'
     , file: fRust()

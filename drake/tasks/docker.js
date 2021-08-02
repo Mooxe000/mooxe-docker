@@ -1,6 +1,6 @@
 import { sh } from 'drake'
 
-const name = 'rescript'
+const name = 'v'
 
 export default {
   name: 'docker'
@@ -14,7 +14,6 @@ export default {
       ,     `--name=${name}`
       ,     '-p 3000:3000'
       ,     '-p 8080:8080'
-      ,     '-p 6001:6001'
       ,     `-v $(pwd):/root/${name}`
       ,   `mooxe/${name}`
       ,     '/bin/bash'
