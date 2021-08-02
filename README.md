@@ -4,12 +4,15 @@
 
 #### Deno
 
-Make sure your deno's version ```= 1.10.3```
-
 You can install the newest version in your system
 
 ```bash
-curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.10.3
+>> # curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.12.2
+>> curl -fsSL https://deno.land/x/dvm/install.sh | sh
+>> tail -n 4 $HOME/.bash_profile >> $HOME/.zshrc
+>> tail -n 4 $HOME/.bash_profile >> $HOME/.config/fish/config.fish
+>> dvm ls-remote
+>> dvm install 1.12.2
 ```
 
 #### Deno:vr
@@ -31,10 +34,16 @@ deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts
 build mooxe-docker images one by one
 
 ```bash
-vr build:basePrd
-vr build:baseDev
-vr build:node
-vr build:deno
+>> vr build:basePrd
+>> vr build:baseDev
+>> vr build:node
+>> vr build:deno
+
+>> vr build:rescript
+>> vr build:purescript
+
+>> vr build:v
+>> vr build:rust
 ```
 
 #### docker:check
