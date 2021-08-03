@@ -2,8 +2,8 @@ name: Build_And_Push
 
 on:
   push:
-    branches:
-      - 'master'
+    branches:    
+      - 'releases/**'
 
 jobs:
 
@@ -142,13 +142,13 @@ jobs:
         run: |
           docker buildx imagetools inspect localhost:5000/mooxe/base:prd
           docker buildx imagetools inspect localhost:5000/mooxe/base:dev
-          docker buildx imagetools inspect localhost:5000/mooxe/base:node
-          docker buildx imagetools inspect localhost:5000/mooxe/base:deno
+          docker buildx imagetools inspect localhost:5000/mooxe/node
+          docker buildx imagetools inspect localhost:5000/mooxe/deno
 
-          docker buildx imagetools inspect localhost:5000/mooxe/base:rescript
-          docker buildx imagetools inspect localhost:5000/mooxe/base:purescript
-          docker buildx imagetools inspect localhost:5000/mooxe/base:nim
+          docker buildx imagetools inspect localhost:5000/mooxe/rescript
+          docker buildx imagetools inspect localhost:5000/mooxe/purescript
+          docker buildx imagetools inspect localhost:5000/mooxe/nim
 
-          docker buildx imagetools inspect localhost:5000/mooxe/base:vlang
-          docker buildx imagetools inspect localhost:5000/mooxe/base:zig
-          docker buildx imagetools inspect localhost:5000/mooxe/base:rust
+          docker buildx imagetools inspect localhost:5000/mooxe/vlang
+          docker buildx imagetools inspect localhost:5000/mooxe/zig
+          docker buildx imagetools inspect localhost:5000/mooxe/rust
