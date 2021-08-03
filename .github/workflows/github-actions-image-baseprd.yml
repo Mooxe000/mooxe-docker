@@ -50,7 +50,7 @@ jobs:
         with:
           find: "localhost"
           replace: "localhost:5000"
-          include: "Docker/"
+          include: "Dockerfile"
 
       -
         name: basedev
@@ -144,9 +144,11 @@ jobs:
           docker buildx imagetools inspect localhost:5000/mooxe/base:dev
           docker buildx imagetools inspect localhost:5000/mooxe/base:node
           docker buildx imagetools inspect localhost:5000/mooxe/base:deno
+
           docker buildx imagetools inspect localhost:5000/mooxe/base:rescript
           docker buildx imagetools inspect localhost:5000/mooxe/base:purescript
           docker buildx imagetools inspect localhost:5000/mooxe/base:nim
+
           docker buildx imagetools inspect localhost:5000/mooxe/base:v
           docker buildx imagetools inspect localhost:5000/mooxe/base:zig
           docker buildx imagetools inspect localhost:5000/mooxe/base:rust
