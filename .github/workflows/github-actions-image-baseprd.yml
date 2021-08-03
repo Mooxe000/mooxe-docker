@@ -12,8 +12,8 @@ jobs:
     services:
       registry:
         image: registry:2
-        # ports:
-        #   - 5000:5000
+        ports:
+          - 5000:5000
     steps:
       -
         name: Checkout
@@ -40,33 +40,33 @@ jobs:
         with:
           context: ./Docker/baseprd
           push: true
-          tags: localhost/mooxe/base:prd
-      -
-        name: basedev
-        uses: docker/build-push-action@v2
-        with:
-          context: ./Docker/basedev
-          push: true
-          tags: localhost/mooxe/base:dev
-      -
-        name: node
-        uses: docker/build-push-action@v2
-        with:
-          context: ./Docker/node
-          push: true
-          tags: localhost/mooxe/node
-      -
-        name: deno
-        uses: docker/build-push-action@v2
-        with:
-          context: ./Docker/deno
-          push: true
-          tags: localhost/mooxe/deno
+          tags: localhost:5000/mooxe/base:prd
+      # -
+      #   name: basedev
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: ./Docker/basedev
+      #     push: true
+      #     tags: localhost/mooxe/base:dev
+      # -
+      #   name: node
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: ./Docker/node
+      #     push: true
+      #     tags: localhost/mooxe/node
+      # -
+      #   name: deno
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: ./Docker/deno
+      #     push: true
+      #     tags: localhost/mooxe/deno
 
       -
         name: Inspect
         run: |
           docker buildx imagetools inspect localhost:5000/mooxe/base:prd
-          docker buildx imagetools inspect localhost:5000/mooxe/base:dev
-          docker buildx imagetools inspect localhost:5000/mooxe/base:node
-          docker buildx imagetools inspect localhost:5000/mooxe/base:deno
+        # docker buildx imagetools inspect localhost:5000/mooxe/base:dev
+        # docker buildx imagetools inspect localhost:5000/mooxe/base:node
+        # docker buildx imagetools inspect localhost:5000/mooxe/base:deno
