@@ -110,14 +110,14 @@ jobs:
             mooxe/nim
 
       -
-        name: v
+        name: vlang
         uses: docker/build-push-action@v2
         with:
-          context: ./Docker/v
+          context: ./Docker/vlang
           push: true
           tags: |
-            localhost:5000/mooxe/v
-            mooxe/v
+            localhost:5000/mooxe/vlang
+            mooxe/vlang
       -
         name: zig
         uses: docker/build-push-action@v2
@@ -149,6 +149,6 @@ jobs:
           docker buildx imagetools inspect localhost:5000/mooxe/base:purescript
           docker buildx imagetools inspect localhost:5000/mooxe/base:nim
 
-          docker buildx imagetools inspect localhost:5000/mooxe/base:v
+          docker buildx imagetools inspect localhost:5000/mooxe/base:vlang
           docker buildx imagetools inspect localhost:5000/mooxe/base:zig
           docker buildx imagetools inspect localhost:5000/mooxe/base:rust
