@@ -41,13 +41,13 @@ jobs:
           context: ./Docker/baseprd
           push: true
           tags: localhost:5000/mooxe/base:prd
-      # -
-      #   name: basedev
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     context: ./Docker/basedev
-      #     push: true
-      #     tags: localhost/mooxe/base:dev
+      -
+        name: basedev
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/basedev
+          push: true
+          tags: localhost:5000/mooxe/base:dev
       # -
       #   name: node
       #   uses: docker/build-push-action@v2
@@ -67,6 +67,6 @@ jobs:
         name: Inspect
         run: |
           docker buildx imagetools inspect localhost:5000/mooxe/base:prd
-        # docker buildx imagetools inspect localhost:5000/mooxe/base:dev
+          docker buildx imagetools inspect localhost:5000/mooxe/base:dev
         # docker buildx imagetools inspect localhost:5000/mooxe/base:node
         # docker buildx imagetools inspect localhost:5000/mooxe/base:deno
