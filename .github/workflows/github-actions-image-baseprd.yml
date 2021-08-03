@@ -44,11 +44,11 @@ jobs:
 
       -
         name: basedev add local port
-        uses: mad9000/actions-find-and-replace-string@2
+        uses: jacobtomlinson/gha-find-replace@master
         with:
-          source: localhost # this translates to ref/heads/main on the main branch, but can be any arbitrary string 
-          find: 'Docker/'        # we want to remove ref/heads/ from source 
-          replace: localhost:5000
+          find: "localhost"
+          replace: "localhost:5000"
+          include: "Docker/"
       -
         name: basedev
         uses: docker/build-push-action@v2
