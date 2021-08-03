@@ -9,7 +9,10 @@ export default ( program, DockerFiles ) =>
 
     if (program.name) {
 
-      const tmpDir = getPath(path.join(__dirname, '../../tmp'))
+      const tmpDir = getPath(path.join(
+        __dirname
+      , `../../Docker/${program.name}`)
+      )
 
       await fs.ensureDir(tmpDir)
 
@@ -36,9 +39,9 @@ export default ( program, DockerFiles ) =>
         DockerFiles[program.name].imgName
       }`
 
-      cd(getPath(path.join(__dirname, '../../')))
+      cd(getPath(path.join(__dirname, '../../../')))
 
-      await Deno.remove(tmpDir, { recursive: true })
+      // await Deno.remove(tmpDir, { recursive: true })
 
     }
 

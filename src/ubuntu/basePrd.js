@@ -4,7 +4,7 @@ import snippets from './snippets/index.js'
 const dockerfile = () =>
   DockerFile()
   .from`docker.io/library/ubuntu`
-  .workdir`root`
+  // .workdir`root`
 
   .env`SOURCES_FILE=/etc/apt/sources.list`
   .env`SYSMIRROR=mirrors.aliyun.com`

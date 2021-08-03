@@ -14,11 +14,11 @@ import fRust from './rust.js'
 
 export default () => (
   {
-    basePrd: {
+    baseprd: {
       imgName: 'mooxe/base:prd'
     , file: fBasePrd()
     }
-  , baseDev: {
+  , basedev: {
       imgName: 'mooxe/base:dev'
     , file: fBaseDev()
     }
