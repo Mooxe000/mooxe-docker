@@ -29,6 +29,25 @@ deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts
 
 ### Usage
 
+#### docker:pull
+
+pull mooxe-docker images from docker.io
+
+```bash
+>> docker/podman pull mooxe/base:prd
+>> docker/podman pull mooxe/base:dev
+>> docker/podman pull mooxe/node
+>> docker/podman pull mooxe/deno
+
+>> docker/podman pull mooxe/rescript
+>> docker/podman pull mooxe/purescript
+>> docker/podman pull mooxe/nim
+
+>> docker/podman pull mooxe/vlang
+>> docker/podman pull mooxe/zig
+>> docker/podman pull mooxe/rust
+```
+
 #### docker:build
 
 build mooxe-docker images one by one
@@ -41,8 +60,10 @@ build mooxe-docker images one by one
 
 >> vr build:rescript
 >> vr build:purescript
+>> vr build:nim
 
->> vr build:v
+>> vr build:vlang
+>> vr build:zig
 >> vr build:rust
 ```
 
