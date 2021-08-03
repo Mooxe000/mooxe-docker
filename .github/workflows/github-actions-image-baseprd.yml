@@ -27,12 +27,12 @@ jobs:
         with:
           driver-opts: network=host
 
-      # -
-      #   name: Login to DockerHub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       -
         name: baseprd
@@ -40,7 +40,9 @@ jobs:
         with:
           context: ./Docker/baseprd
           push: true
-          tags: localhost:5000/mooxe/base:prd
+          tags: |
+            localhost:5000/mooxe/base:prd
+            mooxe/base:prd
 
       -
         name: basedev add local port
@@ -49,32 +51,102 @@ jobs:
           find: "localhost"
           replace: "localhost:5000"
           include: "Docker/"
+
       -
         name: basedev
         uses: docker/build-push-action@v2
         with:
           context: ./Docker/basedev
           push: true
-          tags: localhost:5000/mooxe/base:dev
-      # -
-      #   name: node
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     context: ./Docker/node
-      #     push: true
-      #     tags: localhost/mooxe/node
-      # -
-      #   name: deno
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     context: ./Docker/deno
-      #     push: true
-      #     tags: localhost/mooxe/deno
+          tags: |
+            localhost:5000/mooxe/base:dev
+            mooxe/base:dev
+            mooxe/base:latest
+      -
+        name: node
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/node
+          push: true
+          tags: |
+            localhost/mooxe/node
+            mooxe/node
+      -
+        name: deno
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/deno
+          push: true
+          tags: |
+            localhost/mooxe/deno
+            mooxe/deno
+
+      -
+        name: rescript
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/rescript
+          push: true
+          tags: |
+            localhost/mooxe/rescript
+            mooxe/rescript
+      -
+        name: purescript
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/purescript
+          push: true
+          tags: |
+            localhost/mooxe/purescript
+            mooxe/purescript
+      -
+        name: nim
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/nim
+          push: true
+          tags: |
+            localhost/mooxe/nim
+            mooxe/nim
+
+      -
+        name: v
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/v
+          push: true
+          tags: |
+            localhost/mooxe/v
+            mooxe/v
+      -
+        name: zig
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/zig
+          push: true
+          tags: |
+            localhost/mooxe/zig
+            mooxe/zig
+      -
+        name: rust
+        uses: docker/build-push-action@v2
+        with:
+          context: ./Docker/rust
+          push: true
+          tags: |
+            localhost/mooxe/rust
+            mooxe/rust
 
       -
         name: Inspect
         run: |
           docker buildx imagetools inspect localhost:5000/mooxe/base:prd
           docker buildx imagetools inspect localhost:5000/mooxe/base:dev
-        # docker buildx imagetools inspect localhost:5000/mooxe/base:node
-        # docker buildx imagetools inspect localhost:5000/mooxe/base:deno
+          docker buildx imagetools inspect localhost:5000/mooxe/base:node
+          docker buildx imagetools inspect localhost:5000/mooxe/base:deno
+          docker buildx imagetools inspect localhost:5000/mooxe/base:rescript
+          docker buildx imagetools inspect localhost:5000/mooxe/base:purescript
+          docker buildx imagetools inspect localhost:5000/mooxe/base:nim
+          docker buildx imagetools inspect localhost:5000/mooxe/base:v
+          docker buildx imagetools inspect localhost:5000/mooxe/base:zig
+          docker buildx imagetools inspect localhost:5000/mooxe/base:rust
