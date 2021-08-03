@@ -69,7 +69,7 @@ jobs:
           context: ./Docker/node
           push: true
           tags: |
-            localhost/mooxe/node
+            localhost:5000/mooxe/node
             mooxe/node
       -
         name: deno
@@ -78,7 +78,7 @@ jobs:
           context: ./Docker/deno
           push: true
           tags: |
-            localhost/mooxe/deno
+            localhost:5000/mooxe/deno
             mooxe/deno
 
       -
@@ -88,7 +88,7 @@ jobs:
           context: ./Docker/rescript
           push: true
           tags: |
-            localhost/mooxe/rescript
+            localhost:5000/mooxe/rescript
             mooxe/rescript
       -
         name: purescript
@@ -97,7 +97,7 @@ jobs:
           context: ./Docker/purescript
           push: true
           tags: |
-            localhost/mooxe/purescript
+            localhost:5000/mooxe/purescript
             mooxe/purescript
       -
         name: nim
@@ -106,7 +106,7 @@ jobs:
           context: ./Docker/nim
           push: true
           tags: |
-            localhost/mooxe/nim
+            localhost:5000/mooxe/nim
             mooxe/nim
 
       -
@@ -116,7 +116,7 @@ jobs:
           context: ./Docker/v
           push: true
           tags: |
-            localhost/mooxe/v
+            localhost:5000/mooxe/v
             mooxe/v
       -
         name: zig
@@ -125,7 +125,7 @@ jobs:
           context: ./Docker/zig
           push: true
           tags: |
-            localhost/mooxe/zig
+            localhost:5000/mooxe/zig
             mooxe/zig
       -
         name: rust
@@ -134,7 +134,7 @@ jobs:
           context: ./Docker/rust
           push: true
           tags: |
-            localhost/mooxe/rust
+            localhost:5000/mooxe/rust
             mooxe/rust
 
       -
