@@ -1,6 +1,6 @@
 import { sh } from 'drake'
 
-const name = 'nim'
+const name = 'purescript'
 
 export default {
   name: 'docker'
