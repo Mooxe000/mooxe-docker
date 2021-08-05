@@ -3,6 +3,9 @@ module Data.AddressBook where
 import Prelude (
   ($)
 , (<>)
+, (==)
+, (&&)
+, (<<<)
 , map
 )
 
@@ -12,11 +15,12 @@ import Data.Foldable (
 
 import Control.Plus (empty)
 import Data.List (
-  List(..)
--- , filter
--- , head
+  (:)
+, List(..)
+, filter
+, head
 )
--- import Data.Maybe (Maybe)
+import Data.Maybe (Maybe)
 
 type Address = {
   street :: String
@@ -34,9 +38,11 @@ type AddressBook = List Entry
 
 showAddress :: Address -> String
 showAddress addr =
-      addr.street <> ", "
-  <>  addr.city <> ", "
-  <>  addr.state
+    foldMap (\n -> n <> ", ")
+  $   addr.street
+    : addr.city
+    : addr.state
+    : empty
 
 showEntry :: Entry -> String
 showEntry entry =
@@ -54,8 +60,13 @@ showAddressBook :: AddressBook -> String
 showAddressBook addrBook =
   foldMap (\n -> n <> "\n") $ map showEntry addrBook
 
--- findEntry :: String -> String -> AddressBook -> Maybe Entry
--- findEntry firstName lastName = head <<< filter filterEntry
---   where
---   filterEntry :: Entry -> Boolean
---   filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
+findEntry ::
+  String -> String -> AddressBook
+  -> Maybe Entry
+findEntry firstName lastName =
+  head <<< filter filterEntry
+  where
+    filterEntry :: Entry -> Boolean
+    filterEntry entry =
+          entry.firstName == firstName
+      &&  entry.lastName == lastName

@@ -13,7 +13,7 @@ to generate this file without the comments in this block.
 { name = "my-purescript"
 , dependencies =
   [
-  --  "arrays"
+   "arrays"
   -- , "assert"
   , "console"
   , "control"
@@ -21,7 +21,7 @@ to generate this file without the comments in this block.
   -- , "enums"
   , "foldable-traversable"
   , "lists"
-  -- , "maybe"
+  , "maybe"
   , "prelude"
   -- , "profunctor"
   , "psci-support"
