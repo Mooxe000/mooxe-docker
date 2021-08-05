@@ -19,7 +19,7 @@ to generate this file without the comments in this block.
   , "control"
   , "effect"
   -- , "enums"
-  -- , "foldable-traversable"
+  , "foldable-traversable"
   , "lists"
   -- , "maybe"
   , "prelude"

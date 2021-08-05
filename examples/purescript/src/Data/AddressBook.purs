@@ -1,8 +1,13 @@
 module Data.AddressBook where
 
 import Prelude (
-  (<>)
--- , map
+  ($)
+, (<>)
+, map
+)
+
+import Data.Foldable (
+  foldMap
 )
 
 import Control.Plus (empty)
@@ -45,9 +50,9 @@ emptyBook = empty
 insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry = Cons
 
--- showAddressBook :: List AddressBook -> String
--- showAddressBook addrBook =
---   map (\n -> showEntry n) addrBook
+showAddressBook :: AddressBook -> String
+showAddressBook addrBook =
+  foldMap (\n -> n <> "\n") $ map showEntry addrBook
 
 -- findEntry :: String -> String -> AddressBook -> Maybe Entry
 -- findEntry firstName lastName = head <<< filter filterEntry
