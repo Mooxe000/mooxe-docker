@@ -1,6 +1,6 @@
 import { sh } from 'drake'
 
-const name = 'purescript'
+const name = 'deno'
 
 export default {
   name: 'docker'
