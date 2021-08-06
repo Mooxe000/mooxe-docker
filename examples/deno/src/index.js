@@ -3,13 +3,11 @@
 const match = matchObj => s => {
 
   const initV =
-      matchObj.other
-    && (
-        matchObj.other !== undefined
-    ||  matchObj.other !== null
-    )
-    ? matchObj.other 
-    : null
+        matchObj.hasOwnProperty('other')
+    &&  matchObj.other !== undefined
+    &&  matchObj.other !== null
+    ?   matchObj.other()
+    :   null
 
   return Object.keys(matchObj)
   .reduce(
@@ -17,36 +15,81 @@ const match = matchObj => s => {
       r !== initV
       ? r
       : c === s
-      ? matchObj[c]
+      ? matchObj[c]()
       : r
   , initV
   )
 
 }
 
-const a = match({
-  a: 'Albert'
-, b: 'Broseph'
-, c: 'Cecil'
-, other: 'default'
-})
+// fn
+const curry2 = f => (...args) => {
 
-console.log(a('a'))
-console.log(a('b'))
-console.log(a('c'))
-console.log(a('d'))
+  return match({
+    '1': () => b => f(args[0], b)
+  , '2': () => f(args[0], args[1]) // f.apply(null, args)
+  , other: () => 'Either'
+  })(`${args.length}`)
+}
 
-// const map = (f, a) => {
-//   a.map(f)
-// }
+const F = (() => {
 
-// // $
-// const dl = (f, x) = f(x)
+  const _F = fn => (...args) => {
 
-// // fn
-// const curryFn = (f, []) =>
-//   a => b => c => d => (a, b, c, d) => f(a, b, c, d)
+    const fns = arr => {
+      console.log({arr})
+      return arr.reverse()
+      .reduce(
+        (r, c) =>
+            r === null
+          ? c
+          : fn(c, r)
+      , null
+      )
+    }
 
-// const fold = (f, a) => {
+    return match({
+      '1': () => fn(args[0])
+    , '2': () => fn(args[0], args[1]) // fn.apply(null, args)
+    , other: () => fns(args)
+    })(`${args.length}`)
 
-// }
+  }
+
+  return {
+
+    '$':  _F(
+            curry2(
+              (a, b) =>
+                  typeof a === 'function'
+                ? a(b)
+                : typeof b === 'function'
+                ? b(a)
+                : 'Either'
+            )
+          )
+
+  , '.':  _F(
+            curry2(
+              (fa, fb) => x => fa( fb( x ))
+            )
+          )
+
+  }
+})()
+
+const map = (b, a) =>
+  a.map(
+    t =>
+        typeof b === 'function'
+      ? b(t)
+      : typeof t === 'function' 
+      ? t(b)
+      : 'Either'  
+  )
+
+export {
+  match
+, F
+, map
+}
