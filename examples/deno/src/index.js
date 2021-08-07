@@ -1,43 +1,26 @@
 // Just Maybe Either
 
-const match = matchObj => s => {
-
-  const initV =
-        matchObj.hasOwnProperty('other')
-    &&  matchObj.other !== undefined
-    &&  matchObj.other !== null
-    ?   matchObj.other()
-    :   null
-
-  return Object.keys(matchObj)
-  .reduce(
-    (r, c) =>
-      r !== initV
-      ? r
-      : c === s
-      ? matchObj[c]()
-      : r
-  , initV
-  )
-
-}
+const match = matchObj => s =>
+    matchObj.hasOwnProperty(s)
+  ? matchObj[s]()
+  : matchObj.hasOwnProperty('other')
+  ? matchObj.other()
+  : 'Either'
 
 // fn
-const curry2 = f => (...args) => {
+const curry2 = f => (...args) =>
 
-  return match({
+  match({
     '1': () => b => f(args[0], b)
   , '2': () => f(args[0], args[1]) // f.apply(null, args)
   , other: () => 'Either'
   })(`${args.length}`)
-}
 
 const F = (() => {
 
   const _F = fn => (...args) => {
 
     const fns = arr => {
-      console.log({arr})
       return arr.reverse()
       .reduce(
         (r, c) =>

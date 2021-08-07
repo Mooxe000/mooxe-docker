@@ -96,27 +96,23 @@ const sum = arr =>
   , 0
   )
 
-F['$'](
-  // () => {}
-  console.log
-, [
-    cons(1, 5)
-  , cons(3, 6)
-  , cons(1, 7)
-  ]
+Deno.test(
+  "map #3"
+, () => {
+    assertEquals(
+      map(
+        F['.'](
+          negate
+        , sum
+        , tail
+        )
+      , [
+          cons(1, 5)
+        , cons(3, 6)
+        , cons(1, 7)
+        ]
+      )
+    , [-14,-15,-27]
+    )
+  }
 )
-
-// console.log(
-//   map(
-//     F['.'](
-//       negate
-//     , sum
-//     , tail
-//     )
-//   , [
-//       cons(1, 5)
-//     , cons(3, 6)
-//     , cons(1, 7)
-//     ]
-//   )
-// )
