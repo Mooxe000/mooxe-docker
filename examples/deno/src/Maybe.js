@@ -1,6 +1,5 @@
-import map from './index.js'
-
 const id = self => self
+const Nothing = null
 
 const Just = n => ({
   Just: n
@@ -8,9 +7,6 @@ const Just = n => ({
 
 const getJust = ({Just}) => Just
 
-const Functor = ({ fmap }) => ({ fmap })
-
-const Nothing = null
 
 const Maybe = () => {
 
@@ -32,7 +28,7 @@ const Maybe = () => {
     //   (Just f) <*> something = fmap f something
   , Applicative: Functor => ({
       pure: Just
-    , '<*>': (f, t) =>
+    , fmap: (f, t) =>
             f === Nothing
         ||  t === Nothing
         ?   Nothing
@@ -83,8 +79,11 @@ const Maybe = () => {
     })
   }
 
-  return ( () => {} )
-  .instance(Functor, instance.Funcor)
-  .instance(Applicative, instance.Applicative)
-  .instance(Monad, instance.Monad)
+  return Instance()
+  .where(Functor)
+  .where(Applicative)
+  .where(Monid)
+  .where(Monad)
+  ()
+
 }
