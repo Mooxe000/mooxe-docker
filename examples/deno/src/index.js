@@ -73,6 +73,7 @@ const map = (b, a) =>
 
 export {
   match
+, curry2
 , F
 , map
 }
