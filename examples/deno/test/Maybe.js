@@ -17,8 +17,8 @@ console.log(Maybe.F.Applicative.fmap( Maybe(n => n + 3), Maybe(3) ))
 
 const F = {
   return: Maybe.F.Monad.return
-, '>>=': Maybe.F.Monad.apply
-, '>>': Maybe.F.Monad.bind
+, '>>=': Maybe.F.Monad.bind
+, '>>': Maybe.F.Monad.apply
 }
 
 console.log(

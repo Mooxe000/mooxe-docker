@@ -17,20 +17,20 @@ const Where =
   )
   .set(
     JSON.stringify([
+      'return'
+    , 'bind' // >>=
+    , 'apply'  // >>
+    , 'fail'
+    ])
+  , 'Monad'
+  )
+  .set(
+    JSON.stringify([
       'mempty'
     , 'mappend'
     , 'mconcat'
     ])
   , 'Monid'
-  )
-  .set(
-    JSON.stringify([
-      'return'
-    , 'apply' // >>=
-    , 'bind'  // >>
-    , 'fail'
-    ])
-  , 'Monad'
   )
 
 const Instance = (I = {}) => {

@@ -42,6 +42,26 @@ const Maybe = (() => {
             )
     })
 
+    // instance Monad Maybe where
+    //   return x = Just x
+    //   Nothing >>= f = Nothing
+    //   Just x >>= f = f x
+    //   fail _ = Nothing
+  , Monad: ({
+      Applicative
+    , Monad
+    }) => ({
+      return: Applicative.pure
+      // >>=
+    , bind: (ma, fmb) =>
+          ma === Nothing
+        ? Nothing
+        : fmb( getJust( ma ))
+      // >>
+    , apply: (fmb, ma) => Monad.bind(ma, fmb)
+    , fail: () => Nothing
+    })
+
     // instance Monoid a => Monoid (Maybe a) where
     //   mempty = Nothing
     //   Nothing `mappend` m = m
@@ -66,32 +86,13 @@ const Maybe = (() => {
     , mconcat: () => {}
     }
 
-    // instance Monad Maybe where
-    //   return x = Just x
-    //   Nothing >>= f = Nothing
-    //   Just x >>= f = f x
-    //   fail _ = Nothing
-  , Monad: ({
-      Applicative
-    , Monad
-    }) => ({
-      return: Applicative.pure
-      // >>=
-    , apply: (ma, fmb) =>
-          ma === Nothing
-        ? Nothing
-        : fmb( getJust( ma ))
-      // >>
-    , bind: (fmb, ma) => Monad.apply(ma, fmb)
-    , fail: () => Nothing
-    })
   }
 
   const MaybeIns = Instance()
   .where(instance.Functor)
   .where(instance.Applicative)
-  .where(instance.Monid)
   .where(instance.Monad)
+  .where(instance.Monid)
 
   return (() => {
     const fn = MaybeIns()
