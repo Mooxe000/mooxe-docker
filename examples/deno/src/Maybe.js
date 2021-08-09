@@ -1,3 +1,4 @@
+import { curry2  } from "./F.js"
 import Instance from "./Instance.js"
 
 // const id = self => self
@@ -17,10 +18,12 @@ const Maybe = (() => {
     //   fmap f (Just x) = Just (f x)
     //   fmap f Nothing = Nothing
     Functor: {
-      fmap: (f, t) =>
-          t === Nothing
-        ? Nothing
-        : Just( f( getJust(t) ) )
+      fmap: curry2(
+        (f, t) =>
+            t === Nothing
+          ? Nothing
+          : Just( f( getJust(t) ) )
+      )
     }
 
     // instance Applicative Maybe where
@@ -29,6 +32,7 @@ const Maybe = (() => {
     //   (Just f) <*> something = fmap f something
   , Applicative: ({Functor}) => ({
       pure: Just
+      // <*>
     , fmap: (f, t) =>
             f === Nothing
         ||  t === Nothing
@@ -47,7 +51,7 @@ const Maybe = (() => {
       mempty: Nothing
     , mappend: (
         () => {
-          const recMappend = (m1, m2) =>
+          const mappend = (m1, m2) =>
                 m1 === Nothing
             ||  m2 === Nothing
             ?   m1 === Nothing
@@ -55,8 +59,8 @@ const Maybe = (() => {
             :   m2 === Nothing
             ?   m1
             :   Nothing
-            :   Just( recMappend( getJust(m1), getJust(m2) ))
-          return recMappend
+            :   Just( mappend( getJust(m1), getJust(m2) ))
+          return mappend
         }
       )()
     , mconcat: () => {}
@@ -67,7 +71,10 @@ const Maybe = (() => {
     //   Nothing >>= f = Nothing
     //   Just x >>= f = f x
     //   fail _ = Nothing
-  , Monad: ({Applicative}) => ({
+  , Monad: ({
+      Applicative
+    , Monad
+    }) => ({
       return: Applicative.pure
       // >>=
     , apply: (ma, fmb) =>
@@ -75,7 +82,7 @@ const Maybe = (() => {
         ? Nothing
         : fmb( getJust( ma ))
       // >>
-    , bind: (fmb, ma) => apply(fmb, ma)
+    , bind: (fmb, ma) => Monad.apply(ma, fmb)
     , fail: () => Nothing
     })
   }
