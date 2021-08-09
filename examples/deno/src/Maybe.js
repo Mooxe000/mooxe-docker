@@ -1,4 +1,6 @@
-const id = self => self
+import Instance from "./Instance.js"
+
+// const id = self => self
 const Nothing = null
 
 const Just = n => ({
@@ -7,15 +9,14 @@ const Just = n => ({
 
 const getJust = ({Just}) => Just
 
-
-const Maybe = () => {
+const Maybe = (() => {
 
   const instance = {
 
     // instance Functor Maybe where
     //   fmap f (Just x) = Just (f x)
     //   fmap f Nothing = Nothing
-    Functor = {
+    Functor: {
       fmap: (f, t) =>
           t === Nothing
         ? Nothing
@@ -26,7 +27,7 @@ const Maybe = () => {
     //   pure = Just
     //   Nothing <*> _ = Nothing
     //   (Just f) <*> something = fmap f something
-  , Applicative: Functor => ({
+  , Applicative: ({Functor}) => ({
       pure: Just
     , fmap: (f, t) =>
             f === Nothing
@@ -46,7 +47,7 @@ const Maybe = () => {
       mempty: Nothing
     , mappend: (
         () => {
-          const mappend = (m1, m2) =>
+          const recMappend = (m1, m2) =>
                 m1 === Nothing
             ||  m2 === Nothing
             ?   m1 === Nothing
@@ -54,11 +55,11 @@ const Maybe = () => {
             :   m2 === Nothing
             ?   m1
             :   Nothing
-            :   Just( mappend( getJust(m1), getJust(m2) ))
-          return mappend
+            :   Just( recMappend( getJust(m1), getJust(m2) ))
+          return recMappend
         }
       )()
-    // , mconcat
+    , mconcat: () => {}
     }
 
     // instance Monad Maybe where
@@ -66,24 +67,31 @@ const Maybe = () => {
     //   Nothing >>= f = Nothing
     //   Just x >>= f = f x
     //   fail _ = Nothing
-  , Monad: Applicative => ({
+  , Monad: ({Applicative}) => ({
       return: Applicative.pure
-      // apply
-    , '>>=': (ma, fmb) =>
+      // >>=
+    , apply: (ma, fmb) =>
           ma === Nothing
         ? Nothing
         : fmb( getJust( ma ))
-      // bind
-    , '>>': (fmb, ma) => apply(fmb, ma)
+      // >>
+    , bind: (fmb, ma) => apply(fmb, ma)
     , fail: () => Nothing
     })
   }
 
-  return Instance()
-  .where(Functor)
-  .where(Applicative)
-  .where(Monid)
-  .where(Monad)
-  ()
+  const MaybeIns = Instance()
+  .where(instance.Functor)
+  .where(instance.Applicative)
+  .where(instance.Monid)
+  .where(instance.Monad)
 
-}
+  return (() => {
+    const fn = MaybeIns()
+    fn.F = MaybeIns.F
+    return fn
+  })()
+
+})()
+
+export default Maybe

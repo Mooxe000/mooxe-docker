@@ -1,61 +1,91 @@
+import { match } from './F.js'
+
 const Where =
   new Map()
   .set(
-    [ 'fmap' ]
+    JSON.stringify([
+      'fmap'
+    ])
   , 'Functor'
   )
   .set(
-    [
+    JSON.stringify([
       'pure'
     , 'fmap' // <*>
-    ]
+    ])
   , 'Applicative'
   )
   .set(
-    [
+    JSON.stringify([
       'mempty'
     , 'mappend'
     , 'mconcat'
-    ]
+    ])
   , 'Monid'
   )
   .set(
-    [
+    JSON.stringify([
       'return'
     , 'apply' // >>=
     , 'bind'  // >>
     , 'fail'
-    ]
+    ])
   , 'Monad'
   )
 
-const Instance = (T) => {
+const Instance = (I = {}) => {
 
-  const t = T
+  const i = I
 
   return new Proxy(
     () => {}
   , {
+
       get: (t, k) =>
         match({
+
           where: () => instance => {
 
-            const instanceType = Where.get(Object.keys(instance))
+            const instanceKeys = Object.keys(
+                typeof instance === 'function'
+              ? instance(i)
+              : instance
+            )
 
-            t[instanceType] = match({
-              Functor: () => instance
-            , Applicative: () => instance(t.Functor)
-            , Monid: () => instance
-            , Monad: () => instance
-            , other: () => Nothing
-            })(instanceType)
+            const instanceType = Where.get(
+              JSON.stringify(instanceKeys)
+            )
 
-            return Instance(t)
+            instanceKeys
+            .forEach(
+              k => {
+                  !i[instanceType]
+                ? i[instanceType] = {}
+                : undefined
+
+                i[instanceType][k] =
+                    typeof instance === 'function'
+                  ? instance(i)[k]
+                  : instance[k]
+              }
+            )
+
+            return Instance(i)
 
           }
-        , other: () => Instance(t)
+
+        , F: () => i
+
+        , other: () => Instance(i)
+
         })(k)
-    , apply: (t, b, pa) => Applicative.pure
+
+    , apply: (t, b, pa) => {
+        return i.Applicative.pure
+      }
+
     }
   )
 }
+
+export default Instance
