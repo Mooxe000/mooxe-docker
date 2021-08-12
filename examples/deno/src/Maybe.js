@@ -53,12 +53,16 @@ const Maybe = (() => {
     }) => ({
       return: Applicative.pure
       // >>=
-    , bind: (ma, fmb) =>
+    , pipe: (ma, fmb) =>
           ma === Nothing
         ? Nothing
         : fmb( getJust( ma ))
+      // <=<
+    , apply: (fmb, ma) => Monad.pipe(ma, fmb)
+
       // >>
-    , apply: (fmb, ma) => Monad.bind(ma, fmb)
+    , then: (ma, fmb) => fmb()
+
     , fail: () => Nothing
     })
 

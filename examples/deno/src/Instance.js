@@ -18,8 +18,9 @@ const Where =
   .set(
     JSON.stringify([
       'return'
-    , 'bind' // >>=
-    , 'apply'  // >>
+    , 'pipe' // >>=
+    , 'apply' // <=<
+    , 'then' // >>
     , 'fail'
     ])
   , 'Monad'
