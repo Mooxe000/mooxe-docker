@@ -12,6 +12,9 @@ import fVlang from './vlang.js'
 import fZig from './zig.js'
 import fRust from './rust.js'
 
+import fWineNwjs from './winenwjs.js'
+import fWeChatDevTools from './wechatdevtools.js'
+
 export default () => (
   {
     baseprd: {
@@ -59,6 +62,15 @@ export default () => (
   , rust: {
       imgName: 'mooxe/rust'
     , file: fRust()
+    }
+
+  , winenwjs: {
+      imgName: 'mooxe/winenwjs'
+    , file: fWineNwjs()
+    }
+  , wechatdevtools: {
+      imgName: 'mooxe/wechatdevtools'
+    , file: fWeChatDevTools()
     }
 
   }
