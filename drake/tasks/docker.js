@@ -20,7 +20,7 @@ export default {
       ,     '-p 8080:8080'
       ,     '-e DISPLAY'
       ,     '--net=host'
-      ,     '--device=/dev/dri/card0:/dev/dri/card0'
+      ,     '--device=/dev/dri:/dev/dri'
       ,     `-v $(pwd):/root/${
               name.indexOf(':') !== 0
               ? name.split(':').join('')

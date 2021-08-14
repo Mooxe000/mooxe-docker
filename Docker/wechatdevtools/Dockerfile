@@ -11,7 +11,7 @@ RUN \
   axel -o $HOME/.WeChatDevTools/WeChatDevTools.7z       'https://servicewechat.com/wxa-dev-logic/download_redirect?type=ia32&from=mpwiki&download_version=1052107090&version_type=1';
 
 RUN \
-  apt-fast install -y p7zip-full liblcm1
+  apt-fast install -y p7zip-full
 
 RUN \
   set -ex; \
@@ -23,3 +23,6 @@ RUN \
   set -ex; \
   cd $HOME/.WeChatDevTools; \
   mv \?\?\?\?\?\?\?.exe 微信小程序开发工具.exe;
+
+RUN \
+  apt-fast install -y  liblcm1

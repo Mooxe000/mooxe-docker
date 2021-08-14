@@ -16,12 +16,27 @@ const dockerfile = () =>
   `
 
   .run(
-    snippets.install()([
-      'p7zip-full'
+    snippets.install()`p7zip-full`
+  )
 
+  .run`
+    set -ex;
+    cd $HOME/.WeChatDevTools;
+    yes 'A' | 7z x ./WeChatDevTools.7z;
+    rm -rf ./WeChatDevTools.7z;
+  `
+
+  .run`
+    set -ex;
+    cd $HOME/.WeChatDevTools;
+    mv \\?\\?\\?\\?\\?\\?\\?.exe 微信小程序开发工具.exe;
+  `
+
+  .run(
+    snippets.install()([
     , 'liblcm1'
     // , 'libntlm0'
-    , 'liblcm1-dev'
+    // , 'liblcm1-dev'
 
     // , 'apt-utils'
     // , 'dbus-x11'
@@ -48,18 +63,11 @@ const dockerfile = () =>
     ])
   )
 
-  .run`
-    set -ex;
-    cd $HOME/.WeChatDevTools;
-    yes 'A' | 7z x ./WeChatDevTools.7z;
-    rm -rf ./WeChatDevTools.7z;
-  `
-
-  .run`
-    set -ex;
-    cd $HOME/.WeChatDevTools;
-    mv \\?\\?\\?\\?\\?\\?\\?.exe 微信小程序开发工具.exe;
-  `
+  // .cmd`
+    // dpkg --add-architecture i386 &&
+    // /etc/init.d/dbus start &&
+    // wine $HOME/.WeChatDevTools/微信小程序开发工具.exe
+  // `
 
   ()
 
