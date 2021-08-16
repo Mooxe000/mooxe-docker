@@ -1,5 +1,5 @@
 FROM \
-  docker.io/library/ubuntu
+  docker.io/ubuntu:21.04
 
 ENV \
   SOURCES_FILE=/etc/apt/sources.list

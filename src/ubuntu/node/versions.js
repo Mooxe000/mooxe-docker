@@ -1,7 +1,7 @@
 const VERSIONS = {
   nvm: '0.38.0'
-, node_lts: '14.17.3'
-, node: '16.5.0'
+, node_lts: '14.17.5'
+, node: '16.6.2'
 }
 
 export {

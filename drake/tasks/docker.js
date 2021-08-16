@@ -1,6 +1,6 @@
 import { sh } from 'drake'
 
-const name = 'wechatdevtools'
+const name = 'deno'
 
 export default {
   name: 'docker'
