@@ -7,24 +7,24 @@
 You can install the newest version in your system
 
 ```bash
->> # curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.12.2
+>> # curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.13.1
 >> curl -fsSL https://deno.land/x/dvm/install.sh | sh
 >> tail -n 4 $HOME/.bash_profile >> $HOME/.zshrc
 >> tail -n 4 $HOME/.bash_profile >> $HOME/.config/fish/config.fish
 >> dvm ls-remote
->> dvm install 1.12.2
+>> dvm install 1.13.1
 ```
 
 #### Deno:vr
 
 ```bash
-deno install -qAn vr https://deno.land/x/velociraptor@1.0.2/cli.ts
+>> deno install -qAn vr https://deno.land/x/velociraptor@1.1.0/cli.ts
 ```
 
 #### Deno:dzx
 
 ```bash
-deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts
+>> deno install --allow-all --unstable -f https://deno.land/x/dzx@0.2.4/dzx.ts
 ```
 
 ### Usage
