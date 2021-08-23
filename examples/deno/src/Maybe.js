@@ -4,10 +4,12 @@ import Instance from "./Instance.js"
 // const id = self => self
 const Nothing = null
 
+// unit
 const Just = n => ({
   Just: n
 })
 
+// join
 const getJust = ({Just}) => Just
 
 const Maybe = (() => {
@@ -32,7 +34,7 @@ const Maybe = (() => {
     //   (Just f) <*> something = fmap f something
   , Applicative: ({Functor}) => ({
       pure: Just
-      // <*>
+      // <*> 
     , fmap: (f, t) =>
             f === Nothing
         ||  t === Nothing
@@ -52,14 +54,14 @@ const Maybe = (() => {
     , Monad
     }) => ({
       return: Applicative.pure
-      // >>=
+      // >>= bind
     , pipe: (ma, fmb) =>
           ma === Nothing
         ? Nothing
         : fmb( getJust( ma ))
-      // <=<
-    , apply: (fmb, ma) => Monad.pipe(ma, fmb)
 
+      // <=< apply 
+    , apply: (fmb, ma) => Monad.pipe(ma, fmb)
       // >>
     , then: (ma, fmb) => fmb()
 
