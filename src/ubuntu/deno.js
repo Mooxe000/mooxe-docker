@@ -51,10 +51,10 @@ const dockerfile = () =>
   .run(
     [
       // velociraptor
-      'deno install -qAn vr https://deno.land/x/velociraptor@1.0.2/cli.ts'
+      'deno install -qAn vr https://deno.land/x/velociraptor@1.1.0/cli.ts'
       // dzx 0.2.3
     ,
-      'deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.3/dzx.ts'
+      'deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.4/dzx.ts'
       // trex
     ,
       'deno install -A --unstable --import-map=https://deno.land/x/trex/import_map.json -n trex --no-check https://deno.land/x/trex/cli.ts'
