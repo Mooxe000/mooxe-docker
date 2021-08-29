@@ -12,7 +12,9 @@ ENV \
   TZ=Asia/Shanghai
 
 RUN \
-  apt-get install -y software-properties-common && \
+  apt-get install -y software-properties-common
+
+RUN \
   yes '' | add-apt-repository ppa:git-core/ppa && \
   yes '' | apt-add-repository ppa:fish-shell/release-3 && \
   yes '' | apt-add-repository ppa:apt-fast/stable

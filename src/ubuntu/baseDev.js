@@ -12,7 +12,10 @@ const dockerfile = () =>
   .env`TZ=Asia/Shanghai`
 
   .run`
-    apt-get install -y software-properties-common &&
+    apt-get install -y software-properties-common
+  `
+
+  .run`
     yes '' | add-apt-repository ppa:git-core/ppa &&
     yes '' | apt-add-repository ppa:fish-shell/release-3 &&
     yes '' | apt-add-repository ppa:apt-fast/stable

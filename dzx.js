@@ -1,5 +1,5 @@
-#!/usr/bin/env -S deno run -A --unstable --import-map=import_map.json https://deno.land/x/dzx@0.2.3/dzx.ts
-/// <reference path="https://deno.land/x/dzx@0.2.3/types.d.ts" />
+#!/usr/bin/env -S deno run -A --unstable --import-map=import_map.json https://deno.land/x/dzx@0.2.4/dzx.ts
+/// <reference path="https://deno.land/x/dzx@0.2.4/types.d.ts" />
 
 import run from './src/index.js'
 
