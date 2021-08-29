@@ -1,7 +1,7 @@
 import DockerFile from '../Docker_file.js'
 // import snippets from './snippets/index.js'
 
-const version = '1.12.2'
+const version = '1.13.2'
 
 const dvmRun = cmd => `
   bash -lc "${cmd}"

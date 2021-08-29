@@ -48,7 +48,7 @@ const tWriter = () => {
         const [ y, _v ] = w.get()
 
         const r_w = Writer([
-          y, Witer.mappend(v, _v)
+          y, v.mappend(_v)
         ])
 
         tc(r_w)
