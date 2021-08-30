@@ -39,16 +39,15 @@ type AddressBook = List Entry
 showAddress :: Address -> String
 showAddress addr =
     foldMap (\n -> n <> ", ")
-  $   addr.street
-    : addr.city
-    : addr.state
-    : empty
+  $ addr.street
+  : addr.city
+  : addr.state
+  : empty
 
 showEntry :: Entry -> String
 showEntry entry =
-      entry.lastName <> ", "
-  <>  entry.firstName <> ": "
-  <>  showAddress entry.address
+      entry.lastName <> ", " <> entry.firstName
+  <>  ": " <> showAddress entry.address
 
 emptyBook :: AddressBook
 emptyBook = empty
@@ -58,7 +57,8 @@ insertEntry = Cons
 
 showAddressBook :: AddressBook -> String
 showAddressBook addrBook =
-  foldMap (\n -> n <> "\n") $ map showEntry addrBook
+    foldMap (\n -> n <> "\n")
+  $ map showEntry addrBook
 
 findEntry ::
   String -> String -> AddressBook
