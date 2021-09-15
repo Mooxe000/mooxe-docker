@@ -12,13 +12,13 @@ You can install the newest version in your system
 >> tail -n 4 $HOME/.bash_profile >> $HOME/.zshrc
 >> tail -n 4 $HOME/.bash_profile >> $HOME/.config/fish/config.fish
 >> dvm ls-remote
->> dvm install 1.13.1
+>> dvm install 1.14.0
 ```
 
 #### Deno:vr
 
 ```bash
->> deno install -qAn vr https://deno.land/x/velociraptor@1.1.0/cli.ts
+>> deno install -qAn vr https://deno.land/x/velociraptor@1.2.0/cli.ts
 ```
 
 #### Deno:dzx

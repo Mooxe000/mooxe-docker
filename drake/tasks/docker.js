@@ -18,9 +18,9 @@ export default {
             }`
       ,     '-p 3000:3000'
       ,     '-p 8080:8080'
-      ,     '-e DISPLAY'
-      ,     '--net=host'
-      ,     '--device=/dev/dri:/dev/dri'
+      // ,     '-e DISPLAY'
+      // ,     '--net=host'
+      // ,     '--device=/dev/dri:/dev/dri'
       ,     `-v $(pwd):/root/${
               name.indexOf(':') !== 0
               ? name.split(':').join('')
