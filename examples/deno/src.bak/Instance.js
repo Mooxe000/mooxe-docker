@@ -11,15 +11,19 @@ const Where =
   .set(
     JSON.stringify([
       'pure'
-    , 'fmap' // <*>
+    , 'fmap' // <*> apply
     ])
   , 'Applicative'
   )
   .set(
     JSON.stringify([
       'return'
-    , 'pipe' // >>=
-    , 'apply' // <=<
+      // bind >>=
+      // bindFlipped =<<
+    , 'pipe'  
+      // composeKleisli >=>
+      // composeKleisliFlipped <=<
+    , 'apply'
     , 'then' // >>
     , 'fail'
     ])
