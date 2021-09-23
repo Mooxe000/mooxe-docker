@@ -1,11 +1,13 @@
 import {
-  klass
-, infixr
+  Instance
+, Infixr
 , curry
 } from '../Utils/index.js'
 
-const Semigroupoid = 
-  klass([
+const Semigroupoid =
+
+  Instance
+  .classInterface([
     'compose'
   ])
   .instance({
@@ -19,7 +21,14 @@ const compose = (f, g) =>
 const composeFlipped = (f, g) =>
   compose(g, f)
 
-infixr.config({
+const infixr = Infixr({
   '<<<': compose
 , '>>>': composeFlipped
 })
+
+export {
+  Semigroupoid
+, compose
+, composeFlipped
+, infixr
+}
