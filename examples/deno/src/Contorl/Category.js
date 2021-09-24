@@ -1,11 +1,14 @@
-// import {
-//   Semigroupoid
-// , compose
-// , infixr as i
-// } from './Semigroupoid.js'
+import {
+  Semigroupoid
+, compose
+, infixr
+} from './Semigroupoid.js'
 
 const categoryFn =
   Instance
+  .extends([
+    Semigroupoid.class
+  ])
   .classInterface([
     'identity'
   ])
@@ -13,11 +16,17 @@ const categoryFn =
     identity: x => x
   })
 
-const category = categoryFn.class
+const Category = categoryFn.class
 
 const { identity } = categoryFn
 
 export {
-  category
+
+  Category
 , identity
+
+, Semigroupoid
+, compose
+, infixr
+
 }
