@@ -5,13 +5,15 @@ import {
 } from './Semigroupoid.js'
 
 const categoryFn =
-  Instance
+
+  // forall k.
+  //  (k -> k-> Type) -> Constraint
+
+  Instance('Category')
   .extends([
     Semigroupoid.class
   ])
-  .classInterface([
-    'identity'
-  ])
+  .interface('identity')
   .instance({
     identity: x => x
   })
