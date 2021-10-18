@@ -1,5 +1,5 @@
 FROM \
-  localhost/mooxe/base:dev
+  mooxe/base:dev
 
 WORKDIR \
   /root

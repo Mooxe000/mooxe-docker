@@ -1,5 +1,5 @@
 FROM \
-  localhost/mooxe/winenwjs
+  mooxe/winenwjs
 
 RUN \
   apt-get update && \
