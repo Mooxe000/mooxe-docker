@@ -12,7 +12,7 @@ RUN \
   "
 
 RUN \
-  aria2c -o .zig/zig_linux/zig_linux.tar.xz https://ziglang.org/builds/zig-linux-x86_64-0.9.0-dev.713+d5f173d28.tar.xz
+  aria2c -o .zig/zig_linux/zig_linux.tar.xz https://ziglang.org/builds/zig-linux-x86_64-0.9.0-dev.1414+cde3dd365.tar.xz
 
 RUN \
   bash -lc " \

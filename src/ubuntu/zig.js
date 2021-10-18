@@ -7,7 +7,7 @@ const env = [
 ]
 
 const zig = () => {
-  const name = 'zig-linux-x86_64-0.9.0-dev.713+d5f173d28'
+  const name = 'zig-linux-x86_64-0.9.0-dev.dev.1414+cde3dd365'
   return {
     name
   , url: `https://ziglang.org/builds/${name}.tar.xz`
