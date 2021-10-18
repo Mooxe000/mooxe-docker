@@ -17,9 +17,9 @@ RUN \
 
 RUN \
   bash -lc " \
-    dvm install 1.13.2 \
+    dvm install 1.15.1 \
   "
 
 
 RUN \
-  /bin/fish -lc "deno install -qAn vr https://deno.land/x/velociraptor@1.1.0/cli.ts" && /bin/fish -lc "deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.4/dzx.ts" && /bin/fish -lc "deno install -A --unstable --import-map=https://deno.land/x/trex/import_map.json -n trex --no-check https://deno.land/x/trex/cli.ts"
+  /bin/fish -lc "deno install -qAn vr https://deno.land/x/velociraptor@1.2.0/cli.ts" && /bin/fish -lc "deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.4/dzx.ts" && /bin/fish -lc "deno install -A --unstable --import-map=https://deno.land/x/trex/import_map.json -n trex --no-check https://deno.land/x/trex/cli.ts"

@@ -150,6 +150,7 @@ jobs:
 
           docker buildx imagetools inspect localhost:5000/mooxe/rescript
           docker buildx imagetools inspect localhost:5000/mooxe/purescript
+
           docker buildx imagetools inspect localhost:5000/mooxe/nim
 
           docker buildx imagetools inspect localhost:5000/mooxe/vlang
