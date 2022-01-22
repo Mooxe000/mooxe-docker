@@ -53,8 +53,8 @@ jobs:
         with:
           find: "localhost"
           replace: "localhost:5000"
-          include: "Dockerfile"
-          regex: false
+          include: "**/Dockerfile"
+          regex: true
 
       -
         name: basedev
