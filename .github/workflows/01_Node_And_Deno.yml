@@ -49,11 +49,12 @@ jobs:
 
       -
         name: basedev add local port
-        uses: jacobtomlinson/gha-find-replace@master
+        uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "localhost"
           replace: "localhost:5000"
           include: "Dockerfile"
+          regex: false
 
       -
         name: basedev
