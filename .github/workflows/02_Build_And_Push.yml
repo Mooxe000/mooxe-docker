@@ -1,4 +1,4 @@
-name: Build_And_Push
+name: 02_Build_And_Push
 
 # on:
 #   push:

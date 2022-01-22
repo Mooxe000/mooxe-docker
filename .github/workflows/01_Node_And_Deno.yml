@@ -1,4 +1,4 @@
-name: Build_And_Push
+name: 01_Node_And_Deno
 
 # on:
 #   push:
