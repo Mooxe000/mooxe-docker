@@ -1,5 +1,5 @@
 FROM \
-  mooxe/base:prd
+  localhost/mooxe/base:prd
 
 RUN \
   apt-get update && \

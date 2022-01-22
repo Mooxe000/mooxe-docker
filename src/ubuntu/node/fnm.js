@@ -1,9 +1,11 @@
 import snippets from '../snippets/index.js'
 
 const fnmRun = cmd => `
+  bash -lc '
   export PATH=$HOME/.fnm:$PATH &&
-  eval "\`fnm env\`" &&
+  eval \"\`fnm env\`\" &&
   ${cmd}
+  '
 `
 
 export {
@@ -25,9 +27,9 @@ export default DF => DF
 
   .run(`
     export PATH=$HOME/.fnm:$PATH &&
+    fnm install 17 &&
     fnm install 16 &&
-    fnm install 14 &&
-    fnm alias 14 default
+    fnm alias 16 default
   `)
 
   .run(

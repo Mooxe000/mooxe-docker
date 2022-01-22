@@ -7,24 +7,24 @@
 You can install the newest version in your system
 
 ```bash
->> # curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.13.1
+>> # curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.17.3
 >> curl -fsSL https://deno.land/x/dvm/install.sh | sh
 >> tail -n 4 $HOME/.bash_profile >> $HOME/.zshrc
 >> tail -n 4 $HOME/.bash_profile >> $HOME/.config/fish/config.fish
 >> dvm ls-remote
->> dvm install 1.14.0
+>> dvm install 1.18.0
 ```
 
 #### Deno:vr
 
 ```bash
->> deno install -qAn vr https://deno.land/x/velociraptor@1.2.0/cli.ts
+>> deno install -qAn vr https://deno.land/x/velociraptor@1.4.0/cli.ts
 ```
 
 #### Deno:dzx
 
 ```bash
->> deno install --allow-all --unstable -f https://deno.land/x/dzx@0.2.4/dzx.ts
+>> deno install --allow-all --unstable -f https://deno.land/x/dzx@0.3.0/dzx.ts
 ```
 
 ### Usage
@@ -53,8 +53,8 @@ pull mooxe-docker images from docker.io
 build mooxe-docker images one by one
 
 ```bash
->> vr build:basePrd
->> vr build:baseDev
+>> vr build:baseprd
+>> vr build:basedev
 >> vr build:node
 >> vr build:deno
 

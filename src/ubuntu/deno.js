@@ -1,7 +1,7 @@
 import DockerFile from '../Docker_file.js'
 // import snippets from './snippets/index.js'
 
-const version = '1.15.1'
+const version = '1.18.0'
 
 const dvmRun = cmd => `
   bash -lc "${cmd}"
@@ -14,7 +14,7 @@ const dockerfile = () =>
 
   // .run(`
   //   ${snippets.install()`unzip`} &&
-  //   curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.15.1
+  //   curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.18.0
   // `)
 
   .run(`
@@ -50,13 +50,13 @@ const dockerfile = () =>
 
   .run(
     [
-      // velociraptor 1.2.0
-      'deno install -qAn vr https://deno.land/x/velociraptor@1.2.0/cli.ts'
+      // velociraptor 1.4.0
+      'deno install -qAn vr https://deno.land/x/velociraptor@1.4.0/cli.ts'
     ,
-      // dzx 0.2.3
-      'deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.2.4/dzx.ts'
+      // dzx 0.3.0
+      'deno install --allow-all -r -f --unstable https://deno.land/x/dzx@0.3.0/dzx.ts'
     ,
-      // trex 1.9.1
+      // trex 1.10.0
       'deno install -A --unstable --import-map=https://deno.land/x/trex/import_map.json -n trex --no-check https://deno.land/x/trex/cli.ts'
     ]
     .map( c => `/bin/fish -lc "${c}"` )

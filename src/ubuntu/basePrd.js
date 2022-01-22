@@ -3,7 +3,7 @@ import snippets from './snippets/index.js'
 
 const dockerfile = () =>
   DockerFile()
-  .from`docker.io/ubuntu:21.04`
+  .from`docker.io/ubuntu`
   // .workdir`root`
 
   .env`SOURCES_FILE=/etc/apt/sources.list`
