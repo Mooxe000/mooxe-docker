@@ -1,0 +1,148 @@
+VERSION 0.6
+
+FROM alpine:3.15
+ENV LANG=C.UTF-8
+
+WORKDIR /root
+
+ENV ALPINE_GLIBC_PACKAGE_VERSION=2.34-r0
+
+ENV RUST_VERSION=1.59.0
+ENV RUSTUP_VERSION=1.24.3
+
+ARG TINI_VERSION=0.19.0
+ENV DENO_VERSION=1.19.1
+
+RUN \
+  apk add --no-cache ca-certificates curl
+
+update:
+  RUN \
+      sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' \
+        /etc/apk/repositories \
+  &&  apk update && apk upgrade
+
+glibc:
+  FROM +update
+  RUN set -eux \
+  ; ALPINE_GLIBC_BASE_URL="https://download.fastgit.org/sgerrand/alpine-pkg-glibc/releases/download" \
+  ; ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk" \
+  ; ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-$ALPINE_GLIBC_PACKAGE_VERSION.apk" \
+  ; ALPINE_GLIBC_I18N_PACKAGE_FILENAME="glibc-i18n-$ALPINE_GLIBC_PACKAGE_VERSION.apk" \
+
+  ; apk add --no-cache --virtual=.build-dependencies \
+  # ; echo \
+  #     "-----BEGIN PUBLIC KEY-----\
+  #     MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApZ2u1KJKUu/fW4A25y9m\
+  #     y70AGEa/J3Wi5ibNVGNn1gT1r0VfgeWd0pUybS4UmcHdiNzxJPgoWQhV2SSW1JYu\
+  #     tOqKZF5QSN6X937PTUpNBjUvLtTQ1ve1fp39uf/lEXPpFpOPL88LKnDBgbh7wkCp\
+  #     m2KzLVGChf83MS0ShL6G9EQIAUxLm99VpgRjwqTQ/KfzGtpke1wqws4au0Ab4qPY\
+  #     KXvMLSPLUp7cfulWvhmZSegr5AdhNw5KNizPqCJT8ZrGvgHypXyiFvvAH5YRtSsc\
+  #     Zvo9GI2e2MaZyo9/lvb+LbLEJZKEQckqRj4P26gmASrZEPStwc+yqy1ShHLA0j6m\
+  #     1QIDAQAB\
+  #     -----END PUBLIC KEY-----" \
+  #     | sed 's/   */\n/g' > "/etc/apk/keys/sgerrand.rsa.pub" \
+  ; curl -o /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+  ; curl -O "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+  ; curl -O "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+  ; curl -O "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" \
+    # --allow-untrusted
+  ; apk add --allow-untrusted --no-cache \
+      "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+      "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+      "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" \
+  ; rm "/etc/apk/keys/sgerrand.rsa.pub" \
+
+  ; (/usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true) \
+  ; echo "export LANG=$LANG" > /etc/profile.d/locale.sh \
+  ; apk del glibc-i18n \
+  # &&  rm "/root/.wget-hsts" \
+  ; apk del .build-dependencies \
+  ; rm \
+      "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
+      "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
+      "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+
+rust:
+  FROM +glibc
+  RUN \
+    apk add --no-cache gcc
+
+  ENV RUSTUP_HOME=/usr/local/rustup
+  ENV CARGO_HOME=/usr/local/cargo
+  ENV PATH=/usr/local/cargo/bin:$PATH
+
+  RUN set -eux \
+  ; apkArch="$(apk --print-arch)" \
+  ; case "$apkArch" in \
+        x86_64) \
+          rustArch='x86_64-unknown-linux-musl' \
+        ; rustupSha256='bdf022eb7cba403d0285bb62cbc47211f610caec24589a72af70e1e900663be9' \
+    ;;  aarch64) \
+          rustArch='aarch64-unknown-linux-musl' \
+        ; rustupSha256='89ce657fe41e83186f5a6cdca4e0fd40edab4fd41b0f9161ac6241d49fbdbbbe' \
+    ;; *) \
+          echo >&2 "unsupported architecture: $apkArch" \
+        ; exit 1 \
+    ;; \
+    esac \
+  ; url="https://static.rust-lang.org/rustup/archive/${RUSTUP_VERSION}/${rustArch}/rustup-init" \
+  ; curl -O "$url" \
+  ; echo "${rustupSha256} *rustup-init" | sha256sum -c - \
+  ; chmod +x rustup-init \
+  ; ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch} \
+  ; rm rustup-init \
+  ; chmod -R a+w $RUSTUP_HOME $CARGO_HOME
+
+  ENV RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+  ENV RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+
+deno-bin:
+  ARG BIN_IMAGE=denoland/deno:bin-${DENO_VERSION}
+
+  FROM ${BIN_IMAGE}
+  SAVE ARTIFACT /deno
+
+tini:
+  FROM buildpack-deps:20.04-curl
+  
+  RUN \
+      curl -fsSL https://download.fastgit.org/krallin/tini/releases/download/v${TINI_VERSION}/tini \
+        --output /tini \
+  &&  chmod +x /tini
+  SAVE ARTIFACT /tini
+
+deno:
+  FROM +rust
+
+  RUN addgroup --gid 1000 deno \
+    && adduser --uid 1000 --disabled-password deno --ingroup deno \
+    && mkdir /deno-dir/ \
+    && chown deno:deno /deno-dir/
+
+  ENV DENO_DIR /deno-dir/
+  ENV DENO_INSTALL_ROOT /usr/local
+
+  ARG DENO_VERSION
+  ENV DENO_VERSION=${DENO_VERSION}
+
+  COPY +deno-bin/deno /bin/deno
+
+  # COPY +deno-tini/tini /tini
+
+  # COPY ./deno_entry.sh /usr/local/bin/docker-entrypoint.sh
+  # RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
+
+  # ENTRYPOINT ["/tini", "--", "docker-entrypoint.sh"]
+  # CMD ["run", "https://deno.land/std/examples/welcome.ts"]
+
+base-image:
+  FROM +deno
+
+  RUN set -eux \
+  ; rustup --version \
+  ; cargo --version \
+  ; rustc --version \
+  ; deno --version
+
+  SAVE IMAGE mooxe/base
