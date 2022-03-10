@@ -1,0 +1,28 @@
+VERSION 0.6
+
+base-img:
+  FROM microdeb/bullseye
+  ENV LANG=C.UTF-8
+  WORKDIR /root
+
+MIRROR:
+  COMMAND
+  COPY ./sources.list /etc/apt/sources.list
+
+img:
+  FROM +base-img
+  DO +MIRROR
+
+UPDATE:
+  COMMAND
+  RUN set -eux \ 
+  ; apt update \
+  ; apt upgrade -y \
+  ; apt install -y ca-certificates \
+  ; sed -i 's/http/https/g' \
+      /etc/apt/sources.list
+
+CLEAN:
+  COMMAND
+  RUN set -eux \ 
+  ; apt-get clean

@@ -19,7 +19,7 @@
   - https://hub.docker.com/r/frolvlad/alpine-glibc
 
 - rust
-  - https://github.com/rust-lang/docker-rust/blob/76c10aa123/1.58.1/alpine3.15/Dockerfile
+  - https://github.com/rust-lang/docker-rust/blob/master/1.59.0/alpine3.15/Dockerfile
 
 - deno
   - https://github.com/denoland/deno_docker/blob/main/alpine.dockerfile

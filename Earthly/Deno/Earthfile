@@ -1,0 +1,34 @@
+VERSION 0.6
+
+ENV:
+  COMMAND
+  ENV DENO_VERSION=1.19.2
+
+  ENV DENO_DIR /deno-dir/
+  ENV DENO_INSTALL_ROOT /usr/local
+
+bin:
+  LOCALLY
+  DO +ENV
+  ARG BIN_IMAGE=denoland/deno:bin-${DENO_VERSION}
+
+  FROM ${BIN_IMAGE}
+  SAVE ARTIFACT /deno
+
+INSTALL:
+  COMMAND
+  BUILD +bin
+  DO +ENV
+  RUN set -eux \
+  # ; addgroup --gid 1000 deno \
+  # ; adduser --uid 1000 \
+  #     --disabled-password deno \
+  #     --ingroup deno \
+  ; useradd --uid 1993 --user-group deno \
+  ; mkdir /deno-dir/ \
+  ; chown deno:deno /deno-dir/
+
+  ARG DENO_VERSION
+  ENV DENO_VERSION=${DENO_VERSION}
+
+  COPY +bin/deno /bin/deno
