@@ -1,0 +1,59 @@
+VERSION 0.6
+
+INSTALL:
+  COMMAND
+
+  ENV FNM_HOME=/root/.fnm
+  ENV FNM_VERSION=1.31.0
+
+  # curl -o- https://fnm.vercel.app/install | bash
+
+  RUN set -eux \
+
+  ; aria2c \
+      # "https://github.com/Schniz/fnm/releases/download/v${FNM_VERSION}/fnm-linux.zip" \
+      "https://hub.fastgit.xyz/Schniz/fnm/releases/download/v${FNM_VERSION}/fnm-linux.zip" \
+  ; unzip fnm-linux.zip \
+  ; chmod +x fnm \
+  ; mkdir -p $FNM_HOME \
+  ; mv fnm $FNM_HOME \
+  ; rm fnm-linux.zip \
+
+  ; export PATH=$FNM_HOME:$PATH \
+  ; fnm install 17 \
+  ; fnm install 16 \
+  ; fnm alias 16 default
+
+  RUN set -eux \
+  ; echo 'export PATH=$FNM_HOME:$PATH' \
+      >> $HOME/.bashrc \
+  ; echo 'eval $(fnm env --shell bash)' \
+      >> $HOME/.bashrc \
+  ; echo 'export PATH=$FNM_HOME:$PATH' \
+      >> $HOME/.zshrc \
+  ; echo 'eval $(fnm env --shell zsh)' \
+      >> $HOME/.zshrc \
+  ; echo 'export PATH=$FNM_HOME:$PATH' \
+      >> $HOME/.config/fish/config.fish \
+  ; echo 'eval (fnm env --shell fish)' \
+      >> $HOME/.config/fish/config.fish
+
+  RUN set -eux \
+
+  ; bash -lc 'npm i -g pnpm' \
+  ; bash -lc 'pnpm i -g pnpm' \
+  ; bash -lc 'pnpm i -g npm' \
+  ; bash -lc 'pnpm i -g yarn' \
+
+  # ; bash -lc 'pnpm i -g nnrm'
+  # ; bash -lc 'nnrm use taobao'
+
+  # node-inspector
+  ; bash -lc 'pnpm i -g npm-check' \
+  ; bash -lc 'pnpm i -g node-gyp' \
+
+  ; bash -lc 'pnpm i -g supervisor nodemon forever pm2' \
+  ; bash -lc 'pnpm i -g serve http-server'
+
+  # pnpm i -g lerna autod
+  # pnpm i -g json-server
