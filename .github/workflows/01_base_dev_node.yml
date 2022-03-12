@@ -1,0 +1,26 @@
+name: 01_base_dev_node
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  earthly:
+    name: 01_base_dev_node
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: earthly/actions-setup@v1
+        with:
+          version: "latest" # or pin to an specific version, e.g. "v0.6.10"
+      - uses: actions/checkout@v2
+
+      - name: Docker login # to avoid dockerhub rate-limiting
+        run: docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password "${{ secrets.DOCKERHUB_PASSWORD }}"
+
+      - name: what version is installed?
+        run: earthly --version
+
+      - name: run the earthly hello world
+        run: earthly github.com/earthly/hello-world:main+hello
