@@ -5,24 +5,43 @@ base-img:
   ENV LANG=C.UTF-8
   WORKDIR /root
 
+UPDATE:
+  COMMAND
+  RUN set -eux \ 
+  ; apt-get update \
+  ; apt-get upgrade -y
+
+FASTUPDATE:
+  COMMAND
+  RUN set -eux \ 
+  ; apt-fast update \
+  ; apt-fast upgrade -y
+
 MIRROR:
   COMMAND
   COPY ./sources.list /etc/apt/sources.list
+  DO +UPDATE
+  RUN set -eux \ 
+  ; apt-get install -y ca-certificates \
+  ; sed -i 's/http/https/g' \
+      /etc/apt/sources.list
+
+INSTALL:
+  COMMAND
+  RUN set -eux \ 
+  ; apt-get install -y --no-install-recommends \
+      wget curl aria2 axel unzip
 
 img:
   FROM +base-img
   DO +MIRROR
-
-UPDATE:
-  COMMAND
-  RUN set -eux \ 
-  ; apt update \
-  ; apt upgrade -y \
-  ; apt install -y ca-certificates \
-  ; sed -i 's/http/https/g' \
-      /etc/apt/sources.list
+  DO +INSTALL
 
 CLEAN:
   COMMAND
-  RUN set -eux \ 
+  RUN set -eux \
   ; apt-get clean
+
+DEV:
+  COMMAND
+  DO +UPDATE

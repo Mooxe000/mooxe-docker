@@ -17,13 +17,18 @@ bin:
 
 INSTALL:
   COMMAND
+
   BUILD +bin
+
   DO +ENV
+
   RUN set -eux \
+
   # ; addgroup --gid 1000 deno \
   # ; adduser --uid 1000 \
   #     --disabled-password deno \
   #     --ingroup deno \
+
   ; useradd --uid 1993 --user-group deno \
   ; mkdir /deno-dir/ \
   ; chown deno:deno /deno-dir/
