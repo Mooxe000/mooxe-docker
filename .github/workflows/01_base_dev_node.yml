@@ -45,5 +45,20 @@ jobs:
       - name: base-image
         run: cd src && earthly +base-image
 
+      - name: dev-image
+        run: cd src && earthly +dev-image
+
+      - name: node-image
+        run: cd src && earthly +node-image
+
       - name: docker images
         run: docker images
+
+      - name: docker push base
+        run: docker push mooxe/base
+
+      - name: docker push dev
+        run: docker push mooxe/dev
+
+      - name: docker push node
+        run: docker push mooxe/node
