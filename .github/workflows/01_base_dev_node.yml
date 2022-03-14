@@ -52,16 +52,12 @@ jobs:
           regex: true
 
       - name: build node-image
-        run: earthly ./src+node-image
+        run: earthly --push ./src+node-image
 
-      - name: docker images
-        run: docker images
+      -
+        name: Inspect
+        run: |
+          docker buildx imagetools inspect mooxe/base
+          docker buildx imagetools inspect mooxe/dev
+          docker buildx imagetools inspect mooxe/node
 
-      - name: docker push base
-        run: docker push mooxe/base
-
-      - name: docker push dev
-        run: docker push mooxe/dev
-
-      - name: docker push node
-        run: docker push mooxe/node

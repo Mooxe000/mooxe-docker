@@ -22,7 +22,7 @@ base-image:
   ; rustc --version \
   ; deno --version
 
-  SAVE IMAGE mooxe/base
+  SAVE IMAGE --push mooxe/base
 
 dev-image:
 
@@ -52,7 +52,7 @@ dev-image:
 
   DO BaseImg+CLEAN
 
-  SAVE IMAGE mooxe/dev
+  SAVE IMAGE --push mooxe/dev
 
 node-image:
 
@@ -60,4 +60,4 @@ node-image:
 
   DO Node+INSTALL
 
-  SAVE IMAGE mooxe/node
+  SAVE IMAGE --push mooxe/node
