@@ -63,7 +63,7 @@ or you can replace podman from docker.
 >> earthly config global.container_frontend podman-shell
 >> cat ~/.earthly/config.yml
 >> podman pull earthly/buildkitd
->> podman pull earthly/buildkitd:0.6.7
+>> podman pull earthly/buildkitd:0.6.9
 ```
 
 - Debian slim microdeb/bullseye

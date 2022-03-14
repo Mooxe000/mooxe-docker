@@ -1,0 +1,63 @@
+VERSION 0.6
+
+IMPORT ./Bullseye AS BaseImg
+IMPORT ./Bullseye/DEV AS BaseDev
+
+IMPORT ./Rust AS Rust
+IMPORT ./Deno AS Deno
+IMPORT ./Node AS Node
+
+base-image:
+
+  FROM BaseImg+img
+
+  DO Rust+INSTALL
+  DO Deno+INSTALL
+
+  DO BaseImg+CLEAN
+
+  RUN set -eux \
+  ; rustup --version \
+  ; cargo --version \
+  ; rustc --version \
+  ; deno --version
+
+  SAVE IMAGE mooxe/base
+
+dev-image:
+
+  FROM +base-image
+
+  ENV TZ=Asia/Shanghai
+
+  DO BaseDev+APTFAST 
+
+  RUN set -eux \
+  ; apt-fast install -y git fish zsh \
+  ; apt-fast install -y vim neovim
+
+  DO BaseDev+NU
+  DO BaseDev+OHMYPOSH
+
+  RUN set -eux \
+  ; echo 'eval "$(oh-my-posh --init --shell bash --config $HOME/.poshthemes/ys.omp.json)"' \
+      >> $HOME/.bashrc \
+  ; echo 'eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/ys.omp.json)"' \
+      >> $HOME/.zshrc \
+  ; mkdir -p $HOME/.config/fish \
+  ; echo "set fish_greeting ''" \
+      >> $HOME/.config/fish/config.fish \
+  ; echo 'oh-my-posh --init --shell fish --config $HOME/.poshthemes/ys.omp.json | source' \
+      >> $HOME/.config/fish/config.fish
+
+  DO BaseImg+CLEAN
+
+  SAVE IMAGE mooxe/dev
+
+node-image:
+
+  FROM +dev-image
+
+  DO Node+INSTALL
+
+  SAVE IMAGE mooxe/node
