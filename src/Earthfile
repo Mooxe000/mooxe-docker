@@ -26,7 +26,7 @@ base-image:
 
 dev-image:
 
-  FROM mooxe/base
+  FROM +base-image
 
   ENV TZ=Asia/Shanghai
 
@@ -56,7 +56,7 @@ dev-image:
 
 node-image:
 
-  FROM mooxe/dev
+  FROM +dev-image
 
   DO Node+INSTALL
 
