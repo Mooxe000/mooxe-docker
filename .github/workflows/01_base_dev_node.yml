@@ -41,3 +41,9 @@ jobs:
 
       - name: run the earthly hello world
         run: earthly github.com/earthly/hello-world:main+hello
+
+      - name: base-image
+        run: cd src && earthly +base-image
+
+      - name: docker images
+        run: docker images
