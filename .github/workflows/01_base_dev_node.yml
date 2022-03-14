@@ -42,7 +42,16 @@ jobs:
       - name: run the earthly hello world
         run: earthly github.com/earthly/hello-world:main+hello
 
-      - name: node-image
+      -
+        name: replace fastgit to github
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "hub.fastgit.xyz"
+          replace: "github.com"
+          include: "**/Earthfile"
+          regex: true
+
+      - name: build node-image
         run: earthly ./src+node-image
 
       - name: docker images
