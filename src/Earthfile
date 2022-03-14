@@ -26,11 +26,11 @@ base-image:
 
 dev-image:
 
-  FROM +base-image
+  FROM mooxe/base
 
   ENV TZ=Asia/Shanghai
 
-  DO BaseDev+APTFAST 
+  DO BaseDev+APTFAST
 
   RUN set -eux \
   ; apt-fast install -y git fish zsh \
@@ -56,7 +56,7 @@ dev-image:
 
 node-image:
 
-  FROM +dev-image
+  FROM mooxe/dev
 
   DO Node+INSTALL
 

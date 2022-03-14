@@ -51,8 +51,17 @@ jobs:
           include: "**/Earthfile"
           regex: true
 
+      - name: build base-image
+        run: earthly --push ./src+base-image
+
+      - name: build dev-image
+        run: earthly --push ./src+dev-image
+
       - name: build node-image
         run: earthly --push ./src+node-image
+
+      - name: print local images
+        run: docker images
 
       -
         name: Inspect
