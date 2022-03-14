@@ -29,7 +29,8 @@ MIRROR:
 INSTALL:
   COMMAND
   RUN set -eux \ 
-  ; apt-get install -y --no-install-recommends \
+  # --no-install-recommends
+  ; apt-get install -y \
       wget curl aria2 axel unzip
 
 img:
