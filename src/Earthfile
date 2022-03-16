@@ -7,6 +7,8 @@ IMPORT ./Rust AS Rust
 IMPORT ./Deno AS Deno
 IMPORT ./Node AS Node
 
+IMPORT ./Wasmer AS Wasmer
+
 base-image:
 
   FROM BaseImg+img
@@ -51,6 +53,8 @@ dev-image:
       >> $HOME/.config/fish/config.fish
 
   DO BaseImg+CLEAN
+
+  DO Wasmer+SHELL
 
   SAVE IMAGE --push mooxe/dev
 

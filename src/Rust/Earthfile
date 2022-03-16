@@ -1,5 +1,7 @@
 VERSION 0.6
 
+IMPORT ../Wasmer AS Wasmer
+
 ENV:
   COMMAND
   # ENV RUST_VERSION=1.59.0
@@ -12,33 +14,10 @@ ENV:
 
 MIRROR:
   COMMAND
-  ENV RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
-  ENV RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
-  # ENV RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
-  # ENV RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
-
-WASMER:
-  COMMAND
-  RUN set -eux \
-  ; apt-get install -y \
-      libxkbcommon-dev \
-      libtinfo5
-
-  COPY install.sh install.sh
-
-  RUN set -eux \
-  # ; curl -O https://raw.fastgit.org/wasmerio/wasmer-install/master/install.sh \
-  ; sed -i 's/\/\/github.com\/wasmerio/\/\/hub.fastgit.xyz\/wasmerio/g' install.sh \
-  ; sh install.sh \
-  ; rm install.sh
-
-  RUN set -eux \
-  ; echo '# Wasmer' >> ~/.config/fish/config.fish \
-  ; echo 'export WASMER_DIR="/root/.wasmer"' >> ~/.config/fish/config.fish \
-  ; echo '[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"' >> ~/.config/fish/config.fish
-
-  RUN set -eux \
-  ; rustup target add wasm32-wasi
+  # ENV RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+  # ENV RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+  ENV RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+  ENV RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 
 INSTALL:
   COMMAND
@@ -88,4 +67,4 @@ INSTALL:
   COPY ./Rust/config.toml $CARGO_HOME
 
   DO +MIRROR
-  DO +WASMER
+  DO Wasmer+INSTALL
