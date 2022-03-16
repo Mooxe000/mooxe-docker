@@ -64,3 +64,14 @@ WASMTIME_SHELL_DEV:
 
   ; echo 'export WASMTIME_HOME="$HOME/.wasmtime"' >> ~/.config/fish/config.fish \
   ; echo 'export PATH="$WASMTIME_HOME/bin:$PATH"' >> ~/.config/fish/config.fish
+
+RUSTWASMC_INSTALL:
+  COMMAND
+  RUN set -eux \
+  ; apt-get install -y libcurl4-gnutls-dev
+
+  RUN set -eux \
+  ; curl -O https://raw.fastgit.org/second-state/rustwasmc/master/installer/init.sh \
+  ; sed -i 's/\/\/github.com\/second-state/\/\/hub.fastgit.xyz\/second-state/g' init.sh \
+  ; bash init.sh \
+  ; rm init.sh
