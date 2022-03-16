@@ -55,12 +55,15 @@ jobs:
         name: replace task name
         uses: jacobtomlinson/gha-find-replace@v2
         with:
-        -
           find: "FROM +base-image"
           replace: "FROM mooxe/base"
           include: "**/Earthfile"
           regex: true
-        - 
+
+      -
+        name: replace task name
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
           find: "FROM +dev-image"
           replace: "FROM mooxe/dev"
           include: "**/Earthfile"
