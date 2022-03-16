@@ -20,7 +20,7 @@ MIRROR:
 WASMER:
   COMMAND
   RUN set -eux \
-  ; apt-fast install -y \
+  ; apt-get install -y \
       libxkbcommon-dev \
       libtinfo5
 
