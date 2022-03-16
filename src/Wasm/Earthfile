@@ -1,0 +1,66 @@
+VERSION 0.6
+
+WASM_BASE:
+  COMMAND
+  RUN set -eux \
+  ; rustup target add wasm32-wasi
+
+WASMER_SHELL:
+  COMMAND
+  RUN set -eux \
+  ; echo '# Wasmer' >> ~/.profile \
+  ; echo 'export WASMER_DIR="/root/.wasmer"' >> ~/.profile \
+  ; echo '[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"' >> ~/.profile
+
+WASMER_INSTALL:
+  COMMAND
+  RUN set -eux \
+  ; apt-get install -y \
+      libxkbcommon-dev \
+      libtinfo5
+
+  COPY ./Wasm/wasmer.sh /root/install.sh
+
+  RUN set -eux \
+  # ; curl -O https://raw.fastgit.org/wasmerio/wasmer-install/master/install.sh \
+  ; pwd \
+  ; sed -i 's/\/\/github.com\/wasmerio/\/\/hub.fastgit.xyz\/wasmerio/g' install.sh \
+  ; sh install.sh \
+  ; rm install.sh
+
+  # DO +WASMER_SHELL
+
+WASMER_SHELL_DEV:
+  COMMAND
+  RUN set -eux \
+  ; echo '# Wasmer' >> ~/.config/fish/config.fish \
+  ; echo 'export WASMER_DIR="/root/.wasmer"' >> ~/.config/fish/config.fish \
+  ; echo '[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"' >> ~/.config/fish/config.fish
+
+WASMTIME_SHELL:
+  COMMAND
+  RUN set -eux \
+  ; sed -i '/WASMTIME_HOME/d' $HOME/.bashrc \
+
+  ; echo 'export WASMTIME_HOME="$HOME/.wasmtime"' >> ~/.profile \
+  ; echo 'export PATH="$WASMTIME_HOME/bin:$PATH"' >> ~/.profile
+
+WASMTIME_INSTALL:
+  COMMAND
+  RUN set -eux \
+  ; apt-get install -y xz-utils
+
+  RUN set -eux \
+  ; curl -O https://wasmtime.dev/install.sh \
+  ; sed -i 's/\/\/github.com\/bytecodealliance/\/\/hub.fastgit.xyz\/bytecodealliance/g' install.sh \
+  ; bash install.sh \
+  ; rm install.sh
+
+  DO +WASMTIME_SHELL
+
+WASMTIME_SHELL_DEV:
+  COMMAND
+  RUN set -eux \
+
+  ; echo 'export WASMTIME_HOME="$HOME/.wasmtime"' >> ~/.config/fish/config.fish \
+  ; echo 'export PATH="$WASMTIME_HOME/bin:$PATH"' >> ~/.config/fish/config.fish

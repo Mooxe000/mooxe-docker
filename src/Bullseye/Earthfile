@@ -42,6 +42,12 @@ CLEAN:
   RUN set -eux \
   ; apt-get clean
 
+PROFILE:
+  COMMAND
+  RUN set -eux \
+  ; echo '' > ~/.profile \
+  ; echo 'source ~/.profile' >> ~/.bashrc
+
 DEV:
   COMMAND
   DO +UPDATE

@@ -4,7 +4,7 @@ IMPORT ./Bullseye AS BaseImg
 IMPORT ./Bullseye/DEV AS BaseDev
 
 IMPORT ./Rust AS Rust
-IMPORT ./Wasmer AS Wasmer
+IMPORT ./Wasm AS Wasm
 
 IMPORT ./Deno AS Deno
 IMPORT ./Node AS Node
@@ -13,8 +13,14 @@ base-image:
 
   FROM BaseImg+img
 
+  DO BaseImg+PROFILE
+
   DO Rust+INSTALL
-  DO Wasmer+INSTALL
+
+  DO Wasm+WASM_BASE
+  DO Wasm+WASMER_INSTALL
+  DO Wasm+WASMTIME_INSTALL
+
   DO Deno+INSTALL
 
   DO BaseImg+CLEAN
@@ -61,7 +67,8 @@ dev-image:
   ; echo 'oh-my-posh --init --shell fish --config $HOME/.poshthemes/ys.omp.json | source' \
       >> $HOME/.config/fish/config.fish
 
-  DO Wasmer+SHELL
+  DO Wasm+WASMER_SHELL_DEV
+  DO Wasm+WASMTIME_SHELL_DEV
 
   DO BaseImg+CLEAN
 
