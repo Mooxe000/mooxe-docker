@@ -1,7 +1,5 @@
 VERSION 0.6
 
-IMPORT ../Wasmer AS Wasmer
-
 ENV:
   COMMAND
   # ENV RUST_VERSION=1.59.0
@@ -12,12 +10,15 @@ ENV:
   ENV CARGO_HOME=/usr/local/cargo
   ENV PATH=$CARGO_HOME/bin:$PATH
 
-MIRROR:
+MIRRORO:
   COMMAND
-  # ENV RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
-  # ENV RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
   ENV RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
   ENV RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+
+MIRRORT:
+  COMMAND
+  ENV RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+  ENV RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
 
 INSTALL:
   COMMAND
@@ -66,5 +67,4 @@ INSTALL:
 
   COPY ./Rust/config.toml $CARGO_HOME
 
-  DO +MIRROR
-  DO Wasmer+INSTALL
+  DO +MIRRORO
