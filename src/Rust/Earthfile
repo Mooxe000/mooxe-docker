@@ -24,8 +24,10 @@ WASMER:
       libxkbcommon-dev \
       libtinfo5
 
+  COPY install.sh install.sh
+
   RUN set -eux \
-  ; curl -O https://raw.fastgit.org/wasmerio/wasmer-install/master/install.sh \
+  # ; curl -O https://raw.fastgit.org/wasmerio/wasmer-install/master/install.sh \
   ; sed -i 's/\/\/github.com\/wasmerio/\/\/hub.fastgit.xyz\/wasmerio/g' install.sh \
   ; sh install.sh \
   ; rm install.sh
