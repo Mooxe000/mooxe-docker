@@ -11,6 +11,12 @@ NU:
   RUN set -eux \
   ; cargo install nu
 
+BUILD:
+  COMMAND
+
+  RUN set -eux \
+  ; cargo install mask
+
 APTFAST:
   COMMAND
   RUN set -eux \

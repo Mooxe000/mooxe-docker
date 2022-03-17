@@ -55,6 +55,8 @@ dev-image:
   # RUN set -eux \
   # ; sed -i "s/'tuna'/'ustc'/g" /usr/local/cargo/config.toml
 
+  DO BaseDev+BUILD
+
   DO BaseDev+OHMYPOSH
 
   RUN set -eux \
