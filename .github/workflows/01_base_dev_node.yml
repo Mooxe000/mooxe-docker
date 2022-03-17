@@ -46,7 +46,7 @@ jobs:
         name: replace fastgit to github
         uses: jacobtomlinson/gha-find-replace@v2
         with:
-          find: "hub.fastgit.xyz"
+          find: '(hub|raw).fastgit.(org|xyz)'
           replace: "github.com"
           include: "**/Earthfile"
           regex: true
