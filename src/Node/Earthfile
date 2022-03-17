@@ -3,9 +3,7 @@ VERSION 0.6
 INSTALL:
   COMMAND
 
-  ENV FNM_HOME=/root/.fnm
-  ENV FNM_VERSION=1.31.0
-
+  # ENV FNM_VERSION=1.31.0
   #   --skip-shell
   # curl -o- https://fnm.vercel.app/install | bash
 
@@ -23,21 +21,15 @@ INSTALL:
   ; cargo install fnm
 
   RUN set -eux \
-  ; echo 'export PATH=$FNM_HOME:$PATH' \
-      >> $HOME/.bashrc \
   ; echo 'eval "$(fnm env --use-on-cd)"' \
       >> $HOME/.bashrc \
-  ; echo 'export PATH=$FNM_HOME:$PATH' \
-      >> $HOME/.zshrc \
   ; echo 'eval "$(fnm env --use-on-cd)"' \
       >> $HOME/.zshrc \
-  ; echo 'export PATH=$FNM_HOME:$PATH' \
-      >> $HOME/.config/fish/config.fish \
   ; echo 'fnm env --use-on-cd | source' \
       >> $HOME/.config/fish/config.fish
 
   RUN set -eux \
-  ; export PATH=$FNM_HOME:$PATH \
+#   ; export PATH=$FNM_HOME:$PATH \
   ; fnm install 17 \
       --node-dist-mirror https://mirrors.tuna.tsinghua.edu.cn/nodejs-release \
   ; fnm install 16 \
@@ -46,7 +38,6 @@ INSTALL:
 
   RUN set -eux \
 
-  ; export PATH=$FNM_HOME:$PATH \
   ; eval $(fnm env --shell bash) \
 
   ; npm i -g pnpm \
