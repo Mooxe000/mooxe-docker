@@ -94,6 +94,9 @@ jobs:
           docker tag mooxe/dev mooxe/dev:0.1.2
           docker tag mooxe/node mooxe/node:0.1.2
           docker images
+          docker push mooxe/base:0.1.2
+          docker push mooxe/dev:0.1.2
+          docker push mooxe/node:0.1.2
 
       -
         name: Inspect
@@ -101,4 +104,3 @@ jobs:
           docker buildx imagetools inspect mooxe/base
           docker buildx imagetools inspect mooxe/dev
           docker buildx imagetools inspect mooxe/node
-
