@@ -87,8 +87,13 @@ jobs:
       - name: build node-image
         run: earthly --push ./src+node-image
 
-      - name: print local images
-        run: docker images
+      - name: docker tag and push
+        run: |
+          docker images
+          docker tag mooxe/base mooxe/base:0.1.2
+          docker tag mooxe/dev mooxe/dev:0.1.2
+          docker tag mooxe/node mooxe/node:0.1.2
+          docker images
 
       -
         name: Inspect
