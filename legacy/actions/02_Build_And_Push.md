@@ -1,3 +1,4 @@
+```yml
 name: 02_Build_And_Push
 
 # on:
@@ -104,3 +105,4 @@ jobs:
           docker buildx imagetools inspect localhost:5000/mooxe/vlang
           docker buildx imagetools inspect localhost:5000/mooxe/zig
           docker buildx imagetools inspect localhost:5000/mooxe/rust
+```

@@ -6,9 +6,6 @@ NU:
   COMMAND
 
   RUN set -eux \
-  ; apt-fast install -y pkg-config libssl-dev
-
-  RUN set -eux \
   ; cargo install nu
 
 BUILD:

@@ -28,6 +28,10 @@ MIRROR:
 
 INSTALL:
   COMMAND
+
+  RUN set -eux \
+  ; apt-get install -y pkg-config libssl-dev
+
   RUN set -eux \ 
   ; apt-get install -y --no-install-recommends \
       wget curl aria2 axel unzip

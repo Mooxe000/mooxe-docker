@@ -68,3 +68,6 @@ INSTALL:
   COPY ./Rust/config.toml $CARGO_HOME
 
   DO +MIRRORO
+
+  RUN set -eux \
+  ; cargo install cargo-update

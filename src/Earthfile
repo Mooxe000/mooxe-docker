@@ -23,6 +23,7 @@ base-image:
   DO Wasm+RUSTWASMC_INSTALL
 
   DO Deno+INSTALL
+  DO Deno+INSTALL_DVM
 
   DO BaseImg+CLEAN
 

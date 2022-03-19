@@ -1,3 +1,4 @@
+```yml
 name: 01_Node_And_Deno
 
 # on:
@@ -92,3 +93,4 @@ jobs:
           docker buildx imagetools inspect localhost:5000/mooxe/base:dev
           docker buildx imagetools inspect localhost:5000/mooxe/node
           docker buildx imagetools inspect localhost:5000/mooxe/deno
+```
