@@ -3,7 +3,9 @@ VERSION 0.6
 WASM_BASE:
   COMMAND
   RUN set -eux \
-  ; rustup target add wasm32-wasi
+  ; rustup target add wasm32-wasi \
+  ; rustup target add wasm32-unknown-unknown \
+  ; rustup target add wasm32-unknown-emscripten
 
 WASMER_SHELL:
   COMMAND
@@ -75,3 +77,8 @@ RUSTWASMC_INSTALL:
   ; sed -i 's/\/\/github.com\/second-state/\/\/hub.fastgit.xyz\/second-state/g' init.sh \
   ; bash init.sh \
   ; rm init.sh
+
+WASM_BINDGEN_INSTALL:
+  COMMAND
+  RUN set -eux \
+  ; cargo install wasm-bindgen-cli

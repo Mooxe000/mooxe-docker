@@ -22,6 +22,9 @@ base-image:
   DO Wasm+WASMTIME_INSTALL
   DO Wasm+RUSTWASMC_INSTALL
 
+  DO Rust+MIRRORT
+  DO Wasm+WASM_BINDGEN_INSTALL
+
   DO Deno+INSTALL
   DO Deno+INSTALL_DVM
 
@@ -47,17 +50,11 @@ dev-image:
   RUN set -eux \
   ; apt-fast install -y git fish zsh \
   ; apt-fast install -y vim neovim
-
-  DO Rust+MIRRORT
-  RUN set -eux \
-  ; sed -i "s/'ustc'/'tuna'/g" /usr/local/cargo/config.toml
+  
   DO BaseDev+NU
   # DO Rust+MIRRORO
-  # RUN set -eux \
-  # ; sed -i "s/'tuna'/'ustc'/g" /usr/local/cargo/config.toml
 
   DO BaseDev+BUILD
-
   DO BaseDev+OHMYPOSH
 
   RUN set -eux \
