@@ -28,6 +28,8 @@ base-image:
   DO Deno+INSTALL
   DO Deno+INSTALL_DVM
 
+  DO BaseImg+SWS
+
   DO BaseImg+CLEAN
 
   RUN set -eux \
