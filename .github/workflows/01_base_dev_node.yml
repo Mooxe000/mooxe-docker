@@ -90,13 +90,13 @@ jobs:
       - name: docker tag and push
         run: |
           docker images
-          docker tag mooxe/base mooxe/base:0.1.4
-          docker tag mooxe/dev mooxe/dev:0.1.4
-          docker tag mooxe/node mooxe/node:0.1.4
+          docker tag mooxe/base mooxe/base:0.1.5
+          docker tag mooxe/dev mooxe/dev:0.1.5
+          docker tag mooxe/node mooxe/node:0.1.5
           docker images
-          docker push mooxe/base:0.1.4
-          docker push mooxe/dev:0.1.4
-          docker push mooxe/node:0.1.4
+          docker push mooxe/base:0.1.5
+          docker push mooxe/dev:0.1.5
+          docker push mooxe/node:0.1.5
 
       -
         name: Inspect

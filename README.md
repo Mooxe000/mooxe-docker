@@ -36,10 +36,9 @@ pull mooxe-docker images from docker.io
 build mooxe-docker images used by earthly
 
 ```bash
->> cd src
->> earth +base-image
->> earth +dev-image
->> earth +node-image
+>> earthly ./src/+base-image
+>> earthly ./src/+dev-image
+>> earthly ./src/+node-image
 ```
 
 #### docker:check
@@ -100,3 +99,20 @@ or you can replace podman from docker.
 - https://github.com/second-state
   - https://github.com/wasmerio/wasmer/
   - https://github.com/second-state/rustwasmc
+
+### Rust Book
+
+- Rust 语言圣经 (Rust Course)
+  - https://course.rs/about-book.html
+- Cargo 中文文档
+  - https://cargo.budshome.com/index.html
+- Rust Cookbook 中文版
+  - https://rust-cookbook.budshome.com/intro.html
+- The Cargo Book
+  - https://doc.rust-lang.org/cargo/index.html
+- Rust Algorithm Club
+  - https://rust-algo.club/concepts/asymptotic-notation/
+- Rust 宏小册 中文版
+  - https://www.bookstack.cn/read/DaseinPhaos-tlborm-chinese/README.md
+- Learning Rust With Entirely Too Many Linked Lists
+  - https://rust-unofficial.github.io/too-many-lists/
