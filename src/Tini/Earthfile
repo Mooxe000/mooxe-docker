@@ -1,0 +1,21 @@
+VERSION 0.6
+
+ARG TINI_VERSION=0.19.0
+
+tini:
+  FROM buildpack-deps:20.04-curl
+  
+  RUN \
+      curl -fsSL https://download.fastgit.org/krallin/tini/releases/download/v${TINI_VERSION}/tini \
+        --output /tini \
+  &&  chmod +x /tini
+  SAVE ARTIFACT /tini
+
+tini-bin:
+  COPY +deno-tini/tini /tini
+
+  COPY ./deno_entry.sh /usr/local/bin/docker-entrypoint.sh
+  RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
+
+  ENTRYPOINT ["/tini", "--", "docker-entrypoint.sh"]
+  CMD ["run", "https://deno.land/std/examples/welcome.ts"]

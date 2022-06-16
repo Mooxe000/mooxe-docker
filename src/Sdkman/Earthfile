@@ -1,0 +1,71 @@
+VERSION 0.6
+
+ENV:
+
+  COMMAND
+
+  ENV GRAAL_VERSION=22.1.0.r17-grl
+  ENV KOTLIN_VERSION=1.6.21
+  ENV MAVEN_VERSION=3.8.5
+  ENV SPRINGBOOT_VERSION=2.7.0
+  ENV QUARKUS_VERSION=2.9.2.Final
+
+PRE:
+
+  COMMAND
+
+  RUN set -eux \
+  ; apt install -y zip zlib1g-dev
+
+SDKMAN:
+
+  COMMAND
+
+  RUN set -eux \
+  ; curl -s "https://get.sdkman.io" | bash
+
+  RUN set -eux \
+  ; echo 'source "$HOME/.sdkman/bin/sdkman-init.sh"' \
+      >> $HOME/.profile \
+  ; echo 'function sdk' \
+      >> $HOME/.config/fish/config.fish \
+  ; echo '  bash -lc "source $HOME/.sdkman/bin/sdkman-init.sh && sdk $argv"' \
+      >> $HOME/.config/fish/config.fish \
+  ; echo 'end' \
+      >> $HOME/.config/fish/config.fish
+
+SDKPKG:
+
+  COMMAND
+
+  DO +ENV
+
+  RUN set -eux \
+  # ; source $HOME/.profile \
+  ; bash -lc 'sdk selfupdate force'
+
+  RUN set -eux \
+  ; bash -lc 'sdk env init'
+
+  RUN set -eux \
+  ; bash -lc 'sdk install java $GRAAL_VERSION' \
+  ; bash -lc 'sdk install kotlin $KOTLIN_VERSION' \
+  ; bash -lc 'sdk install springboot $SPRINGBOOT_VERSION' \
+  ; bash -lc 'sdk install quarkus $QUARKUS_VERSION' \
+  ; bash -lc 'sdk install maven $MAVEN_VERSION'
+
+AFTER:
+
+  COMMAND
+
+  RUN set -eux \
+  ; bash -lc 'gu install native-image'
+
+ALL:
+
+  COMMAND
+
+  DO +PRE
+  DO +SDKMAN
+  DO +SDKPKG
+  DO +AFTER

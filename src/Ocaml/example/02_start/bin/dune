@@ -1,0 +1,4 @@
+(executable
+  (public_name start)
+  (name main)
+  (libraries base stdio))

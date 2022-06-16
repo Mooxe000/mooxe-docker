@@ -1,0 +1,84 @@
+VERSION 0.6
+
+ENV:
+  COMMAND
+  # ENV RUST_VERSION=1.59.0
+  ENV RUST_VERSION=stable
+  ENV RUSTUP_VERSION=1.24.3
+
+  ENV RUSTUP_HOME=/usr/local/rustup
+  ENV CARGO_HOME=/usr/local/cargo
+  ENV PATH=$CARGO_HOME/bin:$PATH
+
+MIRRORO:
+  COMMAND
+  ENV RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+  ENV RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+  RUN set -eux \
+  ; sed -i "s/'tuna'/'ustc'/g" /usr/local/cargo/config.toml
+
+MIRRORT:
+  COMMAND
+  ENV RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+  ENV RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+  RUN set -eux \
+  ; sed -i "s/'ustc'/'tuna'/g" /usr/local/cargo/config.toml
+
+INSTALL:
+  COMMAND
+
+  DO +ENV
+
+  RUN set -eux \
+  ; apt-get install -y --no-install-recommends \
+      gcc libc6-dev libssl-dev # openssl
+
+  RUN set -eux \
+  ; dpkgArch="$(dpkg --print-architecture)" \
+  ; case "${dpkgArch##*-}" in \
+      amd64) \
+        rustArch='x86_64-unknown-linux-gnu' \
+      ; rustupSha256='3dc5ef50861ee18657f9db2eeb7392f9c2a6c95c90ab41e45ab4ca71476b4338' \
+      ;; \
+      armhf) \
+        rustArch='armv7-unknown-linux-gnueabihf' \
+      ; rustupSha256='67777ac3bc17277102f2ed73fd5f14c51f4ca5963adadf7f174adf4ebc38747b' \
+      ;; \
+      arm64) \
+        rustArch='aarch64-unknown-linux-gnu' \
+      ; rustupSha256='32a1532f7cef072a667bac53f1a5542c99666c4071af0c9549795bbdb2069ec1' \
+      ;; \
+      i386) \
+        rustArch='i686-unknown-linux-gnu' \
+      ; rustupSha256='e50d1deb99048bc5782a0200aa33e4eea70747d49dffdc9d06812fd22a372515' \
+      ;; \
+      *) \
+        echo >&2 "unsupported architecture: ${dpkgArch}" \
+      ; exit 1 \
+      ;; \
+    esac \
+  ; url="https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup/archive/${RUSTUP_VERSION}/${rustArch}/rustup-init" \
+  # ; url="https://static.rust-lang.org/rustup/archive/${RUSTUP_VERSION}/${rustArch}/rustup-init" \
+  ; curl -O "$url" \
+  ; echo "${rustupSha256} *rustup-init" | sha256sum -c - \
+  ; chmod +x rustup-init \
+  ; ./rustup-init -y --no-modify-path \
+      --profile minimal \
+      --default-toolchain $RUST_VERSION \
+      --default-host ${rustArch} \
+  ; rm rustup-init \
+  ; chmod -R a+w $RUSTUP_HOME $CARGO_HOME
+
+  COPY ./Rust/config.toml $CARGO_HOME
+
+  DO +MIRRORO
+
+  RUN set -eux \
+  ; rustup component add rustfmt \
+  ; cargo install cargo-update
+
+MASK:
+  COMMAND
+
+  RUN set -eux \
+  ; cargo install mask

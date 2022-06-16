@@ -1,0 +1,54 @@
+VERSION 0.6
+
+opam:
+  FROM ocaml/opam
+  SAVE ARTIFACT /home/opam/.opam
+  SAVE ARTIFACT /home/opam/opam-repository
+
+IMAGE:
+  COMMAND
+
+  RUN set -eux \
+  ; mkdir -p /home/opam
+
+  COPY +opam/.opam /home/opam/.opam
+  COPY +opam/opam-repository /home/opam/opam-repository
+
+  RUN set -eux \
+  ; apt install -y opam rsync m4 mercurial darcs
+
+  RUN set -eux \
+  ; ln -s /home/opam/.opam /root/.opam
+
+  ENV DEFAULT_REPO https://mirrors.sjtug.sjtu.edu.cn/git/opam-repository.git
+
+  RUN set -eux \
+  ; cd /home/opam/opam-repository \
+  ; mv Dockerfile ../ \
+  ; git remote remove origin \
+  ; git remote add origin $DEFAULT_REPO \
+  ; git config pull.ff only \
+  # ; git branch --set-upstream-to=origin/master master \
+  ; git pull origin master \
+  ; cd
+
+  RUN set -eux \
+  ; sed -i '/^upstream:/d' /root/.opam/repo/default/repo \
+  ; echo 'upstream: "${DEFAULT_REPO}"' >> \
+      /root/.opam/repo/default/repo \
+  ; opam init default $DEFAULT_REPO
+
+  RUN set -eux \
+  ; echo 'eval $(opam env)' \
+      >> $HOME/.profile \
+  ; echo 'eval (opam env)' \
+      >> $HOME/.config/fish/config.fish
+
+  # utop
+  #use "topfind";;
+  #require "base";;
+
+  RUN set -eux \
+  ; opam install -y utop ocamlfind dune \
+  ; opam install -y base core stdio
+  # ; opam install -y js_of_ocaml js_of_ocaml-compiler js_of_ocaml-lwt js_of_ocaml-ppx

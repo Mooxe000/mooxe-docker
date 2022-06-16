@@ -1,0 +1,86 @@
+VERSION 0.6
+
+IMPORT ../ AS BaseImg
+
+NU:
+  COMMAND
+
+  RUN set -eux \
+  ; cargo install nu
+
+SHELLEDITOR:
+  COMMAND
+
+  RUN set -eux \
+  ; apt-fast install -y git fish zsh \
+  ; apt-fast install -y vim neovim
+
+APTFAST:
+  COMMAND
+  RUN set -eux \
+  ; wget https://hub.fastgit.xyz/ilikenwf/apt-fast/archive/master.zip \
+  ; unzip master.zip \
+  ; cd apt-fast-master \
+  ; cp apt-fast /usr/local/sbin \
+  ; chmod +x /usr/local/sbin/apt-fast \
+  ; cp apt-fast.conf /etc \
+  ; cd .. \
+  ; rm -rf master.zip apt-fast-master
+
+  RUN set -eux \
+  ; apt-get install -y ncurses-bin
+
+  DO BaseImg+FASTUPDATE
+
+STARSHIP:
+  COMMAND
+
+  RUN set -eux \
+  ; cargo install starship
+
+  RUN set -eux \
+  ; mkdir -p $HOME/.config/nushell
+
+  COPY ./Bullseye/DEV/nushell/* /root/.config/nushell/
+
+  RUN set -eux \
+  ; echo 'eval "$(starship init bash)"' \
+      >> $HOME/.bashrc \
+  ; echo 'eval "$(starship init zsh)"' \
+      >> $HOME/.zshrc \
+  ; mkdir -p $HOME/.config/fish \
+  ; echo "set fish_greeting ''" \
+      >> $HOME/.config/fish/config.fish \
+  ; echo 'starship init fish | source' \
+      >> $HOME/.config/fish/config.fish \
+  ; mkdir -p $HOME/.cache/starship \
+  ; starship init nu \
+      >> $HOME/.cache/starship/init.nu \
+  ; echo "source ~/.cache/starship/init.nu" \
+      >> $(nu -l -c 'echo $nu.config-path')
+
+OHMYPOSH:
+  COMMAND
+
+  RUN set -eux \
+  ; wget https://hub.fastgit.xyz/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 \
+      -O /usr/local/bin/oh-my-posh \
+  ; chmod +x /usr/local/bin/oh-my-posh \
+
+  ; mkdir ~/.poshthemes \
+  ; wget https://hub.fastgit.xyz/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip \
+      -O ~/.poshthemes/themes.zip \
+  ; unzip ~/.poshthemes/themes.zip -d ~/.poshthemes \
+  ; chmod u+rw ~/.poshthemes/*.json \
+  ; rm ~/.poshthemes/themes.zip
+
+  RUN set -eux \
+  ; echo 'eval "$(oh-my-posh --init --shell bash --config $HOME/.poshthemes/ys.omp.json)"' \
+      >> $HOME/.bashrc \
+  ; echo 'eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/ys.omp.json)"' \
+      >> $HOME/.zshrc \
+  ; mkdir -p $HOME/.config/fish \
+  ; echo "set fish_greeting ''" \
+      >> $HOME/.config/fish/config.fish \
+  ; echo 'oh-my-posh --init --shell fish --config $HOME/.poshthemes/ys.omp.json | source' \
+      >> $HOME/.config/fish/config.fish

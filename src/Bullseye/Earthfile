@@ -1,0 +1,73 @@
+VERSION 0.6
+
+base-img:
+  FROM microdeb/bullseye
+  ENV LANG=C.UTF-8
+  WORKDIR /root
+
+UPDATE:
+  COMMAND
+  RUN set -eux \
+  ; apt-get update \
+  ; apt-get upgrade -y
+
+FASTUPDATE:
+  COMMAND
+  RUN set -eux \
+  ; apt-fast update \
+  ; apt-fast upgrade -y
+
+MIRROR:
+  COMMAND
+  COPY ./sources.list /etc/apt/sources.list
+  DO +UPDATE
+  RUN set -eux \
+  ; apt-get install -y ca-certificates \
+  ; sed -i 's/http/https/g' \
+      /etc/apt/sources.list
+
+INSTALL:
+  COMMAND
+
+  RUN set -eux \
+  ; apt-get install -y pkg-config
+
+  RUN set -eux \
+  ; apt-get install -y --no-install-recommends \
+      wget curl aria2 axel unzip
+
+img:
+  FROM +base-img
+  DO +MIRROR
+  DO +INSTALL
+
+CLEAN:
+  COMMAND
+  RUN set -eux \
+  ; apt-get clean
+
+PROFILE:
+  COMMAND
+  RUN set -eux \
+  ; echo '' > ~/.profile \
+  ; echo 'source ~/.profile' >> ~/.bashrc
+
+DEV:
+  COMMAND
+  DO +UPDATE
+
+SWS:
+  COMMAND
+
+  ENV SWS_VERSION=2.9.0
+  ENV SWS_BIN=static-web-server
+  ENV SWS_ALIAS=sws
+  ENV SWS_DL_FILE_DIR=$SWS_BIN-v${SWS_VERSION}-x86_64-unknown-linux-gnu
+  ENV SWS_DL_FILE=${SWS_DL_FILE_DIR}.tar.gz
+
+  RUN set -eux \
+  ; aria2c "https://hub.fastgit.xyz/joseluisq/${SWS_BIN}/releases/download/v${SWS_VERSION}/${SWS_DL_FILE}" \
+  ; tar xvf ./$SWS_DL_FILE \
+  ; cp ./$SWS_DL_FILE_DIR/$SWS_BIN /usr/local/bin \
+  ; ln -s /usr/local/bin/$SWS_BIN /usr/local/bin/sws \
+  ; rm -rf ./${SWS_BIN}*

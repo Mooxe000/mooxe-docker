@@ -1,0 +1,14 @@
+.DS_Store
+.idea
+npm-debug.log
+*_book
+
+node_modules
+
+.tmp
+trash
+
+/.drake.cache.json
+
+.pnpm*
+*.lock

@@ -1,0 +1,101 @@
+VERSION 0.6
+
+IMPORT ./Bullseye AS BaseImg
+IMPORT ./Bullseye/DEV AS BaseDev
+
+IMPORT ./Rust AS Rust
+IMPORT ./Wasm AS Wasm
+
+IMPORT ./Deno AS Deno
+IMPORT ./Node AS Node
+
+IMPORT ./Sdkman AS Sdkman
+IMPORT ./Ocaml AS Ocaml
+
+base-image:
+
+  FROM BaseImg+img
+
+  DO BaseImg+PROFILE
+
+  DO Rust+INSTALL
+  DO Rust+MASK
+
+  DO Wasm+WASM_BASE
+  DO Wasm+WASMER_INSTALL
+  DO Wasm+WASMTIME_INSTALL
+  DO Wasm+RUSTWASMC_INSTALL
+
+  DO Rust+MIRRORT
+  DO Wasm+WASM_BINDGEN_INSTALL
+
+  DO Deno+INSTALL
+  DO Deno+INSTALL_DVM
+
+  DO BaseImg+SWS
+
+  DO BaseImg+CLEAN
+
+  RUN set -eux \
+  ; rustup --version \
+  ; cargo --version \
+  ; rustc --version \
+  ; deno --version
+
+  SAVE IMAGE --push mooxe/base
+
+dev-image:
+
+  # FROM mooxe/base
+  FROM +base-image
+
+  ENV TZ=Asia/Shanghai
+
+  RUN set -eux \
+  ; mkdir -p $HOME/.config/nushell
+
+  DO BaseDev+APTFAST
+
+  DO BaseDev+SHELLEDITOR
+  DO BaseDev+NU
+  # DO Rust+MIRRORO
+
+  DO BaseDev+STARSHIP
+  # DO BaseDev+OHMYPOSH
+
+  DO Wasm+WASMER_SHELL_DEV
+  DO Wasm+WASMTIME_SHELL_DEV
+
+  DO BaseImg+CLEAN
+
+  SAVE IMAGE --push mooxe/dev
+
+node-image:
+
+  # FROM mooxe/dev
+  FROM +dev-image
+
+  DO Node+INSTALL
+
+  SAVE IMAGE --push mooxe/node
+
+sdkman-image:
+
+  FROM +dev-image
+
+  DO Sdkman+ALL
+
+  SAVE IMAGE --push mooxe/sdkman
+
+ocaml-image:
+
+  FROM +dev-image
+
+  DO Ocaml+IMAGE
+
+  RUN set -eux \
+  ; opam --version \
+  ; eval $(opam env) \
+  ; ocaml --version
+
+  SAVE IMAGE --push mooxe/ocaml
