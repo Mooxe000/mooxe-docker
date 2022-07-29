@@ -7,6 +7,7 @@ use [Earthly](https://earthly.dev/) to build docker images
 - mooxe/base(rust + deno)
 - mooxe/dev(shell)
 - mooxe/node
+- mooxe/wasm
 - mooxe/ocaml
 - mooxe/sdkman
 
@@ -20,6 +21,7 @@ pull mooxe-docker images from docker.io
 >> docker/podman pull mooxe/base
 >> docker/podman pull mooxe/dev
 >> docker/podman pull mooxe/node
+>> docker/podman pull mooxe/wasm
 >> docker/podman pull mooxe/ocaml
 >> docker/podman pull mooxe/sdkman
 ```
@@ -44,6 +46,7 @@ build mooxe-docker images used by earthly
 >> earthly ./src/+base-image
 >> earthly ./src/+dev-image
 >> earthly ./src/+node-image
+>> earthly ./src/+wasm-image
 >> earthly ./src/+ocaml-image
 >> earthly ./src/+sdkman-image
 ```
@@ -58,6 +61,7 @@ or you can replace podman from docker.
 >> podman run --rm -ti --name mooxe mooxe/base
 >> podman run --rm -ti --name mooxe mooxe/dev
 >> podman run --rm -ti --name mooxe mooxe/node
+>> podman run --rm -ti --name mooxe mooxe/wasm
 >> podman run --rm -ti --name mooxe mooxe/ocaml
 >> podman run --rm -ti --name mooxe mooxe/sdkman
 ```
@@ -71,7 +75,7 @@ or you can replace podman from docker.
 >> earthly config global.container_frontend podman-shell
 >> cat ~/.earthly/config.yml
 >> podman pull earthly/buildkitd
->> podman pull earthly/buildkitd:0.6.15
+>> podman pull earthly/buildkitd:0.6.20
 ```
 
 - Debian slim microdeb/bullseye

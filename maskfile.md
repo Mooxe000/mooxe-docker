@@ -6,6 +6,42 @@
 echo Hello World!!!
 ```
 
+## build-base
+
+```sh
+earthly ./src+base-image
+```
+
+## build-dev
+
+```sh
+earthly ./src+dev-image
+```
+
+## build-node
+
+```sh
+earthly ./src+node-image
+```
+
+## build-wasm
+
+```sh
+earthly ./src+wasm-image
+```
+
+## build-ocaml
+
+```sh
+earthly ./src+ocaml-image
+```
+
+## build-sdkman
+
+```sh
+earthly ./src+sdkman-image
+```
+
 ## run-base
 
 ```sh
@@ -38,6 +74,16 @@ podman run --rm -ti \
   -v /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe \
   -v $(pwd):/root/node \
   mooxe/node \
+  /bin/bash
+```
+
+## run-wasm
+
+```sh
+podman run --rm -ti \
+  --name wasm \
+  -v $(pwd):/root/wasm \
+  mooxe/wasm \
   /bin/bash
 ```
 
