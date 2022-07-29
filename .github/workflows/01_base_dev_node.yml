@@ -87,6 +87,9 @@ jobs:
       - name: build node-image
         run: earthly --push ./src+node-image
 
+      - name: build wasm-image
+        run: earthly --push ./src+wasm-image
+
       - name: build ocaml-image
         run: earthly --push ./src+ocaml-image
 
@@ -96,17 +99,19 @@ jobs:
       - name: docker tag and push
         run: |
           docker images
-          docker tag mooxe/base mooxe/base:0.1.8
-          docker tag mooxe/dev mooxe/dev:0.1.8
-          docker tag mooxe/node mooxe/node:0.1.8
-          docker tag mooxe/ocaml mooxe/ocaml:0.1.8
-          docker tag mooxe/sdkman mooxe/sdkman:0.1.8
+          docker tag mooxe/base mooxe/base:0.1.9
+          docker tag mooxe/dev mooxe/dev:0.1.9
+          docker tag mooxe/node mooxe/node:0.1.9
+          docker tag mooxe/wasm mooxe/wasm:0.1.9
+          docker tag mooxe/ocaml mooxe/ocaml:0.1.9
+          docker tag mooxe/sdkman mooxe/sdkman:0.1.9
           docker images
-          docker push mooxe/base:0.1.8
-          docker push mooxe/dev:0.1.8
-          docker push mooxe/node:0.1.8
-          docker push mooxe/ocaml:0.1.8
-          docker push mooxe/sdkman:0.1.8
+          docker push mooxe/base:0.1.9
+          docker push mooxe/dev:0.1.9
+          docker push mooxe/node:0.1.9
+          docker push mooxe/wasm:0.1.9
+          docker push mooxe/ocaml:0.1.9
+          docker push mooxe/sdkman:0.1.9
 
       -
         name: Inspect
@@ -114,5 +119,6 @@ jobs:
           docker buildx imagetools inspect mooxe/base
           docker buildx imagetools inspect mooxe/dev
           docker buildx imagetools inspect mooxe/node
+          docker buildx imagetools inspect mooxe/wasm
           docker buildx imagetools inspect mooxe/ocaml
           docker buildx imagetools inspect mooxe/sdkman

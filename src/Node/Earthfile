@@ -21,9 +21,11 @@ INSTALL:
   ; cargo install fnm
 
   RUN set -eux \
-  ; echo 'eval "$(fnm env --use-on-cd)"' \
-      >> $HOME/.profile \
-  ; echo 'fnm env --use-on-cd | source' \
+  ; echo 'eval "$(fnm env --shell bash --use-on-cd)"' \
+      >> $HOME/.bashrc \
+  ; echo 'eval "$(fnm env --shell zsh --use-on-cd)"' \
+      >> $HOME/.zshrc \
+  ; echo 'fnm env --shell fish --use-on-cd | source' \
       >> $HOME/.config/fish/config.fish
 
   RUN set -eux \

@@ -2,7 +2,7 @@ VERSION 0.6
 
 VERSION:
   COMMAND
-  ENV DENO_VERSION=1.22.3
+  ENV DENO_VERSION=1.24.0
 
 ENV:
   COMMAND
@@ -17,12 +17,23 @@ bin:
   FROM ${BIN_IMAGE}
   SAVE ARTIFACT /deno
 
+FIX_OPENSSLSYS_BEFORE_INSTALL:
+  COMMAND
+  RUN set -eux \
+  ; apt remove -y \
+      pkg-config build-essential libssl-dev:amd64 librust-openssl-sys-dev:amd64 \
+  ; apt install -y \
+      pkg-config build-essential libssl-dev librust-openssl-sys-dev \
+  ; apt-mark auto pkg-config build-essential
+
 INSTALL_DVM:
   COMMAND
 
   DO +VERSION
 
-  ENV DVM_VERSION=1.8.0
+  ENV DVM_VERSION=1.8.6
+
+  DO +FIX_OPENSSLSYS_BEFORE_INSTALL
 
   RUN set -eux \
   ; cargo install dvm --version $DVM_VERSION \
@@ -52,3 +63,16 @@ INSTALL:
   ENV DENO_VERSION=${DENO_VERSION}
 
   COPY +bin/deno /bin/deno
+
+BUN:
+  COMMAND
+
+  ENV BUN_VERSION=0.1.5
+  ENV SWS_FILE_DIRNAME=bun-linux-x64
+  ENV SWS_ZIP_FILE=$SWS_FILE_DIRNAME.zip
+
+  RUN set -eux \
+  ; aria2c "https://hub.fastgit.xyz/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/${SWS_ZIP_FILE}" \
+  ; unzip $SWS_ZIP_FILE \
+  ; cp $SWS_FILE_DIRNAME/bun $HOME/.local/bin/bun \
+  ; rm -rf ./${SWS_FILE_DIRNAME}*

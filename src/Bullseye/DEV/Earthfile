@@ -32,6 +32,13 @@ APTFAST:
 
   DO BaseImg+FASTUPDATE
 
+PATH:
+  COMMAND
+  RUN set -eux \
+  ; mkdir -p $HOME/.local/bin \
+  ; echo 'set PATH $PATH:$HOME/.local/bin' \
+      >> $HOME/.config/fish/config.fish
+
 STARSHIP:
   COMMAND
 
@@ -59,28 +66,44 @@ STARSHIP:
   ; echo "source ~/.cache/starship/init.nu" \
       >> $(nu -l -c 'echo $nu.config-path')
 
-OHMYPOSH:
+# OHMYPOSH:
+#   COMMAND
+
+#   RUN set -eux \
+#   ; wget https://hub.fastgit.xyz/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 \
+#       -O /usr/local/bin/oh-my-posh \
+#   ; chmod +x /usr/local/bin/oh-my-posh \
+
+#   ; mkdir ~/.poshthemes \
+#   ; wget https://hub.fastgit.xyz/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip \
+#       -O ~/.poshthemes/themes.zip \
+#   ; unzip ~/.poshthemes/themes.zip -d ~/.poshthemes \
+#   ; chmod u+rw ~/.poshthemes/*.json \
+#   ; rm ~/.poshthemes/themes.zip
+
+#   RUN set -eux \
+#   ; echo 'eval "$(oh-my-posh --init --shell bash --config $HOME/.poshthemes/ys.omp.json)"' \
+#       >> $HOME/.bashrc \
+#   ; echo 'eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/ys.omp.json)"' \
+#       >> $HOME/.zshrc \
+#   ; mkdir -p $HOME/.config/fish \
+#   ; echo "set fish_greeting ''" \
+#       >> $HOME/.config/fish/config.fish \
+#   ; echo 'oh-my-posh --init --shell fish --config $HOME/.poshthemes/ys.omp.json | source' \
+#       >> $HOME/.config/fish/config.fish
+
+SWS:
   COMMAND
 
-  RUN set -eux \
-  ; wget https://hub.fastgit.xyz/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 \
-      -O /usr/local/bin/oh-my-posh \
-  ; chmod +x /usr/local/bin/oh-my-posh \
-
-  ; mkdir ~/.poshthemes \
-  ; wget https://hub.fastgit.xyz/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip \
-      -O ~/.poshthemes/themes.zip \
-  ; unzip ~/.poshthemes/themes.zip -d ~/.poshthemes \
-  ; chmod u+rw ~/.poshthemes/*.json \
-  ; rm ~/.poshthemes/themes.zip
+  ENV SWS_VERSION=2.10.0
+  ENV SWS_BIN=static-web-server
+  ENV SWS_ALIAS=sws
+  ENV SWS_DL_FILE_DIR=$SWS_BIN-v${SWS_VERSION}-x86_64-unknown-linux-gnu
+  ENV SWS_DL_FILE=${SWS_DL_FILE_DIR}.tar.gz
 
   RUN set -eux \
-  ; echo 'eval "$(oh-my-posh --init --shell bash --config $HOME/.poshthemes/ys.omp.json)"' \
-      >> $HOME/.bashrc \
-  ; echo 'eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/ys.omp.json)"' \
-      >> $HOME/.zshrc \
-  ; mkdir -p $HOME/.config/fish \
-  ; echo "set fish_greeting ''" \
-      >> $HOME/.config/fish/config.fish \
-  ; echo 'oh-my-posh --init --shell fish --config $HOME/.poshthemes/ys.omp.json | source' \
-      >> $HOME/.config/fish/config.fish
+  ; aria2c "https://hub.fastgit.xyz/joseluisq/${SWS_BIN}/releases/download/v${SWS_VERSION}/${SWS_DL_FILE}" \
+  ; tar xvf ./$SWS_DL_FILE \
+  ; cp ./$SWS_DL_FILE_DIR/$SWS_BIN $HOME/.local/bin \
+  ; ln -s $HOME/.local/bin/$SWS_BIN $HOME/.local/bin/sws \
+  ; rm -rf ./${SWS_BIN}*

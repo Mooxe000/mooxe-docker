@@ -17,22 +17,15 @@ base-image:
   FROM BaseImg+img
 
   DO BaseImg+PROFILE
+  DO BaseImg+PATH
 
   DO Rust+INSTALL
   DO Rust+MASK
 
-  DO Wasm+WASM_BASE
-  DO Wasm+WASMER_INSTALL
-  DO Wasm+WASMTIME_INSTALL
-  DO Wasm+RUSTWASMC_INSTALL
-
-  DO Rust+MIRRORT
-  DO Wasm+WASM_BINDGEN_INSTALL
-
   DO Deno+INSTALL
   DO Deno+INSTALL_DVM
 
-  DO BaseImg+SWS
+  DO Deno+BUN
 
   DO BaseImg+CLEAN
 
@@ -63,8 +56,8 @@ dev-image:
   DO BaseDev+STARSHIP
   # DO BaseDev+OHMYPOSH
 
-  DO Wasm+WASMER_SHELL_DEV
-  DO Wasm+WASMTIME_SHELL_DEV
+  DO BaseDev+PATH
+  DO BaseDev+SWS
 
   DO BaseImg+CLEAN
 
@@ -78,6 +71,28 @@ node-image:
   DO Node+INSTALL
 
   SAVE IMAGE --push mooxe/node
+
+wasm-image:
+
+  # FROM mooxe/dev
+  FROM +dev-image
+
+  DO Wasm+WASM_BASE
+  DO Wasm+WASMER_INSTALL
+  DO Wasm+WASMTIME_INSTALL
+  DO Wasm+RUSTWASMC_INSTALL
+
+  DO Rust+MIRRORT
+  DO Wasm+WASM_BINDGEN_INSTALL
+
+  DO Wasm+WASMER_SHELL_DEV
+  DO Wasm+WASMTIME_SHELL_DEV
+
+  DO BaseImg+CLEAN
+
+  SAVE IMAGE --push mooxe/wasm
+
+# go-image:
 
 sdkman-image:
 

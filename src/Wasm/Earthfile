@@ -55,7 +55,8 @@ WASMTIME_INSTALL:
   RUN set -eux \
   ; curl -O https://wasmtime.dev/install.sh \
   ; sed -i 's/\/\/github.com\/bytecodealliance/\/\/hub.fastgit.xyz\/bytecodealliance/g' install.sh \
-  ; bash install.sh \
+  ; chmod +x install.sh \
+  ; ./install.sh \
   ; rm install.sh
 
   DO +WASMTIME_SHELL
@@ -75,7 +76,8 @@ RUSTWASMC_INSTALL:
   RUN set -eux \
   ; curl -O https://raw.fastgit.org/second-state/rustwasmc/master/installer/init.sh \
   ; sed -i 's/\/\/github.com\/second-state/\/\/hub.fastgit.xyz\/second-state/g' init.sh \
-  ; bash init.sh \
+  ; chmod +x init.sh \
+  ; ./init.sh \
   ; rm init.sh
 
 WASM_BINDGEN_INSTALL:

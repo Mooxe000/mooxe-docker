@@ -22,6 +22,7 @@ podman run --rm -ti \
 podman run --rm -ti \
   --name dev \
   -v $(pwd):/root/dev \
+  -v /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe \
   mooxe/dev \
   /bin/bash
 ```
