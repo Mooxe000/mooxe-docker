@@ -6,6 +6,7 @@ use [Earthly](https://earthly.dev/) to build docker images
 
 - mooxe/base(rust + deno)
 - mooxe/dev(shell)
+- mooxe/go
 - mooxe/node
 - mooxe/wasm
 - mooxe/ocaml
@@ -20,6 +21,7 @@ pull mooxe-docker images from docker.io
 ```bash
 >> docker/podman pull mooxe/base
 >> docker/podman pull mooxe/dev
+>> docker/podman pull mooxe/go
 >> docker/podman pull mooxe/node
 >> docker/podman pull mooxe/wasm
 >> docker/podman pull mooxe/ocaml
@@ -29,7 +31,6 @@ pull mooxe-docker images from docker.io
 #### TODO
 
 - images
-  - golang
 
   - rescript
   - purescript
@@ -45,6 +46,7 @@ build mooxe-docker images used by earthly
 ```bash
 >> earthly ./src/+base-image
 >> earthly ./src/+dev-image
+>> earthly ./src/+go-image
 >> earthly ./src/+node-image
 >> earthly ./src/+wasm-image
 >> earthly ./src/+ocaml-image
@@ -60,6 +62,7 @@ or you can replace podman from docker.
 ```bash
 >> podman run --rm -ti --name mooxe mooxe/base
 >> podman run --rm -ti --name mooxe mooxe/dev
+>> podman run --rm -ti --name mooxe mooxe/go
 >> podman run --rm -ti --name mooxe mooxe/node
 >> podman run --rm -ti --name mooxe mooxe/wasm
 >> podman run --rm -ti --name mooxe mooxe/ocaml
