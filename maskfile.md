@@ -18,6 +18,12 @@ earthly ./src+base-image
 earthly ./src+dev-image
 ```
 
+## build-go
+
+```sh
+earthly ./src+go-image
+```
+
 ## build-node
 
 ```sh
@@ -60,6 +66,17 @@ podman run --rm -ti \
   -v $(pwd):/root/dev \
   -v /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe \
   mooxe/dev \
+  /bin/bash
+```
+
+## run-go
+
+```sh
+podman run --rm -ti \
+  --name go \
+  -v $(pwd):/root/go \
+  -v /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe \
+  mooxe/go \
   /bin/bash
 ```
 

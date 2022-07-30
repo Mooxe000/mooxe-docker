@@ -1,0 +1,24 @@
+VERSION 0.6
+
+G_INSTALL:
+  COMMAND
+
+  ENV G_VERSION=1.4.0
+
+  RUN set -eux \
+  ; curl -O https://raw.fastgit.org/voidint/g/master/install.sh \
+  ; sed -i 's/\/\/github.com\/voidint/\/\/hub.fastgit.xyz\/voidint/g' install.sh \
+  ; chmod +x install.sh \
+  ; ./install.sh \
+  ; rm install.sh \
+  ; mv $HOME/bin/g $HOME/.local/bin \
+  ; rmdir $HOME/bin \
+  ; rm "g${G_VERSION}.linux-amd64.tar.gz"
+
+GO_INSTALL:
+  COMMAND
+
+  ENV GO_STABLE_VERSION=1.18.4
+
+  RUN set -eux \
+  ; bash -lc "g install ${GO_STABLE_VERSION}"

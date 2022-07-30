@@ -4,10 +4,12 @@ IMPORT ./Bullseye AS BaseImg
 IMPORT ./Bullseye/DEV AS BaseDev
 
 IMPORT ./Rust AS Rust
-IMPORT ./Wasm AS Wasm
+IMPORT ./Go AS Go
 
 IMPORT ./Deno AS Deno
 IMPORT ./Node AS Node
+
+IMPORT ./Wasm AS Wasm
 
 IMPORT ./Sdkman AS Sdkman
 IMPORT ./Ocaml AS Ocaml
@@ -63,6 +65,18 @@ dev-image:
 
   SAVE IMAGE --push mooxe/dev
 
+go-image:
+
+  # FROM mooxe/dev
+  FROM +dev-image
+
+  DO Go+G_INSTALL
+  DO Go+GO_INSTALL
+
+  DO BaseImg+CLEAN
+
+  SAVE IMAGE --push mooxe/go
+
 node-image:
 
   # FROM mooxe/dev
@@ -91,8 +105,6 @@ wasm-image:
   DO BaseImg+CLEAN
 
   SAVE IMAGE --push mooxe/wasm
-
-# go-image:
 
 sdkman-image:
 
