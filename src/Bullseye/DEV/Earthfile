@@ -36,6 +36,7 @@ PATH:
   COMMAND
   RUN set -eux \
   ; mkdir -p $HOME/.local/bin \
+  ; mkdir -p $HOME/.config/fish \
   ; echo 'set PATH $PATH:$HOME/.local/bin' \
       >> $HOME/.config/fish/config.fish
 
@@ -62,7 +63,6 @@ STARSHIP:
       >> $HOME/.bashrc \
   ; echo 'eval "$(starship init zsh)"' \
       >> $HOME/.zshrc \
-  ; mkdir -p $HOME/.config/fish \
   ; echo "set fish_greeting ''" \
       >> $HOME/.config/fish/config.fish \
   ; echo 'starship init fish | source' \
