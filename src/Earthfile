@@ -57,10 +57,11 @@ dev-image:
   DO BaseDev+NU
   # DO Rust+MIRRORO
 
+  DO BaseDev+PATH
+
   DO BaseDev+STARSHIP
   # DO BaseDev+OHMYPOSH
 
-  DO BaseDev+PATH
   DO BaseDev+SWS
 
   DO BaseImg+CLEAN
