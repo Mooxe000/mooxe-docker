@@ -12,6 +12,8 @@ use [Earthly](https://earthly.dev/) to build docker images
 - mooxe/ocaml
 - mooxe/sdkman
 
+- mooxe/mvgscolmap
+
 ### Usage
 
 #### docker:pull
@@ -26,6 +28,8 @@ pull mooxe-docker images from docker.io
 >> docker/podman pull mooxe/wasm
 >> docker/podman pull mooxe/ocaml
 >> docker/podman pull mooxe/sdkman
+
+>> docker/podman pull mooxe/mvgscolmap
 ```
 
 #### TODO
@@ -51,6 +55,8 @@ build mooxe-docker images used by earthly
 >> earthly ./src/+wasm-image
 >> earthly ./src/+ocaml-image
 >> earthly ./src/+sdkman-image
+
+>> earthly ./src/+mvgscolmap-image
 ```
 
 #### docker:check
@@ -67,6 +73,8 @@ or you can replace podman from docker.
 >> podman run --rm -ti --name mooxe mooxe/wasm
 >> podman run --rm -ti --name mooxe mooxe/ocaml
 >> podman run --rm -ti --name mooxe mooxe/sdkman
+
+>> podman run --rm -ti --name mooxe mooxe/mvgscolmap
 ```
 
 ### Earthly
