@@ -42,8 +42,15 @@ PATH:
 STARSHIP:
   COMMAND
 
+  ENV STARSHIP_VERSION=1.9.1
+  ENV STARSHIP_DL_NAME=starship-x86_64-unknown-linux-gnu.tar.gz
+
   RUN set -eux \
-  ; cargo install starship
+  # ; cargo install starship
+  ; axel "https://hub.fastgit.xyz/starship/starship/releases/download/v${STARSHIP_VERSION}/${STARSHIP_DL_NAME}" \
+  ; tar xvf $STARSHIP_DL_NAME \
+  ; mv starship $HOME/.local/bin \
+  ; rm $STARSHIP_DL_NAME
 
   RUN set -eux \
   ; mkdir -p $HOME/.config/nushell

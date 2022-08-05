@@ -31,7 +31,9 @@ INSTALL:
 
   RUN set -eux \
   ; apt-get install -y --no-install-recommends \
-      gcc libc6-dev libssl-dev # openssl
+      gcc libc6-dev libssl-dev # openssl \
+      # librust-cargo-openssl-dev librust-openssl-dev
+
 
   RUN set -eux \
   ; dpkgArch="$(dpkg --print-architecture)" \
