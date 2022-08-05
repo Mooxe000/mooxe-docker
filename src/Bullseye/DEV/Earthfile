@@ -68,11 +68,11 @@ STARSHIP:
       >> $HOME/.config/fish/config.fish \
   ; echo 'starship init fish | source' \
       >> $HOME/.config/fish/config.fish \
-  ; mkdir -p $HOME/.cache/starship \
   ; mkdir -p $HOME/.config/nushell \
   ; echo 'let-env PATH = ($env.PATH | append "$HOME/.local/bin")' \
       >> $HOME/.config/nushell/login.nu \
-  ; starship init nu \
+  ; mkdir -p $HOME/.cache/starship \
+  ; bash -lc 'starship init nu' \
       >> $HOME/.cache/starship/init.nu \
   ; echo "source ~/.cache/starship/init.nu" \
       >> $(nu -l -c 'echo $nu.config-path')
