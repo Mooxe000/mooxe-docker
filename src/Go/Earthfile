@@ -18,7 +18,7 @@ G_INSTALL:
 GO_INSTALL:
   COMMAND
 
-  ENV GO_STABLE_VERSION=1.18.4
+  ENV GO_STABLE_VERSION=1.19
 
   RUN set -eux \
   ; bash -lc "g install ${GO_STABLE_VERSION}"

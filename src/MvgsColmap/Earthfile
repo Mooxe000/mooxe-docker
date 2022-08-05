@@ -1,0 +1,61 @@
+VERSION 0.6
+
+dockercontext:
+  FROM ubuntu:bionic # 18.04
+
+openmvg:
+  FROM DOCKERFILE -f ./openMVG/Dockerfile \
+    +dockercontext/Dockerfile
+  SAVE ARTIFACT /opt/openMVG_Build/install
+
+OPENMVG_INSTALL:
+  COMMAND
+
+  # RUN set -eux \
+  # ; mkdir -p /opt/openMVG
+
+  COPY +openmvg/install /opt/openMVG
+
+  RUN set -eux \
+  ; echo 'export PATH=$PATH:/opt/openMVG/bin' \
+      >> $HOME/.profile \
+  ; echo 'set PATH $PATH:/opt/openMVG/bin' \
+      >> $HOME/.config/fish/config.fish
+
+openmvs:
+  FROM DOCKERFILE -f ./openMVS/Dockerfile \
+    +dockercontext/Dockerfile
+  RUN set -eux \
+  ; mkdir -p /opt/openMVS/bin \
+  ; mkdir -p /opt/openMVS/include \
+  ; mkdir -p /opt/openMVS/lib \
+  ; mkdir -p /opt/openMVS/share \
+  ; cp /usr/local/bin/OpenMVS/* /opt/openMVS/bin \
+  ; cp -R /usr/local/include/OpenMVS /opt/openMVS/include \
+  ; cp -R /usr/local/include/eigen3 /opt/openMVS/include \
+  ; cp -R /usr/local/lib/OpenMVS /opt/openMVS/lib \
+  ; cp -R /usr/local/lib/cmake /opt/openMVS/lib \
+  ; cp -R /usr/local/share/eigen3 /opt/openMVS/share \
+  ; cp -R /usr/local/share/pkgconfig /opt/openMVS/share
+  SAVE ARTIFACT /opt/openMVS
+
+OPENMVS_INSTALL:
+  COMMAND
+  COPY +openmvs/openMVS /opt/openMVS
+
+  # Boost
+  RUN set -eux \
+  ; apt-get -y install \
+      libboost-iostreams-dev libboost-program-options-dev \
+      libboost-system-dev libboost-serialization-dev
+
+  # OpenCV
+  RUN set -eux \
+  ; DEBIAN_FRONTEND=noninteractive \
+      apt-get install -y libopencv-dev
+
+  RUN set -eux \
+  ; echo 'export PATH=$PATH:/opt/openMVS/bin' \
+      >> $HOME/.profile \
+  ; echo 'set PATH $PATH:/opt/openMVS/bin' \
+      >> $HOME/.config/fish/config.fish

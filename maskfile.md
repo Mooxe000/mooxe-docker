@@ -48,6 +48,12 @@ earthly ./src+ocaml-image
 earthly ./src+sdkman-image
 ```
 
+## build-mvgscolmap
+
+```sh
+earthly ./src+mvgscolmap-image
+```
+
 ## run-base
 
 ```sh
@@ -74,7 +80,7 @@ podman run --rm -ti \
 ```sh
 podman run --rm -ti \
   --name go \
-  -v $(pwd):/root/go \
+  -v $(pwd):/root/golang \
   -v /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe \
   mooxe/go \
   /bin/bash
@@ -118,10 +124,20 @@ podman run --rm -ti \
 
 ```sh
 podman run --rm -ti \
-  --name dev \
+  --name sdkman \
   -p 8080:8080 \
   -p 9000:9000 \
-  -v $(pwd):/root/dev \
+  -v $(pwd):/root/sdkman \
   mooxe/sdkman \
+  /bin/bash
+```
+
+## run-mvgscolmap
+
+```sh
+podman run --rm -ti \
+  --name mvgscolmap \
+  -v $(pwd):/root/mvgscolmap \
+  mooxe/mvgscolmap \
   /bin/bash
 ```

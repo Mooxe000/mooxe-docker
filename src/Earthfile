@@ -14,6 +14,8 @@ IMPORT ./Wasm AS Wasm
 IMPORT ./Sdkman AS Sdkman
 IMPORT ./Ocaml AS Ocaml
 
+IMPORT ./MvgsColmap AS MvgsColmap
+
 base-image:
 
   FROM BaseImg+img
@@ -126,3 +128,15 @@ ocaml-image:
   ; ocaml --version
 
   SAVE IMAGE --push mooxe/ocaml
+
+mvgscolmap-image:
+
+  # FROM +base-image
+  FROM +dev-image
+
+  DO MvgsColmap+OPENMVG_INSTALL
+  DO MvgsColmap+OPENMVS_INSTALL
+
+  DO BaseImg+CLEAN
+
+  SAVE IMAGE --push mooxe/mvgscolmap

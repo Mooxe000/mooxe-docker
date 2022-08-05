@@ -99,24 +99,29 @@ jobs:
       - name: build sdkman-image
         run: earthly --push ./src+sdkman-image
 
+      - name: build mvgscolmap-image
+        run: earthly --push ./src+mvgscolmap-image
+
       - name: docker tag and push
         run: |
           docker images
-          docker tag mooxe/base mooxe/base:0.1.9
-          docker tag mooxe/dev mooxe/dev:0.1.9
-          docker tag mooxe/go mooxe/go:0.1.9
-          docker tag mooxe/node mooxe/node:0.1.9
-          docker tag mooxe/wasm mooxe/wasm:0.1.9
-          docker tag mooxe/ocaml mooxe/ocaml:0.1.9
-          docker tag mooxe/sdkman mooxe/sdkman:0.1.9
+          docker tag mooxe/base mooxe/base:0.1.10
+          docker tag mooxe/dev mooxe/dev:0.1.10
+          docker tag mooxe/go mooxe/go:0.1.10
+          docker tag mooxe/node mooxe/node:0.1.10
+          docker tag mooxe/wasm mooxe/wasm:0.1.10
+          docker tag mooxe/ocaml mooxe/ocaml:0.1.10
+          docker tag mooxe/sdkman mooxe/sdkman:0.1.10
+          docker tag mooxe/mvgscolmap mooxe/mvgscolmap:0.1.10
           docker images
-          docker push mooxe/base:0.1.9
-          docker push mooxe/dev:0.1.9
-          docker push mooxe/go:0.1.9
-          docker push mooxe/node:0.1.9
-          docker push mooxe/wasm:0.1.9
-          docker push mooxe/ocaml:0.1.9
-          docker push mooxe/sdkman:0.1.9
+          docker push mooxe/base:0.1.10
+          docker push mooxe/dev:0.1.10
+          docker push mooxe/go:0.1.10
+          docker push mooxe/node:0.1.10
+          docker push mooxe/wasm:0.1.10
+          docker push mooxe/ocaml:0.1.10
+          docker push mooxe/sdkman:0.1.10
+          docker push mooxe/mvgscolmap:0.1.10
 
       -
         name: Inspect
@@ -128,3 +133,4 @@ jobs:
           docker buildx imagetools inspect mooxe/wasm
           docker buildx imagetools inspect mooxe/ocaml
           docker buildx imagetools inspect mooxe/sdkman
+          docker buildx imagetools inspect mooxe/mvgscolmap
