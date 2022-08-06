@@ -53,8 +53,8 @@ WASMTIME_INSTALL:
   ; apt-get install -y xz-utils
 
   RUN set -eux \
-  ; ln -s /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/libssl.so.1.1 \
-  ; ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so /usr/lib/libcrypto.so.1.1
+  ; ln -s /lib/libssl.so /usr/lib/libssl.so.1.1 \
+  ; ln -s /lib/libcrypto.so /usr/lib/libcrypto.so.1.1
 
   RUN set -eux \
   ; curl -O https://wasmtime.dev/install.sh \
