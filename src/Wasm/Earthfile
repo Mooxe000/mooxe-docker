@@ -50,11 +50,19 @@ WASMTIME_SHELL:
 WASMTIME_INSTALL:
   COMMAND
   RUN set -eux \
-  ; apt-get install -y xz-utils
+  ; apt-get install -y xz-utils make
 
   RUN set -eux \
-  ; ln -s /usr/lib/x86_64-linux-gnu/libssl.so /lib/libssl.so.1.1 \
-  ; ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so /lib/libcrypto.so.1.1
+  # ; ln -s /usr/lib/x86_64-linux-gnu/libssl.so /lib/libssl.so.1.1 \
+  # ; ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so /lib/libcrypto.so.1.1
+  ; aria2c https://www.openssl.org/source/openssl-1.1.1q.tar.gz \
+  ; tar xvf openssl-1.1.1q.tar.gz \
+  ; cd openssl-1.1.1q \
+  ; ./config \
+  ; make \
+  ; make install \
+  ; cd .. \
+  ; rm -rf openssl-1.1.1q*
 
   RUN set -eux \
   ; curl -O https://wasmtime.dev/install.sh \
