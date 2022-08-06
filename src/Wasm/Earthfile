@@ -53,6 +53,10 @@ WASMTIME_INSTALL:
   ; apt-get install -y xz-utils
 
   RUN set -eux \
+  ; ln -s /usr/lib/x86_64-linux-gnu/libssl.so /usr/lib/libssl.so.1.1 \
+  ; ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so /usr/lib/libcrypto.so.1.1
+
+  RUN set -eux \
   ; curl -O https://wasmtime.dev/install.sh \
   ; sed -i 's/\/\/github.com\/bytecodealliance/\/\/hub.fastgit.xyz\/bytecodealliance/g' install.sh \
   ; chmod +x install.sh \
