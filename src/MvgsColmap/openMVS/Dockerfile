@@ -12,7 +12,7 @@ FROM mooxe/base
 # RUN set -eux \
 # ; apt-get update
 RUN set -eux \
-; apt install -y make cmake git vim
+; apt install -y make cmake git vim build-essential
 
 # Prepare and empty machine for building:
 RUN set -eux \
