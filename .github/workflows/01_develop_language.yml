@@ -61,7 +61,7 @@ jobs:
           regex: true
 
       - name: before build
-        run: cp ./src/Earthfile.sample ./src/Earthfile
+        run: sed "s/localhost:5000\///g" ./src/Earthfile.sample > ./src/Earthfile
 
       - name: build base-image
         run: earthly --push ./src+base-image
