@@ -1,0 +1,82 @@
+name: 01_base_dev_node
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  earthly:
+    name: 01_base_dev_node
+    runs-on: ubuntu-latest
+
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
+    steps:
+
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - uses: earthly/actions-setup@v1
+        with:
+          version: "latest" # or pin to an specific version, e.g. "v0.6.10"
+      - uses: actions/checkout@v2
+
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: what version is installed?
+        run: earthly --version
+
+      - name: run the earthly hello world
+        run: earthly github.com/earthly/hello-world:main+hello
+
+      -
+        name: replace fastgit to github
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: '(hub|download).fastgit.(org|xyz)'
+          replace: "github.com"
+          include: "**/Earthfile"
+          regex: true
+
+      -
+        name: replace fastgit to github
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: 'raw.fastgit.(org|xyz)'
+          replace: "raw.githubusercontent.com"
+          include: "**/Earthfile"
+          regex: true
+
+      - name: before build
+        run: cp ./src/Earthfile.sample ./src/Earthfile
+
+      - name: build mvgscolmap-image
+        run: earthly --push ./src+mvgscolmap-image
+
+      - name: after build
+        run: rm ./src/Earthfile
+
+      - name: docker tag and push
+        run: |
+          docker images
+          docker tag mooxe/mvgscolmap mooxe/mvgscolmap:0.1.10
+          docker images
+          docker push mooxe/mvgscolmap:0.1.10
+
+      -
+        name: Inspect
+        run: |
+          docker buildx imagetools inspect mooxe/mvgscolmap

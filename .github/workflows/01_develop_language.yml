@@ -26,7 +26,7 @@ jobs:
 
       - uses: earthly/actions-setup@v1
         with:
-          version: "latest" # or pin to an specific version, e.g. "v0.6.10"
+          version: "latest" # or pin to an specific version, e.g. "v1.6.10"
       - uses: actions/checkout@v2
 
       -
@@ -60,23 +60,8 @@ jobs:
           include: "**/Earthfile"
           regex: true
 
-      -
-        name: replace task name
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "FROM +base-image"
-          replace: "FROM mooxe/base"
-          include: "**/Earthfile"
-          regex: true
-
-      -
-        name: replace task name
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "FROM +dev-image"
-          replace: "FROM mooxe/dev"
-          include: "**/Earthfile"
-          regex: true
+      - name: before build
+        run: cp ./src/Earthfile.sample ./src/Earthfile
 
       - name: build base-image
         run: earthly --push ./src+base-image
@@ -99,8 +84,8 @@ jobs:
       - name: build sdkman-image
         run: earthly --push ./src+sdkman-image
 
-      - name: build mvgscolmap-image
-        run: earthly --push ./src+mvgscolmap-image
+      - name: after build
+        run: rm ./src/Earthfile
 
       - name: docker tag and push
         run: |
@@ -112,7 +97,6 @@ jobs:
           docker tag mooxe/wasm mooxe/wasm:0.1.10
           docker tag mooxe/ocaml mooxe/ocaml:0.1.10
           docker tag mooxe/sdkman mooxe/sdkman:0.1.10
-          docker tag mooxe/mvgscolmap mooxe/mvgscolmap:0.1.10
           docker images
           docker push mooxe/base:0.1.10
           docker push mooxe/dev:0.1.10
@@ -121,7 +105,6 @@ jobs:
           docker push mooxe/wasm:0.1.10
           docker push mooxe/ocaml:0.1.10
           docker push mooxe/sdkman:0.1.10
-          docker push mooxe/mvgscolmap:0.1.10
 
       -
         name: Inspect
@@ -133,4 +116,3 @@ jobs:
           docker buildx imagetools inspect mooxe/wasm
           docker buildx imagetools inspect mooxe/ocaml
           docker buildx imagetools inspect mooxe/sdkman
-          docker buildx imagetools inspect mooxe/mvgscolmap

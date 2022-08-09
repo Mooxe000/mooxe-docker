@@ -6,52 +6,103 @@
 echo Hello World!!!
 ```
 
-## build-base
+## start-registry2
 
 ```sh
-earthly ./src+base-image
+podman run -d --rm \
+  --name registry2 \
+  -p 5000:5000 \
+  -v .docker-registry-config.yml:/root/config.yml \
+    registry:2 \
+      registry serve /root/config.yml
 ```
 
-## build-dev
+## stop-registry2
 
 ```sh
-earthly ./src+dev-image
+podman rm -f registry2
 ```
 
-## build-go
+## logs-registry2
 
 ```sh
-earthly ./src+go-image
+podman logs -f registry2
 ```
 
-## build-node
+## before-build (registry_ip)
 
-```sh
-earthly ./src+node-image
+```bash
+# export registry_ip=localhost:5000
+# mask before-build $registry_ip
+sed "s/localhost/$registry_ip/g" ./src/Earthfile.sample > ./src/Earthfile
 ```
 
-## build-wasm
+## after-build
 
-```sh
-earthly ./src+wasm-image
+```bash
+rm ./src/Earthfile
 ```
 
-## build-ocaml
+## build-wrapper (task_name) (registry_ip)
 
-```sh
-earthly ./src+ocaml-image
+```bash
+mask before-build $registry_ip
+
+echo registry_ip = $registry_ip
+earthly --push ./src+$task_name-image
+
+podman pull $registry_ip:5000/mooxe/$task_name
+podman tag $registry_ip:5000/mooxe/$task_name mooxe/$task_name
+
+mask after-build
 ```
 
-## build-sdkman
+## build-base (registry_ip)
 
-```sh
-earthly ./src+sdkman-image
+```bash
+mask build-wrapper base $registry_ip
 ```
 
-## build-mvgscolmap
+## build-dev (registry_ip)
 
 ```sh
-earthly ./src+mvgscolmap-image
+mask build-wrapper dev $registry_ip
+```
+
+## build-go (registry_ip)
+
+```sh
+mask build-wrapper go $registry_ip
+```
+
+## build-node (registry_ip)
+
+```sh
+mask build-wrapper node $registry_ip
+```
+
+## build-wasm (registry_ip)
+
+```sh
+mask build-wrapper wasm $registry_ip
+```
+
+## build-ocaml (registry_ip)
+
+```sh
+mask build-wrapper ocaml $registry_ip
+```
+
+## build-sdkman (registry_ip)
+
+```sh
+mask build-wrapper sdkman $registry_ip
+```
+
+## build-mvgscolmap (registry_ip)
+
+```sh
+mask build-wrapper mvgscolmap $registry_ip
 ```
 
 ## run-base

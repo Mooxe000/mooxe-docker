@@ -39,12 +39,11 @@ base-image:
   ; rustc --version \
   ; deno --version
 
-  SAVE IMAGE --push mooxe/base
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/base
 
 dev-image:
 
-  # FROM mooxe/base
-  FROM +base-image
+  FROM localhost:5000/mooxe/base
 
   ENV TZ=Asia/Shanghai
 
@@ -66,33 +65,30 @@ dev-image:
 
   DO BaseImg+CLEAN
 
-  SAVE IMAGE --push mooxe/dev
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/dev
 
 go-image:
 
-  # FROM mooxe/dev
-  FROM +dev-image
+  FROM localhost:5000/mooxe/dev
 
   DO Go+G_INSTALL
   DO Go+GO_INSTALL
 
   DO BaseImg+CLEAN
 
-  SAVE IMAGE --push mooxe/go
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/go
 
 node-image:
 
-  # FROM mooxe/dev
-  FROM +dev-image
+  FROM localhost:5000/mooxe/dev
 
   DO Node+INSTALL
 
-  SAVE IMAGE --push mooxe/node
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/node
 
 wasm-image:
 
-  # FROM mooxe/dev
-  FROM +dev-image
+  FROM localhost:5000/mooxe/dev
 
   DO Wasm+WASM_BASE
   DO Wasm+WASMER_INSTALL
@@ -107,19 +103,19 @@ wasm-image:
 
   DO BaseImg+CLEAN
 
-  SAVE IMAGE --push mooxe/wasm
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/wasm
 
 sdkman-image:
 
-  FROM +dev-image
+  FROM localhost:5000/mooxe/dev
 
   DO Sdkman+ALL
 
-  SAVE IMAGE --push mooxe/sdkman
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/sdkman
 
 ocaml-image:
 
-  FROM +dev-image
+  FROM localhost:5000/mooxe/dev
 
   DO Ocaml+IMAGE
 
@@ -128,16 +124,15 @@ ocaml-image:
   ; eval $(opam env) \
   ; ocaml --version
 
-  SAVE IMAGE --push mooxe/ocaml
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/ocaml
 
 mvgscolmap-image:
 
-  # FROM +base-image
-  FROM +dev-image
+  FROM localhost:5000/mooxe/dev
 
   DO MvgsColmap+OPENMVG_INSTALL
   DO MvgsColmap+OPENMVS_INSTALL
 
   DO BaseImg+CLEAN
 
-  SAVE IMAGE --push mooxe/mvgscolmap
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/mvgscolmap
