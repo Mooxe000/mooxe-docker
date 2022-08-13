@@ -72,9 +72,9 @@ jobs:
       - name: docker tag and push
         run: |
           docker images
-          docker tag mooxe/mvgscolmap mooxe/mvgscolmap:0.1.10
+          docker tag mooxe/mvgscolmap mooxe/mvgscolmap:0.1.11
           docker images
-          docker push mooxe/mvgscolmap:0.1.10
+          docker push mooxe/mvgscolmap:0.1.11
 
       -
         name: Inspect

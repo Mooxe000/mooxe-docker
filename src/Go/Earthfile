@@ -19,6 +19,8 @@ GO_INSTALL:
   COMMAND
 
   ENV GO_STABLE_VERSION=1.19
+  # ENV G_MIRROR='https://mirrors.aliyun.com/golang/'
+  ENV G_MIRROR='https://studygolang.com/dl'
 
   RUN set -eux \
   ; bash -lc "g install ${GO_STABLE_VERSION}"

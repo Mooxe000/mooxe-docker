@@ -37,6 +37,40 @@ podman logs -f registry2
 sed "s/localhost/$registry_ip/g" ./src/Earthfile.sample > ./src/Earthfile
 ```
 
+## registry-config
+
+```bash
+echo "registry_ip = $registry_ip"
+
+echo "
+unqualified-search-registries = ['docker.io']
+
+[[registry]]
+location = \"$registry_ip:5000\"
+insecure = true
+
+[[registry]]
+location = \"localhost:5000\"
+insecure = true
+" > ~/.config/containers/registries.conf
+
+bat ~/.config/containers/registries.conf
+
+echo "
+global:
+  container_frontend: podman-shell
+  buildkit_additional_config: |
+    [registry.\"$registry_ip:5000\"]
+      http = true
+      insecure = true
+    [registry.\"localhost:5000\"]
+      http = true
+      insecure = true
+" > ~/.earthly/config.yml
+
+bat ~/.earthly/config.yml
+```
+
 ## after-build
 
 ```bash
@@ -49,10 +83,11 @@ rm ./src/Earthfile
 mask before-build $registry_ip
 
 echo registry_ip = $registry_ip
-earthly --push ./src+$task_name-image
+earthly ./src+$task_name-image
 
-podman pull $registry_ip:5000/mooxe/$task_name
+podman tag $registry_ip:5000/mooxe/$task_name localhost:5000/mooxe/$task_name
 podman tag $registry_ip:5000/mooxe/$task_name mooxe/$task_name
+podman tag $registry_ip:5000/mooxe/$task_name docker.io/mooxe/$task_name
 
 mask after-build
 ```

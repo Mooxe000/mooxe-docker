@@ -1,7 +1,29 @@
 VERSION 0.6
 
+ENV:
+  COMMAND
+
+  # ENV DEFAULT_REPO https://mirrors.sjtug.sjtu.edu.cn/git/opam-repository.git
+  ENV DEFAULT_REPO https://hub.fastgit.xyz/ocaml/opam-repository.git
+
 opam:
-  FROM ocaml/opam
+  FROM ocaml/opam:ubuntu-22.04-ocaml-4.14
+
+  DO +ENV
+
+  RUN set -eux \
+  ; cd /home/opam/opam-repository \
+  ; mv Dockerfile ../ \
+  ; git remote remove origin \
+  ; git remote add origin $DEFAULT_REPO \
+  ; git config pull.ff only \
+  # ; git branch --set-upstream-to=origin/master master \
+  ; git pull origin master \
+  ; cd
+
+  # RUN set -eux \
+  # ; opam switch -y create 4.14.0
+
   SAVE ARTIFACT /home/opam/.opam
   SAVE ARTIFACT /home/opam/opam-repository
 
@@ -15,33 +37,27 @@ IMAGE:
   COPY +opam/opam-repository /home/opam/opam-repository
 
   RUN set -eux \
-  ; apt install -y opam rsync m4 mercurial darcs
-
-  RUN set -eux \
   ; ln -s /home/opam/.opam /root/.opam
 
-  ENV DEFAULT_REPO https://mirrors.sjtug.sjtu.edu.cn/git/opam-repository.git
+  RUN set -eux \
+  ; apt install -y opam # rsync m4 mercurial darcs
+
+  DO +ENV
+
+  # RUN set -eux \
+  # ; sed -i '/^upstream:/d' /home/opam/.opam/repo/default/repo \
+  # ; echo "upstream: \"$DEFAULT_REPO\"" >> \
+  #     /home/opam/.opam/repo/default/repo \
+  # ; rm -rf /home/opam/.opam/repo/default \
+  # ; opam init -y default $DEFAULT_REPO \
+  # ; opam repo set-url default $DEFAULT_REPO --all --set-default \
+
+  # eval (opam env --switch=default)
 
   RUN set -eux \
-  ; cd /home/opam/opam-repository \
-  ; mv Dockerfile ../ \
-  ; git remote remove origin \
-  ; git remote add origin $DEFAULT_REPO \
-  ; git config pull.ff only \
-  # ; git branch --set-upstream-to=origin/master master \
-  ; git pull origin master \
-  ; cd
-
-  RUN set -eux \
-  ; sed -i '/^upstream:/d' /root/.opam/repo/default/repo \
-  ; echo 'upstream: "${DEFAULT_REPO}"' >> \
-      /root/.opam/repo/default/repo \
-  ; opam init default $DEFAULT_REPO
-
-  RUN set -eux \
-  ; echo 'eval $(opam env)' \
+  ; echo 'eval $(opam env --switch=4.14)' \
       >> $HOME/.profile \
-  ; echo 'eval (opam env)' \
+  ; echo 'eval (opam env --switch=4.14)' \
       >> $HOME/.config/fish/config.fish
 
   # utop
@@ -49,6 +65,6 @@ IMAGE:
   #require "base";;
 
   RUN set -eux \
-  ; opam install -y utop ocamlfind dune \
+  ; opam install -y dune utop ocamlfind ocaml-lsp-server \
   ; opam install -y base core stdio
   # ; opam install -y js_of_ocaml js_of_ocaml-compiler js_of_ocaml-lwt js_of_ocaml-ppx
