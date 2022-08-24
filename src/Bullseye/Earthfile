@@ -47,7 +47,7 @@ INSTALL:
 img:
   FROM +base-img
   DO +MIRROR
-  DO +INSTALL
+  DO +UPDATE
 
 CLEAN:
   COMMAND
@@ -68,6 +68,10 @@ PATH:
   ; echo 'export PATH=$PATH:$HOME/.local/bin' \
       >> $HOME/.profile
 
-DEV:
+ET:
   COMMAND
-  DO +UPDATE
+
+  RUN set -eux \
+  ; apt install -y software-properties-common \
+  ; add-apt-repository ppa:jgmath2000/et \
+  ; apt install -y ssh et

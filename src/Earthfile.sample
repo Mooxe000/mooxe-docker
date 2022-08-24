@@ -15,10 +15,26 @@ IMPORT ./Sdkman AS Sdkman
 IMPORT ./Ocaml AS Ocaml
 
 IMPORT ./MvgsColmap AS MvgsColmap
+IMPORT ./CloudGraph AS CloudGraph
+
+et-image:
+
+  FROM BaseImg+img
+
+  DO BaseImg+PROFILE
+  DO BaseImg+PATH
+
+  DO BaseImg+ET
+
+  DO BaseImg+CLEAN
+
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/et
 
 base-image:
 
   FROM BaseImg+img
+
+  DO BaseImg+INSTALL
 
   DO BaseImg+PROFILE
   DO BaseImg+PATH
@@ -136,3 +152,12 @@ mvgscolmap-image:
   DO BaseImg+CLEAN
 
   SAVE IMAGE --push --insecure localhost:5000/mooxe/mvgscolmap
+
+
+cloudgraph-image:
+
+  FROM localhost:5000/mooxe/go
+
+  DO CloudGraph+WINVM
+
+  SAVE IMAGE --push --insecure localhost:5000/mooxe/cloudgraph

@@ -63,6 +63,9 @@ jobs:
       - name: before build
         run: sed -e "s/localhost:5000\///g" -e "s/--insecure//g" ./src/Earthfile.sample > ./src/Earthfile
 
+      - name: build et-image
+        run: earthly --push ./src+et-image
+
       - name: build base-image
         run: earthly --push ./src+base-image
 
@@ -90,6 +93,7 @@ jobs:
       - name: docker tag and push
         run: |
           docker images
+          docker tag mooxe/base mooxe/et:0.1.11
           docker tag mooxe/base mooxe/base:0.1.11
           docker tag mooxe/dev mooxe/dev:0.1.11
           docker tag mooxe/go mooxe/go:0.1.11
@@ -98,6 +102,7 @@ jobs:
           docker tag mooxe/ocaml mooxe/ocaml:0.1.11
           docker tag mooxe/sdkman mooxe/sdkman:0.1.11
           docker images
+          docker push mooxe/et:0.1.11
           docker push mooxe/base:0.1.11
           docker push mooxe/dev:0.1.11
           docker push mooxe/go:0.1.11
@@ -109,6 +114,7 @@ jobs:
       -
         name: Inspect
         run: |
+          docker buildx imagetools inspect mooxe/et
           docker buildx imagetools inspect mooxe/base
           docker buildx imagetools inspect mooxe/dev
           docker buildx imagetools inspect mooxe/go

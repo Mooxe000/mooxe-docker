@@ -92,6 +92,12 @@ podman tag $registry_ip:5000/mooxe/$task_name docker.io/mooxe/$task_name
 mask after-build
 ```
 
+## build-et (registry_ip)
+
+```bash
+mask build-wrapper et $registry_ip
+```
+
 ## build-base (registry_ip)
 
 ```bash
@@ -140,6 +146,22 @@ mask build-wrapper sdkman $registry_ip
 mask build-wrapper mvgscolmap $registry_ip
 ```
 
+## build-cloudgraph (registry_ip)
+
+```sh
+mask build-wrapper cloudgraph $registry_ip
+```
+
+## run-et
+
+```sh
+podman run --rm -ti \
+  --name base \
+  -v $HOME/.ssh:/root/.ssh \
+  mooxe/et \
+  /bin/bash
+```
+
 ## run-base
 
 ```sh
@@ -177,9 +199,6 @@ podman run --rm -ti \
 ```sh
 podman run --rm -ti \
   --name node \
-  -p 3000:3000 \
-  -p 8080:8080 \
-  -p 9000:9000 \
   -v /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe \
   -v $(pwd):/root/node \
   mooxe/node \
@@ -211,8 +230,6 @@ podman run --rm -ti \
 ```sh
 podman run --rm -ti \
   --name sdkman \
-  -p 8080:8080 \
-  -p 9000:9000 \
   -v $(pwd):/root/sdkman \
   mooxe/sdkman \
   /bin/bash
