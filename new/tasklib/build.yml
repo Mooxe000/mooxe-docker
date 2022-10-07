@@ -1,0 +1,23 @@
+version: '3'
+
+vars:
+  defContainerName: ContainerName
+  defImageName: ImageName
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  build-with-cache:
+    cmds:
+      - podman build --force-rm
+          --tag {{.ImageName | default .defImageName }} .
+
+  build:
+    cmds:
+      - podman build --force-rm
+          --no-cache
+          --tag {{.ImageName | default .defImageName }} .

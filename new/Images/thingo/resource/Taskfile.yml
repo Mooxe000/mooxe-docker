@@ -1,0 +1,74 @@
+version: '3'
+
+includes:
+  apt: ./tasklib/apt.yml
+  apps: ./tasklib/apps.yml
+
+vars:
+  # dl_bin: wget
+  # dl_cmd: '{{dl_bin}} -o-'
+  dl_bin: curl
+  dl_cmd: '{{.dl_bin}} -O'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-base:
+    deps:
+      - apt:apt-init
+    cmds:
+      - apt install -y fish git
+      - mkdir -p $HOME/.config/fish
+
+  install-before:
+    cmds:
+      - apt install -y {{.dl_bin}}
+
+  install-golang:
+    cmds:
+      - apt install -y golang
+
+  go-env:
+    cmds:
+      - go env -w GO111MODULE=on
+      - go env -w GOPROXY=https://goproxy.cn,direct
+      - go env | grep GOPROXY
+
+  go-path:
+    cmds:
+      - echo 'export PATH=$HOME/go/bin:$PATH' >> $HOME/.bashrc
+      - mkdir -p $HOME/.config/fish
+      - echo 'set PATH $HOME/go/bin:$PATH'
+        | tee $HOME/.config/fish/config.fish
+
+  golang:
+    deps:
+      - install-golang
+    cmds:
+      - task: go-env
+      - task: go-path
+
+  install-after:
+    cmds:
+      - apt autoremove -y {{.dl_bin}}
+
+  install-all:
+    deps:
+      - install-base
+    cmds:
+      - task: install-before
+      - task: apps:install-fswatch
+      - task: apps:install-pueued
+      - task: golang
+      - task: install-after
+
+  status:
+    deps:
+      - apt:apt-clean
+    cmds:
+      - fswatch --version
+      - go version

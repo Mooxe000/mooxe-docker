@@ -1,0 +1,38 @@
+version: '3'
+
+vars:
+  def_unbuntu_mirror: mirrors.163.com
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  apt-mirror:
+    cmds:
+      - sed -i
+          's/\(archive\|security\).ubuntu.com/{{.unbuntu_mirror | default .def_unbuntu_mirror }}/g'
+          /etc/apt/sources.list
+
+  apt-update:
+    cmds:
+      - apt update -y
+      - apt upgrade -y
+
+  apt-clean:
+    cmds:
+      - apt-get clean -y
+      - apt-get autoremove -y
+      - rm -rf
+          /var/cache/debconf/*
+          /var/lib/apt/lists/*
+          /var/log/*
+          /var/tmp/*
+      - rm -rf /tmp/*
+
+  apt-init:
+    cmds:
+      - task: apt-mirror
+      - task: apt-update

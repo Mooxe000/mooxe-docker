@@ -1,0 +1,27 @@
+version: '3'
+
+vars:
+  ContainerName: thinjs
+  ImageName: mooxe/{{.ContainerName}}
+
+includes:
+  image:
+    taskfile: ../../tasklib/image.yml
+    vars:
+      ContainerName: '{{.ContainerName}}'
+      ImageName: '{{.ImageName}}'
+  taskbin: ../../tasklib/taskbin.yml
+  tasklib: ../../tasklib/tasklib.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  build:
+    deps:
+      - tasklib:tasklib
+    cmds:
+      - task: image:build:build

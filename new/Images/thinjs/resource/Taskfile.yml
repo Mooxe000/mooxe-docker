@@ -1,0 +1,125 @@
+version: '3'
+
+includes:
+  apt: ./tasklib/apt.yml
+
+vars:
+  # git_host: github.com
+  git_host: download.fastgit.org
+
+  # dl_bin: wget
+  # dl_cmd: '{{dl_bin}} -o-'
+  dl_bin: curl
+  dl_cmd: '{{.dl_bin}} -O'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-base:
+    deps:
+      - apt:apt-init
+    cmds:
+      - apt install -y fish git
+      - mkdir -p $HOME/.config/fish
+
+  install-before:
+    cmds:
+      - apt install -y unzip {{.dl_bin}}
+
+  install-deno:
+    vars:
+      bin_name: deno
+      git_proj: denoland/{{.bin_name}}
+      bin_version: v1.25.2
+      bin_os: x86_64-unknown-linux-gnu
+      file_name: '{{.bin_name}}-{{.bin_os}}.zip'
+      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
+      url: '{{.url_prefix}}/{{.bin_version}}/{{.file_name}}'
+    cmds:
+      - '{{.dl_cmd}} {{.url}}'
+      - unzip {{.file_name}}
+      - chmod +x {{.bin_name}}
+      - mv {{.bin_name}} /usr/local/bin
+      - rm -rf {{.file_name}}
+
+  install-fnm:
+    vars:
+      bin_name: fnm
+      git_proj: Schniz/{{.bin_name}}
+      bin_version: v1.31.1
+      bin_os: linux
+      file_name: '{{.bin_name}}-{{.bin_os}}.zip'
+      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
+      url: '{{.url_prefix}}/{{.bin_version}}/{{.file_name}}'
+    cmds:
+      - '{{.dl_cmd}} {{.url}}'
+      - unzip {{.file_name}}
+      - chmod +x {{.bin_name}}
+      - mv {{.bin_name}} /usr/local/bin
+      - rm -rf {{.file_name}}
+
+  install-node:
+    deps:
+      - install-fnm
+    vars:
+      node_version: v18.9.0
+      node_mirror: https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
+      npm_version: 8.19.2
+    cmds:
+      - fnm install
+        --node-dist-mirror {{.node_mirror}}
+        {{.node_version}}
+      - echo 'eval "$(fnm env --use-on-cd)"'
+        >> $HOME/.bashrc
+      - echo 'fnm env --use-on-cd | source'
+        >> $HOME/.config/fish/config.fish
+      - eval "$(fnm env --use-on-cd)"
+        ; npm install -g npm@{{.npm_version}}
+        ; npm i -g pnpm yarn nnrm
+
+  # https://github.com/oven-sh/bun
+  # https://github.com/oven-sh/bun/releases/download/bun-v0.1.11/bun-linux-x64.zip
+  install-bun:
+    vars:
+      bin_name: bun
+      git_proj: oven-sh/{{.bin_name}}
+      bin_version: v0.1.11
+      bin_os: linux-x64
+      file_name: '{{.bin_name}}-{{.bin_os}}.zip'
+      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
+      url: '{{.url_prefix}}/{{.bin_name}}-{{.bin_version}}/{{.file_name}}'
+      file_path: '{{.bin_name}}-{{.bin_os}}/{{.bin_name}}'
+    cmds:
+      - '{{.dl_cmd}} {{.url}}'
+      - unzip {{.file_name}}
+      - chmod +x {{.file_path}}
+      - mv {{.file_path}} /usr/local/bin
+      - rm -rf {{.file_name}}
+
+  install-after:
+    cmds:
+      - apt autoremove -y unzip {{.dl_bin}}
+
+  install-all:
+    deps:
+      - install-before
+    cmds:
+      - task: install-deno
+      - task: install-node
+      - task: install-bun
+      - task: install-after
+
+  status:
+    deps:
+      - apt:apt-clean
+    cmds:
+      - fnm --version
+      - deno --version
+      - eval "$(fnm env --use-on-cd)"
+        ; node --version
+        ; npm --version
+      - bun --version

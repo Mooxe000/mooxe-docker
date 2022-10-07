@@ -1,0 +1,31 @@
+version: '3'
+
+vars:
+  prefix_nix_mirror: https://mirrors.tuna.tsinghua.edu.cn/nix-channels
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  nix-channel:
+    cmds:
+      - nix-channel
+          --add {{.prefix_nix_mirror}}/nixpkgs-unstable nixpkgs
+
+  nix-channel-update:
+    cmds:
+      - nix-channel --update
+
+  nix-mirror:
+    cmds:
+      - mkdir -p $HOME/.config/nix
+      - echo
+          'substituters = {{.prefix_nix_mirror}}/store https://cache.nixos.org/'
+        >> $HOME/.config/nix/nix.conf
+
+  nix-update:
+    cmds:
+      - nix-env -u

@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+
+  tasklib-clean:
+    cmds:
+      - if [[ ! -z ./resource/tasklib ]]
+        ; then
+            rm -rf ./resource/tasklib
+        ; fi
+
+  tasklib:
+    deps:
+      - tasklib-clean
+    cmds:
+      - cp -R ../../tasklib ./resource

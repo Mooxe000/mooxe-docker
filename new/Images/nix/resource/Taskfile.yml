@@ -1,0 +1,18 @@
+version: '3'
+
+includes:
+  nix: ./tasklib/nix.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  nix-init-all:
+    cmds:
+      - task: nix:nix-channel
+      - task: nix:nix-channel-update
+      - task: nix:nix-mirror
+      - task: nix:nix-update
