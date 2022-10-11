@@ -26,6 +26,7 @@ tasks:
         ; fi
 
   taskbin:
+    # https://github.com/go-task/task/releases
     deps:
       - taskbin-clean
     vars:

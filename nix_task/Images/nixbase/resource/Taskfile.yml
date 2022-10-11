@@ -16,3 +16,4 @@ tasks:
       - task: nix:nix-channel-update
       - task: nix:nix-mirror
       - task: nix:nix-update
+      - nix-env -i go-task

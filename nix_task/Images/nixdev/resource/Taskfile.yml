@@ -1,0 +1,81 @@
+version: '3'
+
+includes:
+  apps: ./tasklib/apps.yml
+
+vars:
+  # wget -o-
+  dl_bin: curl
+  dl_cmd: '{{.dl_bin}} -O'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-base:
+    cmds:
+      - nix-env -i which-2.21
+
+  install-shell:
+    cmds:
+      - nix-env -i bash
+      - nix-env -i fish ncurses
+      - nix-env -i zsh
+      - nix-env -i nushell
+      - install -d $HOME/.config/fish
+      - cp -r ./nushell $HOME/.config
+
+  install-starship:
+    cmds:
+      - nix-env -i starship
+      - echo 'eval "$(starship init bash)"'
+        >> $HOME/.bashrc
+      - echo 'eval "$(starship init zsh)"'
+        >> $HOME/.zshrc
+      - echo 'set fish_greeting '''
+        >> $HOME/.config/fish/config.fish
+      - echo 'starship init fish | source'
+        >> $HOME/.config/fish/config.fish
+      - install -d $HOME/.cache/starship
+      - echo 'mkdir ~/.cache/starship'
+        >> $HOME/.config/nushell/env.nu
+      - echo 'starship init nu | save ~/.cache/starship/init.nu'
+        >> $HOME/.config/nushell/env.nu
+      - echo 'source ~/.cache/starship/init.nu'
+        >> $HOME/.config/nushell/config.nu
+
+  profile-path:
+    cmds:
+      - echo '' > ~/.profile
+
+      - mkdir -p $HOME/.local/bin
+      - echo 'export PATH=$PATH:$HOME/.local/bin'
+          >> $HOME/.profile
+
+      - echo 'source ~/.profile' >> ~/.bashrc
+      - echo 'source ~/.profile' >> ~/.zshrc
+
+      - echo 'set PATH $PATH:$HOME/.local/bin'
+          >> $HOME/.config/fish/config.fish
+
+  install-editor:
+    cmds:
+      - nix-env -i neovim
+      - ln -s $(which nvim) $HOME/.local/bin/vi
+      - ln -s $(which nvim) $HOME/.local/bin/vim
+
+  install-all:
+    cmds:
+      - task: install-base
+
+      - task: install-shell
+      - task: install-starship
+
+      - task: profile-path
+
+      - task: install-editor
+
+      - task: apps:install-sws

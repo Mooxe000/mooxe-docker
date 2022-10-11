@@ -27,6 +27,8 @@ tasks:
         g++-multilib g++-11-multilib
 
   install-fswatch:
+    # https://github.com/emcrisostomo/fswatch/releases
+    # https://github.com/emcrisostomo/fswatch/releases/download/1.17.1/fswatch-1.17.1.tar.gz
     deps:
       - install-fswatch-before
     vars:
@@ -37,7 +39,6 @@ tasks:
       file_name: '{{.source_dir}}.tar.gz'
       url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
       url: '{{.url_prefix}}/{{.bin_version}}/{{.file_name}}'
-      # https://github.com/emcrisostomo/fswatch/releases/download/1.17.1/fswatch-1.17.1.tar.gz
       dist_dir: /opt/{{.bin_name}}
     cmds:
       - '{{.dl_cmd}} {{.url}}'
@@ -68,12 +69,13 @@ tasks:
       - mv {{.bin_rename}} /usr/local/bin
 
   install-sws:
+    # https://github.com/joseluisq/static-web-server/releases
     # https://github.com/joseluisq/static-web-server/releases/download/v2.11.0/static-web-server-v2.11.0-x86_64-unknown-linux-gnu.tar.gz
     vars:
       bin_name: static-web-server
       bin_rename: sws
       git_proj: joseluisq/{{.bin_name}}
-      bin_version: v2.11.0
+      bin_version: v2.12.0
       bin_os: x86_64-unknown-linux-gnu
       file_dir: '{{.bin_name}}-{{.bin_version}}-{{.bin_os}}'
       file_name: '{{.file_dir}}.tar.gz'

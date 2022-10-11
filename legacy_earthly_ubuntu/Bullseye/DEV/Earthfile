@@ -58,7 +58,6 @@ STARSHIP:
 
   COPY ./Bullseye/DEV/nushell/* /root/.config/nushell/
 
-
   RUN set -eux \
   ; echo 'eval "$(starship init bash)"' \
       >> $HOME/.bashrc \
