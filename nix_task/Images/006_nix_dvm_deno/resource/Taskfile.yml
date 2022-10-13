@@ -1,5 +1,11 @@
 version: '3'
 
+vars:
+  git_host: download.fastgit.org
+
+  dl_bin: curl
+  dl_cmd: '{{.dl_bin}} -O'
+
 tasks:
 
   default:
@@ -7,10 +13,66 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  # https://github.com/justjavac/dvm/releases
-  # install-dvm:
-  # https://github.com/justjavac/dvm/releases/download/v1.8.6/dvm-x86_64-unknown-linux-gnu.zip
-
-  install-deno:
+  install-before:
     cmds:
-      - echo 'dvm_deno'
+      - nix-env -i unzip
+
+  install-after:
+    cmds:
+      - nix-env -e unzip
+
+  # https://github.com/justjavac/dvm/releases
+  install-dvm:
+    deps:
+      - install-before
+    vars:
+      bin_name: dvm
+      git_proj: justjavac/{{.bin_name}}
+      bin_version: v1.8.6
+      bin_os: x86_64-unknown-linux-gnu
+      dl_file: '{{.bin_name}}-{{.bin_os}}.zip'
+      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
+      url: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
+    # https://github.com/justjavac/dvm/releases/download/v1.8.6/dvm-x86_64-unknown-linux-gnu.zip
+    cmds:
+      - '{{.dl_cmd}} {{.url}}'
+      - unzip {{.dl_file}}
+      - chmod +x {{.bin_name}}
+      - patchelf --set-interpreter
+          $(
+            find /nix/store -name ld-linux-x86-64.so.2
+          | grep 2.35
+          | grep -v debug
+          )
+          {{.bin_name}}
+      - mv {{.bin_name}} /usr/local/bin
+      - rm -rf {{.dl_file}}
+
+  dvm-env:
+    vars:
+      bash_env: |-
+        export DVM_DIR=$HOME/.dvm
+        export PATH=$PATH:$DVM_DIR/bin
+      fish_env: |-
+        set DVM_DIR $HOME/.dvm
+        set PATH $PATH:$DVM_DIR/bin
+    cmds:
+      - echo '{{.bash_env}}' >> $HOME/.profile
+      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+  
+  install-deno:
+    deps:
+      - install-dvm
+    vars:
+      deno_version: 1.26.1
+    cmds:
+      - dvm install --no-use {{.deno_version}}
+      - patchelf --set-interpreter
+          $(
+            find /nix/store -name ld-linux-x86-64.so.2
+          | grep 2.35
+          | grep -v debug
+          ) $HOME/.dvm/versions/{{.deno_version}}/deno
+      - dvm use {{.deno_version}}
+      - task: dvm-env
+      - task: install-after
