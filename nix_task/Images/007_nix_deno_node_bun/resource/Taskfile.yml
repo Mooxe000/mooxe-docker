@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-all:
+    cmds:
+      - nix-env -i
+          nodejs bun
