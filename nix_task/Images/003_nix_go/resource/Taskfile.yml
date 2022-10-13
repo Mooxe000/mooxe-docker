@@ -1,11 +1,5 @@
 version: '3'
 
-vars:
-  git_host: download.fastgit.org
-
-  dl_bin: curl
-  dl_cmd: '{{.dl_bin}} -O'
-
 tasks:
 
   default:
@@ -13,52 +7,13 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  # https://github.com/voidint/g/releases
-  install-g:
-    vars:
-      bin_name: g
-      git_proj: voidint/{{.bin_name}}
-      bin_version: 1.4.0
-      bin_os: linux-amd64
-      dl_file: '{{.bin_name}}{{.bin_version}}.{{.bin_os}}.tar.gz'
-      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
-      url: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
-    cmds:
-      - '{{.dl_cmd}} {{.url}}'
-      - tar xvf {{.dl_file}}
-      - mv g /usr/local/bin
-      - rm -rf {{.dl_file}}
-
   go-env:
-    vars:
-      bash_env: |-
-        export GOROOT="$HOME/.g/go"
-        export PATH="$HOME/.g/go/bin:$PATH"
-        export G_MIRROR=https://golang.google.cn/dl/
-      fish_env: |-
-        set GOROOT "$HOME/.g/go"
-        set PATH "$HOME/.g/go/bin:$PATH"
-        set G_MIRROR https://golang.google.cn/dl/
     cmds:
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
-
-      - patchelf --set-interpreter
-          $(
-            find /nix/store -name ld-linux-x86-64.so.2
-          | grep 2.35
-          | grep -v debug
-          )
-          $HOME/.g/go/bin/go
-
-      - eval {{.bash_env}}
-        ; go env -w GO111MODULE=on
-        ; go env -w GOPROXY=https://goproxy.cn,direct
-        ; go env | grep GOPROXY
+      - go env -w GO111MODULE=on
+      - go env -w GOPROXY=https://goproxy.cn,direct
+      - go env | grep GOPROXY
 
   install-go:
-    deps:
-      - install-g
     env:
       G_MIRROR:
         https://golang.google.cn/dl/,
@@ -67,6 +22,5 @@ tasks:
     vars:
       go_version: 1.19.2
     cmds:
-      - g install {{.go_version}}
-      - g use {{.go_version}}
+      - nix-env -i go-{{.go_version}}
       - task: go-env

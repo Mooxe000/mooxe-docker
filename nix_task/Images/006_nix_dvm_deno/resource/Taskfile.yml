@@ -1,0 +1,16 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  # https://github.com/justjavac/dvm/releases
+  # install-dvm:
+  # https://github.com/justjavac/dvm/releases/download/v1.8.6/dvm-x86_64-unknown-linux-gnu.zip
+
+  install-deno:
+    cmds:
+      - echo 'dvm_deno'

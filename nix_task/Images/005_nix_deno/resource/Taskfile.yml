@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-deno:
+    cmds:
+      - nix-env -i deno
