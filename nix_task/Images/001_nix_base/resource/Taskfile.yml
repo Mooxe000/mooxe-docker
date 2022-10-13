@@ -17,3 +17,4 @@ tasks:
       - task: nix:nix-mirror
       - task: nix:nix-update
       - nix-env -i go-task
+      - nix-env -i glibc patchelf

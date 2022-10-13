@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  ContainerName: nix
+  ContainerName: nix_go
   ImageName: mooxe/{{.ContainerName}}
 
 includes:
@@ -10,7 +10,6 @@ includes:
     vars:
       ContainerName: '{{.ContainerName}}'
       ImageName: '{{.ImageName}}'
-  taskbin: ../../tasklib/taskbin.yml
   tasklib: ../../tasklib/tasklib.yml
 
 tasks:
@@ -33,14 +32,3 @@ tasks:
   run:
     cmds:
       - task: image:run:run
-
-  # https://hydra.nixos.org/build/190743960
-  download-base-img:
-    cmds:
-      - curl
-          -o nix.tar.gz
-          https://hydra.nixos.org/build/190743960/download/1/image.tar.gz
-
-  load-base-img:
-    cmds:
-      - podman load -i ./nix.tar.gz

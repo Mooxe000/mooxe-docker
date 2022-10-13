@@ -1,4 +1,4 @@
-FROM mooxe/nix
+FROM mooxe/nix_base
 
 ADD resource /root/build
 

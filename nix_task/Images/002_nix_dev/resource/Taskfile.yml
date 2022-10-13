@@ -3,11 +3,6 @@ version: '3'
 includes:
   apps: ./tasklib/apps.yml
 
-vars:
-  # wget -o-
-  dl_bin: curl
-  dl_cmd: '{{.dl_bin}} -O'
-
 tasks:
 
   default:
@@ -64,8 +59,26 @@ tasks:
   install-editor:
     cmds:
       - nix-env -i neovim
-      - ln -s $(which nvim) $HOME/.local/bin/vi
-      - ln -s $(which nvim) $HOME/.local/bin/vim
+      - ln -s $(which nvim) /usr/local/bin/vi
+      - ln -s $(which nvim) /usr/local/bin/vim
+
+  install-sws:
+    deps:
+      - apps:install-sws
+    cmds:
+      # - patchelf --print-interpreter /usr/local/bin/static-web-server
+      # - patchelf --print-needed /usr/local/bin/static-web-server
+      # - patchelf --print-rpath /usr/local/bin/static-web-server
+      # - ldd /usr/local/bin/static-web-server
+
+      - patchelf --set-interpreter
+          $(
+            find /nix/store -name ld-linux-x86-64.so.2
+          | grep 2.35
+          | grep -v debug
+          )
+          /usr/local/bin/static-web-server
+
 
   install-all:
     cmds:
@@ -78,4 +91,4 @@ tasks:
 
       - task: install-editor
 
-      - task: apps:install-sws
+      - task: install-sws

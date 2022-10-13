@@ -26,9 +26,8 @@ tasks:
         gcc-multilib gcc-11-multilib
         g++-multilib g++-11-multilib
 
+  # https://github.com/emcrisostomo/fswatch/releases
   install-fswatch:
-    # https://github.com/emcrisostomo/fswatch/releases
-    # https://github.com/emcrisostomo/fswatch/releases/download/1.17.1/fswatch-1.17.1.tar.gz
     deps:
       - install-fswatch-before
     vars:
@@ -68,9 +67,8 @@ tasks:
       - chmod +x {{.bin_rename}}
       - mv {{.bin_rename}} /usr/local/bin
 
+  # https://github.com/joseluisq/static-web-server/releases
   install-sws:
-    # https://github.com/joseluisq/static-web-server/releases
-    # https://github.com/joseluisq/static-web-server/releases/download/v2.11.0/static-web-server-v2.11.0-x86_64-unknown-linux-gnu.tar.gz
     vars:
       bin_name: static-web-server
       bin_rename: sws
@@ -89,9 +87,10 @@ tasks:
       - ln -s /usr/local/bin/{{.bin_name}} /usr/local/bin/{{.bin_rename}}
       - rm -rf ./{{.file_dir}}*
 
-  # https://download.fastgit.org/Nukesor/pueue/releases/download/v2.1.0/pueued-linux-x86_64
-  # https://download.fastgit.org/Nukesor/pueue/releases/download/v2.1.0/pueue-linux-x86_64
+  # https://download.fastgit.org/Nukesor/pueue/releases
   install-pueued-base:
+    # https://download.fastgit.org/Nukesor/pueue/releases/download/v2.1.0/pueued-linux-x86_64
+    # https://download.fastgit.org/Nukesor/pueue/releases/download/v2.1.0/pueue-linux-x86_64
     vars:
       # bin_name: pueued
       git_proj: Nukesor/pueue
