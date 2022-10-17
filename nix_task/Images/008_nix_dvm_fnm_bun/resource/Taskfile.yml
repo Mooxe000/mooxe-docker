@@ -13,18 +13,8 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  install-before:
-    cmds:
-      - nix-env -i unzip gnused
-
-  install-after:
-    cmds:
-      - nix-env -e unzip gnused
-
   # https://github.com/Schniz/fnm/releases
   install-fnm:
-    deps:
-      - install-before
     vars:
       bin_name: fnm
       git_proj: Schniz/{{.bin_name}}
@@ -62,9 +52,16 @@ tasks:
     cmds:
       - fnm install {{.node_version}}
 
-      - fnm env --shell bash >> $HOME/.bashrc
-      - fnm env --shell zsh >> $HOME/.zshrc
-      - fnm env --shell fish >> $HOME/.config/fish/config.fish
+      # - fnm env --shell bash >> $HOME/.bashrc
+      # - fnm env --shell zsh >> $HOME/.zshrc
+      # - fnm env --shell fish >> $HOME/.config/fish/config.fish
+
+      - echo 'eval "$(fnm env --shell bash --use-on-cd)"'
+          >> $HOME/.bashrc
+      - echo 'eval "$(fnm env --shell zsh --use-on-cd)"'
+          >> $HOME/.zshrc
+      - echo 'fnm env --shell fish --use-on-cd | source'
+          >> $HOME/.config/fish/config.fish
 
       - patchelf
           --set-interpreter
@@ -83,8 +80,6 @@ tasks:
 
   # https://github.com/oven-sh/bun/releases
   install-bun:
-    deps:
-      - install-before
     vars:
       bin_name: bun
       git_proj: oven-sh/{{.bin_name}}
@@ -111,8 +106,27 @@ tasks:
       - rm -rf {{.dl_file_dir}}
       - rm -rf {{.dl_file}}
 
+  install-node-base-cli:
+    cmds:
+
+      # nnrm use taobao
+      # node-inspector
+      # npm-check
+
+      # lerna autod
+      # json-server
+
+      - eval $(fnm env --shell bash)
+        ; npm i -g npm yarn
+        ; yarn global add pnpm
+            nnrm taze node-gyp
+        ; yarn global add
+            supervisor nodemon forever pm2
+        ; yarn global add
+            serve http-server
+
   install-all:
     cmds:
       - task: install-node
       - task: install-bun
-      - task: install-after
+      - task: install-node-base-cli

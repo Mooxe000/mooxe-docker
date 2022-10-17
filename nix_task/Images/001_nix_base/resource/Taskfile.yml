@@ -17,4 +17,7 @@ tasks:
       - task: nix:nix-mirror
       - task: nix:nix-update
       - nix-env -i go-task
-      - nix-env -i glibc patchelf
+
+      - nix-env -i
+          which-2.21 gnused unzip
+          glibc patchelf

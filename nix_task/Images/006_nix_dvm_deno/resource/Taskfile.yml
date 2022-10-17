@@ -13,18 +13,8 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  install-before:
-    cmds:
-      - nix-env -i unzip
-
-  install-after:
-    cmds:
-      - nix-env -e unzip
-
   # https://github.com/justjavac/dvm/releases
   install-dvm:
-    deps:
-      - install-before
     vars:
       bin_name: dvm
       git_proj: justjavac/{{.bin_name}}
@@ -75,4 +65,3 @@ tasks:
           ) $HOME/.dvm/versions/{{.deno_version}}/deno
       - dvm use {{.deno_version}}
       - task: dvm-env
-      - task: install-after

@@ -10,10 +10,6 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  install-base:
-    cmds:
-      - nix-env -i which-2.21
-
   install-shell:
     cmds:
       - nix-env -i bash
@@ -82,8 +78,6 @@ tasks:
 
   install-all:
     cmds:
-      - task: install-base
-
       - task: install-shell
       - task: install-starship
 
