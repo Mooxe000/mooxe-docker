@@ -13,6 +13,12 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
+  install-febore:
+    cmds:
+      - rustup target add wasm32-wasi
+      - rustup target add wasm32-unknown-unknown \
+      - rustup target add wasm32-unknown-emscripten
+
   # https://github.com/rustwasm
   # https://rustwasm.github.io/wasm-pack/
   # https://rustwasm.github.io/docs/book/introduction.html
@@ -50,3 +56,9 @@ tasks:
           | grep 2.35
           | grep -v debug
           ) /usr/local/bin/{{.bin_name}}
+
+  install-all:
+    cmds:
+      - task: install-before
+      - task: install-wasm
+      - task: install-wapm
