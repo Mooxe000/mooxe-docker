@@ -11,8 +11,10 @@ tasks:
     vars:
       bash_env:
         export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+        export PATH=$PATH:$HOME/.cargo/bin
       fish_env:
         set RUSTUP_UPDATE_ROOT https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
+        set PATH $PATH:$HOME/.cargo/bin
     cmds:
       - echo '{{.bash_env}}' >> $HOME/.profile
       - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
@@ -32,3 +34,6 @@ tasks:
       - nix-shell
           -p clang pkg-config openssl
           --run 'cargo install cargo-update'
+      - nix-shell
+          -p clang perl openssl
+          --run 'cargo install cargo-generate'

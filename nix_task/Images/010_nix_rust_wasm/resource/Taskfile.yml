@@ -1,0 +1,52 @@
+version: '3'
+
+vars:
+  git_host: download.fastgit.org
+
+  dl_bin: curl
+  dl_cmd: '{{.dl_bin}} -O'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  # https://github.com/rustwasm
+  # https://rustwasm.github.io/wasm-pack/
+  # https://rustwasm.github.io/docs/book/introduction.html
+  install-wasm:
+    cmds:
+      # - nix-shell
+      #     -p clang perl openssl
+      #     --run 'cargo install wasm-pack'
+      - nix-env -i wasm-pack
+      - nix-env -i wasmtime wasmer
+
+  # https://github.com/wasmerio/wapm-cli
+  install-wapm:
+    # https://github.com/wasmerio/wapm-cli/releases/download/v0.5.6/wapm-cli-linux-amd64.tar.gz
+    vars:
+      bin_name: wapm
+      git_proj: wasmerio/{{.bin_name}}-cli
+      bin_version: v0.5.6
+      bin_os: linux-amd64
+      dl_file: '{{.bin_name}}-cli-{{.bin_os}}.tar.gz'
+      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
+      url: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
+    cmds:
+      - mkdir -p {{.bin_name}}
+      - cd {{.bin_name}}
+        ; {{.dl_cmd}} {{.url}}
+        ; tar xvf {{.dl_file}}
+        ; chmod +x bin/wa*
+        ; mv bin/wa* /usr/local/bin
+      - rm -rf {{.bin_name}}
+      - patchelf
+          --set-interpreter
+          $(
+            find /nix/store -name ld-linux-x86-64.so.2
+          | grep 2.35
+          | grep -v debug
+          ) /usr/local/bin/{{.bin_name}}
