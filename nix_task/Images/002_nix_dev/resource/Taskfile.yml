@@ -55,8 +55,14 @@ tasks:
   install-editor:
     cmds:
       - nix-env -i neovim
+      # helix
       - ln -s $(which nvim) /usr/local/bin/vi
       - ln -s $(which nvim) /usr/local/bin/vim
+
+  install-dltool:
+    cmds:
+      # aria2
+      - nix-env -i axel
 
   install-sws:
     deps:
@@ -84,5 +90,6 @@ tasks:
       - task: profile-path
 
       - task: install-editor
+      - task: install-dltool
 
       - task: install-sws

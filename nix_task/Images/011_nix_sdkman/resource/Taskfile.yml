@@ -1,0 +1,206 @@
+version: '3'
+
+vars:
+  git_host: download.fastgit.org
+
+  dl_bin: curl
+  dl_cmd: '{{.dl_bin}} -O'
+
+env:
+  SDK_JAVA_VERSION: 22.2.r17-grl
+  SDK_KOTLIN_VERSION: 1.7.20
+  SDK_SBT_VERSION:  1.7.2
+  SDK_SCALA_VERSION: 3.2.0
+  SDK_LEININGEN_VERSION: 2.9.10-2
+  SDK_MAVEN_VERSION: 3.8.6
+  SDK_GRADLE_VERSION: 7.5.1
+  SDK_SPRINGBOOT_VERSION: 2.7.3
+  SDK_QUARKUS_VERSION: 2.13.3.Final
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  sdkman-env:
+    vars:
+      bash_env: source $HOME/.sdkman/bin/sdkman-init.sh
+      fish_env: |-
+        function sdk
+          bash -c "source $HOME/.sdkman/bin/sdkman-init.sh ; sdk $argv[1..]"
+        end
+    cmds:
+      - echo '{{.bash_env}}' >> $HOME/.profile
+      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+
+  install-post-sdkman:
+    # - nix-shell -p gawk axel zip --run 'fish'
+    # - -U 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11'
+    # | sed -e '/# download binary/ {n; d}'
+    cmds:
+      - nix-env -i gawk axel zip-3.0
+      - cat $HOME/.sdkman/src/sdkman-install.sh
+          | sed -e "\$!N;/\n.*X-Sdkman'/!P;D"
+          | sed
+              -e "/X-Sdkman'/i\
+                \n
+                \       echo \${download_url}\n
+                \       curl -I \${download_url} > \${tmp_headers_file}\n
+                \       local download_url=\$(
+                          cat \${tmp_headers_file}
+                          | grep '^location'
+                          | awk '{print \$2}'
+                          | sed
+                              -e 's/[[:space:]]*$//'
+                              -e 's/github.com/{{.git_host}}/g'
+                        )
+                \n
+              "
+              -e "/X-Sdkman'/a\
+                \n
+                \       axel
+                          -o \${binary_input}
+                          -n 5 \${download_url}
+                \n
+              "
+          > $HOME/.sdkman/src/sdkman-install.tmp.sh
+      - mv $HOME/.sdkman/src/sdkman-install.tmp.sh
+          $HOME/.sdkman/src/sdkman-install.sh
+      # -   > $HOME/.sdkman/src/sdkman-install.new.sh
+      # - cp $HOME/.sdkman/src/sdkman-install.sh
+      #     $HOME/.sdkman/src/sdkman-install.old.sh
+      # - cp $HOME/.sdkman/src/sdkman-install.new.sh
+      #     $HOME/.sdkman/src/sdkman-install.sh
+      # - rm $HOME/.sdkman/src/sdkman-install.old.sh
+      # - rm $HOME/.sdkman/src/sdkman-install.new.sh
+
+  # https://github.com/sdkman/sdkman-cli
+  install-sdkman:
+    deps:
+      - sdkman-env
+    # https://github.com/sdkman/sdkman-cli/releases/download/5.16.0/sdkman-cli-5.16.0.zip
+    vars:
+      bin_name: sdkman
+      git_proj: '{{.bin_name}}/{{.bin_name}}-cli'
+      bin_version: 5.16.0
+      dl_file: '{{.bin_name}}-cli-{{.bin_version}}.zip'
+      unzip_dir: '{{.bin_name}}-{{.bin_version}}'
+      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
+      url: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
+    cmds:
+      - '{{.dl_cmd}} {{.url}}'
+      - unzip {{.dl_file}}
+      - mv {{.unzip_dir}} $HOME/.sdkman
+      - install -d $HOME/.sdkman/ext
+      - install -d $HOME/.sdkman/tmp
+      - touch candidates
+        ; install -D candidates $HOME/.sdkman/var/candidates
+        ; rm candidates
+      - bash -lc 'sdk update'
+      - task: install-post-sdkman
+
+  install-sdk:
+    vars:
+      bash_env: |-
+        export {{.upname}}_HOME=$HOME/.sdkman/candidates/{{.lwname}}/current
+        export PATH=$PATH:${ {{.upname}}_HOME }/bin
+      fish_env: |-
+        set {{.upname}}_HOME $HOME/.sdkman/candidates/{{.lwname}}/current
+        set PATH $PATH:{${{.upname}}_HOME}/bin
+    cmds:
+      - bash -lc '{{.precmds}}
+          sdk i {{.lwname}} $SDK_{{.upname}}_VERSION'
+      - echo '{{.bash_env}}' >> $HOME/.profile
+      - echo '{{.fish_env}}'
+        | sed -e 's/${ /${/' -e 's/ }/}/'
+        >> $HOME/.config/fish/config.fish
+
+  install-sdks:
+    cmds:
+
+      - task: install-sdk
+        vars: {
+          upname: JAVA
+        , lwname: java
+        }
+
+      - bash -lc '
+          sdk use java $SDK_JAVA_VERSION 
+        ; sdk env init'
+
+      - patchelf
+          --set-interpreter $(
+              find /nix/store -name ld-linux-x86-64.so.2
+            | grep 2.35
+            | grep -v debug
+            )
+          --set-rpath $(dirname $(
+              find /nix/store -name libz.so.1
+            | grep 'zlib-1.2.12'
+            | sed -n '1p'
+            ))
+          ~/.sdkman/candidates/java/current/lib/installer/bin/gu
+
+      # - gu install native-image
+      # grallvm native-image
+      # https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.2.0/native-image-installable-svm-java17-linux-amd64-22.2.0.jar
+      - export native_image_local_file='native-image-installable-svm-java17-linux-amd64-22.2.0.jar'
+        ; export download_release_url_prefix=https://{{.git_host}}/graalvm/graalvm-ce-builds/releases/download
+        ; axel ${download_release_url_prefix}/vm-22.2.0/${native_image_local_file}
+        ; bash -lc 'gu -L install ${native_image_local_file}'
+        ; rm ${native_image_local_file}
+
+      # - task: install-sdk
+      #   vars: {
+      #     upname: KOTLIN
+      #   , lwname: kotlin
+      #   }
+
+      # - task: install-sdk
+      #   vars: {
+      #     upname: SBT
+      #   , lwname: sbt
+      #   }
+      # - task: install-sdk
+      #   vars: {
+      #     upname: SCALA
+      #   , lwname: scala
+      #   , precmds: sdk use $SDK_SBT_VERSION
+      #   }
+
+      # - task: install-sdk
+      #   vars: {
+      #     upname: LEININGEN
+      #   , lwname: leiningen
+      #   }
+
+      # - task: install-sdk
+      #   vars: {
+      #     upname: MAVEN
+      #   , lwname: maven
+      #   }
+
+      # - task: install-sdk
+      #   vars: {
+      #     upname: GRADLE
+      #   , lwname: gradle
+      #   }
+
+      # - task: install-sdk
+      #   vars: {
+      #     upname: SPRINGBOOT
+      #   , lwname: springboot
+      #   }
+
+      # - task: install-sdk
+      #   vars: {
+      #     upname: QUARKUS
+      #   , lwname: quarkus
+      #   }
+
+  install-all:
+    cmds:
+      - task: install-sdkman
+      - task: install-sdks
