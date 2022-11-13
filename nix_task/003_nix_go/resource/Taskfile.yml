@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  go-env:
+    cmds:
+      - go env -w GO111MODULE=on
+      - go env -w GOPROXY=https://goproxy.cn,direct
+      - go env | grep GOPROXY
+
+  install-go:
+    env:
+      G_MIRROR:
+        https://golang.google.cn/dl/,
+        https://studygolang.com/dl/,
+        https://mirrors.aliyun.com/golang/
+    cmds:
+      - nix-env -i go
+      - task: go-env

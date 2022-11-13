@@ -1,0 +1,94 @@
+version: '3'
+
+includes:
+  apps: ~/.taskfilehub/hubs/apps.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-shell:
+    cmds:
+      - nix-env -i bash
+      - nix-env -i fish ncurses
+      - nix-env -i zsh
+      - nix-env -i nushell
+      - install -d $HOME/.config/fish
+      - cp -r ./nushell $HOME/.config
+
+  install-starship:
+    cmds:
+      - nix-env -i starship
+      - echo 'eval "$(starship init bash)"'
+        >> $HOME/.bashrc
+      - echo 'eval "$(starship init zsh)"'
+        >> $HOME/.zshrc
+      - echo 'set fish_greeting '''
+        >> $HOME/.config/fish/config.fish
+      - echo 'starship init fish | source'
+        >> $HOME/.config/fish/config.fish
+      - install -d $HOME/.cache/starship
+      - echo 'mkdir ~/.cache/starship'
+        >> $HOME/.config/nushell/env.nu
+      - echo 'starship init nu | save ~/.cache/starship/init.nu'
+        >> $HOME/.config/nushell/env.nu
+      - echo 'source ~/.cache/starship/init.nu'
+        >> $HOME/.config/nushell/config.nu
+
+  profile-path:
+    cmds:
+      - echo '' > ~/.profile
+
+      - mkdir -p $HOME/.local/bin
+      - echo 'export PATH=$PATH:$HOME/.local/bin'
+          >> $HOME/.profile
+
+      - echo 'source ~/.profile' >> ~/.bashrc
+      - echo 'source ~/.profile' >> ~/.zshrc
+
+      - echo 'set PATH $PATH:$HOME/.local/bin'
+          >> $HOME/.config/fish/config.fish
+
+  install-editor:
+    cmds:
+      - nix-env -i neovim
+      # helix
+      - ln -s $(which nvim) /usr/local/bin/vi
+      - ln -s $(which nvim) /usr/local/bin/vim
+
+  install-dltool:
+    cmds:
+      # aria2
+      - nix-env -i axel
+
+  install-sws:
+    deps:
+      - apps:install-sws
+    cmds:
+      # - patchelf --print-interpreter /usr/local/bin/static-web-server
+      # - patchelf --print-needed /usr/local/bin/static-web-server
+      # - patchelf --print-rpath /usr/local/bin/static-web-server
+      # - ldd /usr/local/bin/static-web-server
+
+      - patchelf --set-interpreter
+          $(
+            find /nix/store -name ld-linux-x86-64.so.2
+          | grep 2.35
+          | grep -v debug
+          )
+          /usr/local/bin/static-web-server
+
+  install-all:
+    cmds:
+      - task: install-shell
+      - task: install-starship
+
+      - task: profile-path
+
+      - task: install-editor
+      - task: install-dltool
+
+      - task: install-sws

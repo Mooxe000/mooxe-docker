@@ -1,0 +1,48 @@
+version: '3'
+
+vars:
+  ContainerName: nix_base
+  ImageName: mooxe/{{.ContainerName}}
+
+includes:
+  image:
+    taskfile: ~/.taskfilehub/hubs/image.yml
+    vars:
+      ContainerName: '{{.ContainerName}}'
+      ImageName: '{{.ImageName}}'
+  taskbin: ~/.taskfilehub/hubs/taskbin.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  build:
+    cmds:
+      - if [[ -d ./resource/.taskfilehub ]]
+        ; then
+          rm -rf ./resource/.taskfilehub
+        ; fi
+      - cp -R ~/.taskfilehub ./resource
+      - task: image:build:build
+
+  run-dev:
+    cmds:
+      - task: image:run:run-dev
+        vars:
+          run_option: '-v ~/.taskfilehub:/root/.taskfilehub'
+
+  run:
+    cmds:
+      - task: image:run:run
+
+  # https://hydra.nixos.org/build/190743960
+  base-img:
+    cmds:
+      - aria2c
+          -o nix.tar.gz
+          https://hydra.nixos.org/build/190743960/download/1/image.tar.gz
+      - podman load -i ./nix.tar.gz
+      - rm ./nix.tar.gz

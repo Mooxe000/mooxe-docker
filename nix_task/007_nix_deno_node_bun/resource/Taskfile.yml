@@ -1,0 +1,76 @@
+version: '3'
+
+vars:
+  node_version: 18.12.1
+  nix_node_global_path:
+    /nix/store/$(
+      ls /nix/store
+      | grep -e "nodejs-{{.node_version}}$"
+      | sed -n '1p'
+    )/bin
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  update-npm:
+    cmds:
+      - npm i -g
+          --registry=https://registry.npm.taobao.org
+          npm
+      - npm fund
+
+  install-use-nnrm:
+    vars:
+      nix_node_global_path:
+        sh: echo {{.nix_node_global_path}}
+    cmds:
+      - npm i -g
+          --registry=https://registry.npm.taobao.org
+          nnrm
+      - export PATH=$PATH:{{.nix_node_global_path}}
+        ; nnrm use taobao
+
+  install-yarn:
+    vars:
+      nix_node_global_path:
+        sh: echo {{.nix_node_global_path}}
+    cmds:
+      - npm i -g yarn
+
+      # node-inspector
+      # npm-check
+
+      # lerna autod
+      # json-server
+
+      - export PATH=$PATH:{{.nix_node_global_path}}
+        ; yarn global add pnpm
+            nnrm taze node-gyp
+        ; yarn global add
+            supervisor nodemon forever pm2
+        ; yarn global add
+            serve http-server
+
+  node-global-env:
+    vars:
+      nix_node_global_path:
+        sh: echo {{.nix_node_global_path}}
+      yarn_global_path: /usr/local/share/.config/yarn/global/node_modules/.bin
+      bash_env: export PATH=$PATH:{{.nix_node_global_path}}:{{.yarn_global_path}}
+      fish_env: set PATH $PATH:{{.nix_node_global_path}}:{{.yarn_global_path}}
+    cmds:
+      - echo '{{.bash_env}}' >> $HOME/.profile
+      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+
+  install-all:
+    cmds:
+      - nix-env -i nodejs bun
+      - task: update-npm
+      - task: node-global-env
+
+      - task: install-use-nnrm
+      - task: install-yarn
