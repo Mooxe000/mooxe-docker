@@ -3,19 +3,19 @@ version: '3'
 vars:
   git_host: download.fastgit.org
 
-  dl_bin: curl
-  dl_cmd: '{{.dl_bin}} -O'
+  dl_bin: axel
+  dl_cmd: '{{.dl_bin}}'
 
 env:
-  SDK_JAVA_VERSION: 22.2.r17-grl
-  SDK_KOTLIN_VERSION: 1.7.20
-  SDK_SBT_VERSION:  1.7.2
+  SDK_JAVA_VERSION: 22.3.r19-grl
+  SDK_KOTLIN_VERSION: 1.7.21
+  SDK_SBT_VERSION:  1.8.0
   SDK_SCALA_VERSION: 3.2.0
   SDK_LEININGEN_VERSION: 2.9.10-2
   SDK_MAVEN_VERSION: 3.8.6
-  SDK_GRADLE_VERSION: 7.5.1
-  SDK_SPRINGBOOT_VERSION: 2.7.3
-  SDK_QUARKUS_VERSION: 2.13.3.Final
+  SDK_GRADLE_VERSION: 7.6-rc-3
+  SDK_SPRINGBOOT_VERSION: 2.7.5
+  SDK_QUARKUS_VERSION: 2.14.0.Final
 
 tasks:
 
@@ -40,7 +40,7 @@ tasks:
     # - -U 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11'
     # | sed -e '/# download binary/ {n; d}'
     cmds:
-      - nix-env -i gawk axel zip-3.0
+      - nix-env -i gawk zip-3.0
       - cat $HOME/.sdkman/src/sdkman-install.sh
           | sed -e "\$!N;/\n.*X-Sdkman'/!P;D"
           | sed
@@ -98,7 +98,7 @@ tasks:
       - touch candidates
         ; install -D candidates $HOME/.sdkman/var/candidates
         ; rm candidates
-      - bash -lc 'sdk update'
+      - bash -lc 'sdk offline; sdk update'
       - task: install-post-sdkman
 
   install-sdk:
@@ -127,7 +127,7 @@ tasks:
         }
 
       - bash -lc '
-          sdk use java $SDK_JAVA_VERSION 
+          sdk use java $SDK_JAVA_VERSION
         ; sdk env init'
 
       - patchelf
@@ -145,10 +145,10 @@ tasks:
 
       # - gu install native-image
       # grallvm native-image
-      # https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.2.0/native-image-installable-svm-java17-linux-amd64-22.2.0.jar
-      - export native_image_local_file='native-image-installable-svm-java17-linux-amd64-22.2.0.jar'
+      # https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/native-image-installable-svm-java19-linux-amd64-22.3.0.jar
+      - export native_image_local_file='native-image-installable-svm-java19-linux-amd64-22.3.0.jar'
         ; export download_release_url_prefix=https://{{.git_host}}/graalvm/graalvm-ce-builds/releases/download
-        ; axel ${download_release_url_prefix}/vm-22.2.0/${native_image_local_file}
+        ; axel ${download_release_url_prefix}/vm-22.3.0/${native_image_local_file}
         ; bash -lc 'gu -L install ${native_image_local_file}'
         ; rm ${native_image_local_file}
 

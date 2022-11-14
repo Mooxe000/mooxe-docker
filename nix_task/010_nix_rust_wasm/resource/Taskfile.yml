@@ -3,8 +3,8 @@ version: '3'
 vars:
   git_host: download.fastgit.org
 
-  dl_bin: curl
-  dl_cmd: '{{.dl_bin}} -O'
+  dl_bin: axel
+  dl_cmd: '{{.dl_bin}}'
 
 tasks:
 
@@ -36,7 +36,7 @@ tasks:
     vars:
       bin_name: wapm
       git_proj: wasmerio/{{.bin_name}}-cli
-      bin_version: v0.5.6
+      bin_version: v0.5.7
       bin_os: linux-amd64
       dl_file: '{{.bin_name}}-cli-{{.bin_os}}.tar.gz'
       url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
