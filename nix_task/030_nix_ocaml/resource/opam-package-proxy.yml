@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  reset:
+    cmds:
+      - cd ~/.opam-repository
+        ; git reset --hard
+
+  fn:
+    cmds:
+      - sed -i
+          's/github.com\/{{.search_word}}/ghproxy.com\/&/'
+          ~/.opam-repository/packages/{{.pkgname}}/{{.pkgname}}.{{.pkgversion}}/opam
+
+  all:
+    deps:
+      - reset
+    cmds:
+      - ./opam-proxy.sh

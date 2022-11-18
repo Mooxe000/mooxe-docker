@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  ContainerName: nix_ocaml
+  ContainerName: nix_ocaml_basepkgs
   ImageName: mooxe/{{.ContainerName}}
 
 includes:

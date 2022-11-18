@@ -1,10 +1,7 @@
 version: '3'
 
-# vars:
-#   git_host: download.fastgit.org
-
-#   dl_bin: axel
-#   dl_cmd: '{{.dl_bin}}'
+includes:
+  opam-package-proxy: ./opam-package-proxy.yml
 
 tasks:
 
@@ -19,34 +16,73 @@ tasks:
           gnumake gcc-wrapper
           diffutils patch
           rsync mercurial darcs
+          gawk bzip2
 
   install-opam-ocaml:
     cmds:
       - nix-env -i opam ocaml
 
-  init-opam:
+  clone-opam-repo:
     vars:
-      # https://gitclone.com/github.com/ocaml/opam-repository.git
-      # https://hub.fastgit.org/ocaml/opam-repository.git
-      DEFAULT_REPO: https://mirrors.sjtug.sjtu.edu.cn/git/opam-repository.git
+      # https://mirrors.sjtug.sjtu.edu.cn/git/opam-repository.git
+      # https://ghproxy.com/https://github.com/ocaml/opam-repository.git
+      # dont use: https://gitclone.com/github.com/ocaml/opam-repository.git
+      DEFAULT_REPO: https://ghproxy.com/github.com/ocaml/opam-repository.git
     cmds:
+      - git clone
+          -b master --depth=1
+          {{.DEFAULT_REPO}}
+          ~/.opam-repository
+
+  init-opam:
+    deps:
+      - clone-opam-repo
+    cmds:
+      - task: opam-package-proxy:all
+      # --shell-setup
+      # --bare
       - opam init
           --disable-sandboxing
-          -y default {{.DEFAULT_REPO}}
+          -y default ~/.opam-repository
 
   opam-env:
     vars:
-      bash_env: eval $(opam env)
-      fish_env: eval (opam env)
+      bash_env: eval $(opam env --switch=default)
+      fish_env: eval (opam env --switch=default)
     cmds:
       - echo '{{.bash_env}}' >> $HOME/.profile
       - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
 
-  install-opam-default-pkgs:
+  # opam-package-proxy-before:
+  #   cmds:
+  #     - cd ~/.opam/repo
+  #       ; tar xvf default.tar.gz
+
+  # opam-package-proxy-post:
+  #   cmds:
+  #     - cd ~/.opam/repo
+  #       ; rm -rf ./default.tar.gz
+  #       ; tar zcvf default.tar.gz default
+  #       ; rm -rf ./default
+
+  opam-download-command:
     cmds:
-      - opam install -y dune utop ocamlfind ocaml-lsp-server
-      - opam install -y base core stdio
-      # - opam install -y js_of_ocaml js_of_ocaml-compiler js_of_ocaml-lwt js_of_ocaml-ppx
+      - cp ./download_command ~/.local/bin
+      - '
+        sed -i "/download-jobs/adownload-command: [
+        \n  \"download_command\"
+        \n  \"%{out}%\"
+        \n  \"%{url}%\"
+        \n]" ~/.opam/config
+        '
+      # download-command: [
+      #   "download_command"
+      #   "%{out}%"
+      #   "%{url}%"
+      # ]
+      # global config:
+      # axel -o %{out}% %{url}%
+      # opam install --download-only -y dune
 
   install-all:
     deps:
@@ -55,4 +91,4 @@ tasks:
       - task: install-opam-ocaml
       - task: init-opam
       - task: opam-env
-      - task: install-opam-default-pkgs
+      - task: opam-download-command

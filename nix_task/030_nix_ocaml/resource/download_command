@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+out=$1
+url=$2
+
+out_dir=$(dirname $out)
+
+echo $out
+echo $url
+
+if [[ -d $out_dir ]]
+then
+  rm -rf $out_dir
+  mkdir -p $out_dir
+fi
+
+# axel -o $( echo $out | sed 's/.part$//' ) $url
+axel -o $out $url
+
+echo 200\\\\n
