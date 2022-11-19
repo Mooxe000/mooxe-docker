@@ -1,16 +1,14 @@
 version: '3'
 
 includes:
-  apt: ./tasklib/apt.yml
+  apt: ~/.taskfilehub/hubs/apt.yml
 
 vars:
   # git_host: github.com
   git_host: download.fastgit.org
 
-  # dl_bin: wget
-  # dl_cmd: '{{dl_bin}} -o-'
-  dl_bin: curl
-  dl_cmd: '{{.dl_bin}} -O'
+  dl_bin: axel
+  dl_cmd: '{{.dl_bin}}'
 
 tasks:
 
@@ -34,7 +32,7 @@ tasks:
     vars:
       bin_name: deno
       git_proj: denoland/{{.bin_name}}
-      bin_version: v1.25.2
+      bin_version: v1.28.1
       bin_os: x86_64-unknown-linux-gnu
       file_name: '{{.bin_name}}-{{.bin_os}}.zip'
       url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
@@ -50,7 +48,7 @@ tasks:
     vars:
       bin_name: fnm
       git_proj: Schniz/{{.bin_name}}
-      bin_version: v1.31.1
+      bin_version: v1.32.0
       bin_os: linux
       file_name: '{{.bin_name}}-{{.bin_os}}.zip'
       url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
@@ -66,7 +64,7 @@ tasks:
     deps:
       - install-fnm
     vars:
-      node_version: v18.9.0
+      node_version: v18.12.1
       node_mirror: https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
       npm_version: 8.19.2
     cmds:
@@ -78,16 +76,19 @@ tasks:
       - echo 'fnm env --use-on-cd | source'
         >> $HOME/.config/fish/config.fish
       - eval "$(fnm env --use-on-cd)"
-        ; npm install -g npm@{{.npm_version}}
-        ; npm i -g pnpm yarn nnrm
+        ; npm i -g
+            --registry=https://registry.npm.taobao.org
+            npm nnrm
+        ; nnrm use taobao
+        ; npm i -g yarn
+        ; yarn global add pnpm
 
   # https://github.com/oven-sh/bun
-  # https://github.com/oven-sh/bun/releases/download/bun-v0.1.11/bun-linux-x64.zip
   install-bun:
     vars:
       bin_name: bun
       git_proj: oven-sh/{{.bin_name}}
-      bin_version: v0.1.11
+      bin_version: v0.2.2
       bin_os: linux-x64
       file_name: '{{.bin_name}}-{{.bin_os}}.zip'
       url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
