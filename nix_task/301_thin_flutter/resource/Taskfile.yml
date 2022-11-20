@@ -112,9 +112,12 @@ tasks:
         | tee $HOME/.config/fish/config.fish
 
   flutter-status:
+    deps:
+      - apt:apt-clean
     cmds:
       - export PATH=$PATH:$HOME/.flutter/bin
         ; flutter doctor
+        ; flutter --version
 
   install-all:
     deps:
