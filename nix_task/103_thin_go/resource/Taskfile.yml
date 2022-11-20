@@ -1,14 +1,12 @@
 version: '3'
 
 includes:
-  apt: ./tasklib/apt.yml
-  apps: ./tasklib/apps.yml
+  apt: ~/.taskfilehub/hubs/apt.yml
+  apps: ~/.taskfilehub/hubs/apps.yml
 
 vars:
-  # dl_bin: wget
-  # dl_cmd: '{{dl_bin}} -o-'
-  dl_bin: curl
-  dl_cmd: '{{.dl_bin}} -O'
+  dl_bin: axel
+  dl_cmd: '{{.dl_bin}}'
 
 tasks:
 
