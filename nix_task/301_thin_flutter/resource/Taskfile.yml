@@ -1,0 +1,125 @@
+version: '3'
+
+includes:
+  apt: ~/.taskfilehub/hubs/apt.yml
+
+vars:
+  # git_host: github.com
+  git_host: download.fastgit.org
+
+  dl_bin: axel
+  dl_cmd: '{{.dl_bin}}'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-base:
+    deps:
+      - apt:apt-init
+    cmds:
+      - apt install -y fish git
+      - mkdir -p $HOME/.config/fish
+
+  install-before:
+    cmds:
+      - apt install -y
+          curl unzip {{.dl_bin}}
+          clang cmake
+          pkg-config
+          ninja-build
+          openjdk-17-jre
+      # generate-ninja
+      # sdkmanager
+      # android-sdk
+
+  install-flutter:
+    env:
+      PUB_HOSTED_URL: https://pub.flutter-io.cn
+      FLUTTER_STORAGE_BASE_URL: https://storage.flutter-io.cn
+      TAR_OPTIONS: '--no-same-owner'
+      FLUTTER_GIT_URL: https://ghproxy.com/github.com/flutter/flutter.git
+      REPO_OS_OVERRIDE: linux
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      ANDROID_SDK_ROOT: $HOME/.sdk_root
+    vars:
+      cmdline_tools_zip: commandlinetools-linux-9123335_latest.zip
+      cmdline_tools_url: '
+        https://dl.google.com/android/repository/{{.cmdline_tools_zip}}?hl=zh-cn
+      '
+    cmds:
+      # - set -gx PATH $PATH:$HOME/.flutter/bin
+      - git clone
+          -b dev --depth=1
+          $FLUTTER_GIT_URL
+          ~/.flutter
+      - axel {{.cmdline_tools_url}}
+        ; unzip {{.cmdline_tools_zip}}
+        ; rm -rf {{.cmdline_tools_zip}}
+        ; mv cmdline-tools $HOME/.cmdline-tools
+      - mkdir -p $HOME/.sdk_root
+      # - set -gx PATH $PATH:$HOME/.cmdline-tools/bin
+      - export PATH=$PATH:$HOME/.cmdline-tools/bin
+        ; sdkmanager
+          --sdk_root=$ANDROID_SDK_ROOT
+          --update
+        ; yes | sdkmanager
+          --sdk_root=$ANDROID_SDK_ROOT
+          --install 'cmdline-tools;latest'
+        ; rm -rf $HOME/.cmdline-tools
+      # - set -gx PATH $PATH:$HOME/.sdk_root/cmdline-tools/latest/bin
+      - export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+        ; sdkmanager
+          --sdk_root=$ANDROID_SDK_ROOT
+          --update
+        ; yes | sdkmanager
+          --sdk_root=$ANDROID_SDK_ROOT
+          --install
+            'platforms;android-29'
+            'build-tools;28.0.3'
+            'platform-tools'
+      # --no-https
+      # --proxy_host
+      # --proxy_port
+      # https://flutter.cn/community/china
+      # 东软信息学院
+      # mirrors.neusoft.edu.cn 80
+      # 北京化工大学
+      # ubuntu.buct.edu.cn/ubuntu.buct.cn 80
+      # 中国科学院开源协会
+      # mirrors.opencas.cn/mirrors.opencas.org/mirrors.opencas.ac.cn 80
+      # 上海GDG镜像服务器
+      # sdk.gdgshanghai.com 8000
+      # 电子科技大学
+      # mirrors.dormforce.net 80
+      # 腾讯Bugly
+      # android-mirror.bugly.qq.com 8080
+      - export PATH=$PATH:$HOME/.flutter/bin
+        ; flutter config --android-sdk $ANDROID_SDK_ROOT
+        ; yes | flutter doctor --android-licenses
+
+  flutter-path:
+    vars:
+      PATH: '$PATH:$HOME/.flutter/bin:$HOME/.sdk_root/cmdline-tools/latest/bin'
+    cmds:
+      - echo 'export PATH={{.PATH}}'
+          >> $HOME/.bashrc
+      - mkdir -p $HOME/.config/fish
+      - echo 'set PATH {{.PATH}}'
+        | tee $HOME/.config/fish/config.fish
+
+  flutter-status:
+    cmds:
+      - export PATH=$PATH:$HOME/.flutter/bin
+        ; flutter doctor
+
+  install-all:
+    deps:
+      - install-before
+    cmds:
+      - task: install-flutter
+      - task: flutter-path
+      - task: flutter-status

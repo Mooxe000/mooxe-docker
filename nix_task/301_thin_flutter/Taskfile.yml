@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  ContainerName: thinjs
+  ContainerName: thin_flutter
   ImageName: mooxe/{{.ContainerName}}
 
 includes:
@@ -33,6 +33,10 @@ tasks:
       - task: image:run:run-dev
         vars:
           run_option: '-v ~/.taskfilehub:/root/.taskfilehub'
+      # --privileged
+      # apt install -y curl unzip pkg-config clang cmake ninja
+      # export TAR_OPTIONS=--no-same-owner
+      #
 
   run:
     cmds:

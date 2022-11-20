@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  ContainerName: thingo
+  ContainerName: thin_go
   ImageName: mooxe/{{.ContainerName}}
 
 includes:
