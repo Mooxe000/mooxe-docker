@@ -1,0 +1,81 @@
+version: '3'
+
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
+
+vars:
+  version_g: 1.4.0
+  version_go: 1.19.3
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  # https://github.com/voidint/g/releases
+  install-g:
+    vars:
+      bin_name: g
+      repo_name: voidint/{{.bin_name}}
+      bin_version: '{{.version_g}}'
+      bin_os: linux-amd64
+      dl_file: '{{.bin_name}}{{.bin_version}}.{{.bin_os}}.tar.gz'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
+    cmds:
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+      - tar xvf {{.dl_file}}
+      - mv g /usr/local/bin
+      - rm -rf {{.dl_file}}
+
+  go-env:
+    vars:
+      GOROOT: $HOME/.g/go
+      PATH: $PATH:{{.GOROOT}}/bin
+      G_MIRROR: https://golang.google.cn/dl/
+      go_env:
+        GOROOT={{.GOROOT}}
+        PATH={{.PATH}}
+        G_MIRROR={{.G_MIRROR}}
+    cmds:
+      - task: helper:fn-env-kv
+        vars:
+          env_key: GOROOT
+          env_value: '{{.GOROOT}}'
+      - task: helper:fn-env-kv
+        vars:
+          env_key: PATH
+          env_value: '{{.PATH}}'
+      - task: helper:fn-env-kv
+        vars:
+          env_key: G_MIRROR
+          env_value: '{{.G_MIRROR}}'
+
+      - task: helper:fn-patchelf
+        vars:
+          patch_target: '{{.GOROOT}}/bin/go'
+          patch_lib: ld-linux-x86-64.so.2
+          grep_option: 2.35
+
+      - export {{.go_env}}
+        ; go env -w GO111MODULE=on
+        ; go env -w GOPROXY=https://goproxy.cn,direct
+        ; go env | grep GOPROXY
+
+  install-go:
+    deps:
+      - install-g
+    env:
+      G_MIRROR:
+        https://golang.google.cn/dl/,
+        https://studygolang.com/dl/,
+        https://mirrors.aliyun.com/golang/
+    cmds:
+      - g install {{.version_go}}
+      - g use {{.version_go}}
+      - task: go-env

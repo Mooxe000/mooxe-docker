@@ -2,6 +2,7 @@ version: '3'
 
 includes:
   apps: ~/.taskfilehub/hubs/apps.yml
+  helper: ~/.taskfilehub/hubs/helper.yml
 
 tasks:
 
@@ -12,10 +13,11 @@ tasks:
 
   install-shell:
     cmds:
-      - nix-env -i bash
-      - nix-env -i fish ncurses
-      - nix-env -i zsh
-      - nix-env -i nushell
+      - nix-env -i
+          bash
+          fish ncurses
+          zsh
+          nushell
       - install -d $HOME/.config/fish
       - cp -r ./nushell $HOME/.config
 
@@ -41,16 +43,15 @@ tasks:
   profile-path:
     cmds:
       - echo '' > ~/.profile
-
-      - mkdir -p $HOME/.local/bin
-      - echo 'export PATH=$PATH:$HOME/.local/bin'
-          >> $HOME/.profile
-
       - echo 'source ~/.profile' >> ~/.bashrc
       - echo 'source ~/.profile' >> ~/.zshrc
 
-      - echo 'set PATH $PATH:$HOME/.local/bin'
-          >> $HOME/.config/fish/config.fish
+      - mkdir -p $HOME/.local/bin
+
+      - task: helper:fn-env-kv
+        vars:
+          env_key: PATH
+          env_value: $PATH:$HOME/.local/bin
 
   install-editor:
     cmds:

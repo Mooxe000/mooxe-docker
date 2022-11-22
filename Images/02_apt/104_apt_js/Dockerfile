@@ -27,6 +27,5 @@ RUN set -eux \
 ; task status
 
 RUN set -eux \
-; rm -rf /usr/local/bin/task \
 ; rm -rf /root/build \
 ; rm -rf /root/.taskfilehub
