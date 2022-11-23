@@ -1,5 +1,11 @@
 version: '3'
 
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
+
+vars:
+  RUSTUP_DIST_SERVER: https://mirrors.tuna.tsinghua.edu.cn/rustup
+
 tasks:
 
   default:
@@ -8,16 +14,16 @@ tasks:
     silent: true
 
   rust-env:
-    vars:
-      bash_env:
-        export RUSTUP_UPDATE_ROOT=https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
-        export PATH=$PATH:$HOME/.cargo/bin
-      fish_env:
-        set RUSTUP_UPDATE_ROOT https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
-        set PATH $PATH:$HOME/.cargo/bin
     cmds:
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+      - task: helper:fn-env-kv
+        vars:
+          env_key: RUSTUP_UPDATE_ROOT
+          env_value: '{{.RUSTUP_DIST_SERVER}}'
+      - task: helper:fn-env-kv
+        vars:
+          env_key: PATH
+          env_value: $PATH:$HOME/.cargo/bin
+
       - install -D cargo.config $HOME/.cargo/config
 
   install-rust:
@@ -26,7 +32,7 @@ tasks:
     cmds:
       - nix-env -i rustup
       - env
-          RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
+          RUSTUP_DIST_SERVER={{.RUSTUP_DIST_SERVER}}
           rustup install stable
 
   install-cargo-update:
@@ -37,3 +43,16 @@ tasks:
       - nix-shell
           -p clang perl openssl
           --run 'cargo install cargo-generate'
+
+  cli-version:
+    cmds:
+      - rustup --version
+      - rustc --version
+
+  install-all:
+    deps:
+      - install-rust
+    cmds:
+      - task: install-cargo-update
+
+      - task: cli-version

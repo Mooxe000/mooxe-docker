@@ -9,6 +9,7 @@ vars:
   version_node: 18.12.1
   # https://github.com/oven-sh/bun/releases
   version_bun: 0.2.2
+
   FNM_NODE_DIST_MIRROR: https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
   reistry_mirror: https://registry.npm.taobao.org
 

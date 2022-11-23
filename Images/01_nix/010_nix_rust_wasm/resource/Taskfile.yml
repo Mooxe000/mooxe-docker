@@ -1,10 +1,11 @@
 version: '3'
 
-vars:
-  git_host: download.fastgit.org
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
 
-  dl_bin: axel
-  dl_cmd: '{{.dl_bin}}'
+vars:
+  # https://github.com/wasmerio/wapm-cli
+  version_wapm: 0.5.9
 
 tasks:
 
@@ -16,7 +17,7 @@ tasks:
   install-febore:
     cmds:
       - rustup target add wasm32-wasi
-      - rustup target add wasm32-unknown-unknown \
+      - rustup target add wasm32-unknown-unknown
       - rustup target add wasm32-unknown-emscripten
 
   # https://github.com/rustwasm
@@ -30,35 +31,49 @@ tasks:
       - nix-env -i wasm-pack
       - nix-env -i wasmtime wasmer
 
-  # https://github.com/wasmerio/wapm-cli
   install-wapm:
     # https://github.com/wasmerio/wapm-cli/releases/download/v0.5.6/wapm-cli-linux-amd64.tar.gz
     vars:
       bin_name: wapm
-      git_proj: wasmerio/{{.bin_name}}-cli
-      bin_version: v0.5.7
+      repo_name: wasmerio/{{.bin_name}}-cli
+      bin_version: '{{.version_wapm}}'
       bin_os: linux-amd64
       dl_file: '{{.bin_name}}-cli-{{.bin_os}}.tar.gz'
-      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
-      url: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
     cmds:
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+
       - mkdir -p {{.bin_name}}
+        ; mv {{.dl_file}} {{.bin_name}}
       - cd {{.bin_name}}
-        ; {{.dl_cmd}} {{.url}}
         ; tar xvf {{.dl_file}}
         ; chmod +x bin/wa*
-        ; mv bin/wa* /usr/local/bin
+        ; sed
+            -i '1s/^.*$/#!\/usr\/bin\/env bash/'
+            bin/wax
+
+      - task: helper:fn-patchelf-ld
+        vars:
+          patch_target: '{{.bin_name}}/bin/{{.bin_name}}'
+
+      - mv {{.bin_name}}/bin/wa* /usr/local/bin
       - rm -rf {{.bin_name}}
-      - patchelf
-          --set-interpreter
-          $(
-            find /nix/store -name ld-linux-x86-64.so.2
-          | grep 2.35
-          | grep -v debug
-          ) /usr/local/bin/{{.bin_name}}
+
+  cli-version:
+    cmds:
+      - wasmer --version
+      - wasmtime --version
+      - wapm --version
 
   install-all:
+    deps:
+      - install-before
     cmds:
-      - task: install-before
       - task: install-wasm
       - task: install-wapm
+
+      - task: cli-version

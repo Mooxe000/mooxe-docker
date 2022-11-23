@@ -7,8 +7,7 @@ RUN set -eux \
 
 RUN set -eux \
 ; cd /root/build \
-; task install-rust \
-; task install-cargo-update
+; task install-all
 
 RUN set -eux \
 ; rm -rf /root/build \

@@ -74,13 +74,9 @@ tasks:
       # - patchelf --print-rpath /usr/local/bin/static-web-server
       # - ldd /usr/local/bin/static-web-server
 
-      - patchelf --set-interpreter
-          $(
-            find /nix/store -name ld-linux-x86-64.so.2
-          | grep 2.35
-          | grep -v debug
-          )
-          /usr/local/bin/static-web-server
+      - task: helper:fn-patchelf-ld
+        vars:
+          patch_target: /usr/local/bin/static-web-server
 
   install-all:
     cmds:
