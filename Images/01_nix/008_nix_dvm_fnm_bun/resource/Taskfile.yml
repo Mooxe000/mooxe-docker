@@ -1,10 +1,16 @@
 version: '3'
 
-vars:
-  git_host: download.fastgit.org
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
 
-  dl_bin: axel
-  dl_cmd: '{{.dl_bin}}'
+vars:
+  # https://github.com/Schniz/fnm/releases
+  version_fnm: 1.31.1
+  version_node: 18.12.1
+  # https://github.com/oven-sh/bun/releases
+  version_bun: 0.2.2
+  FNM_NODE_DIST_MIRROR: https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
+  reistry_mirror: https://registry.npm.taobao.org
 
 tasks:
 
@@ -13,44 +19,44 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  # https://github.com/Schniz/fnm/releases
   install-fnm:
     vars:
       bin_name: fnm
-      git_proj: Schniz/{{.bin_name}}
-      bin_version: v1.31.1
+      repo_name: Schniz/{{.bin_name}}
+      bin_version: '{{.version_fnm}}'
       bin_os: linux
       dl_file: '{{.bin_name}}-{{.bin_os}}.zip'
-      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
-      url: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
     # https://github.com/Schniz/fnm/releases/download/v1.31.1/fnm-linux.zip
     cmds:
-      - '{{.dl_cmd}} {{.url}}'
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+
       - unzip {{.dl_file}}
       - chmod +x {{.bin_name}}
       - mv {{.bin_name}} /usr/local/bin
       - rm -rf {{.dl_file}}
 
   fnm-env:
-    vars:
-      bash_env:
-        export FNM_NODE_DIST_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
-      fish_env:
-        set FNM_NODE_DIST_MIRROR https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
     cmds:
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+      - task: helper:fn-env-kv
+        vars:
+          env_key: FNM_NODE_DIST_MIRROR
+          env_value: '{{.FNM_NODE_DIST_MIRROR}}'
 
   install-node:
     deps:
       - install-fnm
       - fnm-env
     env:
-      FNM_NODE_DIST_MIRROR: https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
+      FNM_NODE_DIST_MIRROR: '{{.FNM_NODE_DIST_MIRROR}}'
     vars:
-      node_version: v19.0.1
+      node_path: $HOME/.local/share/fnm/aliases/default/bin/node
     cmds:
-      - fnm install {{.node_version}}
+      - fnm install {{.version_node}}
 
       # - fnm env --shell bash >> $HOME/.bashrc
       # - fnm env --shell zsh >> $HOME/.zshrc
@@ -63,46 +69,42 @@ tasks:
       - echo 'fnm env --shell fish --use-on-cd | source'
           >> $HOME/.config/fish/config.fish
 
-      - patchelf
-          --set-interpreter
-          $(
-            find /nix/store -name ld-linux-x86-64.so.2
-          | grep 2.35
-          | grep -v debug
-          )
-          --set-rpath
-          $(dirname $(
-            find /nix/store -name libstdc++.so.6
-          | grep gcc-11.3.0-lib
-          | sed -n '1p'
-          ))
-          $HOME/.local/share/fnm/aliases/default/bin/node
+      - task: helper:fn-patchelf-ld
+        vars:
+          patch_target: '{{.node_path}}'
 
-  # https://github.com/oven-sh/bun/releases
+      - task: helper:fn-patchelf-rpath
+        vars:
+          patch_lib: libstdc++.so.6
+          grep_option: gcc-11.3.0-lib | sed -n '1p'
+          patch_target: '{{.node_path}}'
+
   install-bun:
-    # https://github.com/oven-sh/bun/releases/download/bun-v0.2.2/bun-linux-x64.zip
     vars:
       bin_name: bun
-      git_proj: oven-sh/{{.bin_name}}
-      bin_version: v0.2.2
+      repo_name: oven-sh/{{.bin_name}}
+      bin_version: '{{.version_bun}}'
       bin_os: linux-x64
       dl_file_dir: '{{.bin_name}}-{{.bin_os}}'
       dl_file: '{{.dl_file_dir}}.zip'
-      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
-      url: '{{.url_prefix}}/{{.bin_name}}-{{.bin_version}}/{{.dl_file}}'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/{{.bin_name}}-v{{.bin_version}}/{{.dl_file}}'
+      # https://github.com/oven-sh/bun/releases/download/bun-v0.2.2/bun-linux-x64.zip
     cmds:
-      - '{{.dl_cmd}} {{.url}}'
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+
       - unzip {{.dl_file}}
-      - cd {{.dl_file_dir}}
-        ; chmod +x {{.bin_name}}
-        ; patchelf
-          --set-interpreter
-          $(
-            find /nix/store -name ld-linux-x86-64.so.2
-          | grep 2.35
-          | grep -v debug
-          ) {{.bin_name}}
-        ; mv {{.bin_name}} /usr/local/bin
+      - chmod +x {{.dl_file_dir}}/{{.bin_name}}
+
+      - task: helper:fn-patchelf-ld
+        vars:
+          patch_target: '{{.dl_file_dir}}/{{.bin_name}}'
+
+      - mv {{.dl_file_dir}}/{{.bin_name}} /usr/local/bin
+
       - rm -rf {{.dl_file_dir}}
       - rm -rf {{.dl_file}}
 
@@ -111,15 +113,15 @@ tasks:
     cmds:
       - eval $(fnm env --shell bash)
         ; npm i -g
-            --registry=https://registry.npm.taobao.org
+            --no-fund
+            --registry={{.registry_mirror}}
             npm
-        ; npm fund
 
   install-use-nnrm:
     cmds:
       - eval $(fnm env --shell bash)
         ; npm i -g
-            --registry=https://registry.npm.taobao.org
+            --registry={{.registry_mirror}}
             nnrm
         ; nnrm use taobao
 
@@ -135,11 +137,9 @@ tasks:
       - eval $(fnm env --shell bash)
         ; npm i -g yarn
         ; yarn global add pnpm
-            nnrm taze node-gyp
-        ; yarn global add
-            supervisor nodemon forever pm2
-        ; yarn global add
+            taze node-gyp
             serve http-server
+            supervisor nodemon forever pm2
 
   install-all:
     cmds:

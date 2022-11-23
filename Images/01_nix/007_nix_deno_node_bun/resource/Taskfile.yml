@@ -1,13 +1,17 @@
 version: '3'
 
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
+
 vars:
-  node_version: 18.12.1
+  version_node: 18.12.1
   nix_node_global_path:
     /nix/store/$(
       ls /nix/store
-      | grep -e "nodejs-{{.node_version}}$"
+      | grep -e "nodejs-{{.version_node}}$"
       | sed -n '1p'
     )/bin
+  registry_mirror: https://registry.npm.taobao.org
 
 tasks:
 
@@ -19,9 +23,9 @@ tasks:
   update-npm:
     cmds:
       - npm i -g
-          --registry=https://registry.npm.taobao.org
+          --no-fund
+          --registry={{.registry_mirror}}
           npm
-      - npm fund
 
   install-use-nnrm:
     vars:
@@ -29,7 +33,7 @@ tasks:
         sh: echo {{.nix_node_global_path}}
     cmds:
       - npm i -g
-          --registry=https://registry.npm.taobao.org
+          --registry={{.registry_mirror}}
           nnrm
       - export PATH=$PATH:{{.nix_node_global_path}}
         ; nnrm use taobao
@@ -49,22 +53,21 @@ tasks:
 
       - export PATH=$PATH:{{.nix_node_global_path}}
         ; yarn global add pnpm
-            nnrm taze node-gyp
-        ; yarn global add
-            supervisor nodemon forever pm2
-        ; yarn global add
+            taze node-gyp
             serve http-server
+            supervisor nodemon forever pm2
 
   node-global-env:
     vars:
       nix_node_global_path:
         sh: echo {{.nix_node_global_path}}
       yarn_global_path: /usr/local/share/.config/yarn/global/node_modules/.bin
-      bash_env: export PATH=$PATH:{{.nix_node_global_path}}:{{.yarn_global_path}}
-      fish_env: set PATH $PATH:{{.nix_node_global_path}}:{{.yarn_global_path}}
+      PATH: $PATH:{{.nix_node_global_path}}:{{.yarn_global_path}}
     cmds:
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+      - task: helper:fn-env-kv
+        vars:
+          env_key: PATH
+          env_value: '{{.PATH}}'
 
   install-all:
     cmds:
