@@ -48,7 +48,7 @@ tasks:
     # - -U 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11'
     # | sed -e '/# download binary/ {n; d}'
     cmds:
-      - nix-env -i file gawk zip-3.0
+      - nix-env -i zip-3.0
       - cat $HOME/.sdkman/src/sdkman-install.sh
           | sed -e "\$!N;/\n.*X-Sdkman'/!P;D"
           | sed
@@ -214,7 +214,6 @@ tasks:
     cmds:
       - task: patchelf:auto-patch
         vars:
-          rpath_libnames: libz libjli
           rpath_env: |
             libz_path:
               find_path: /nix/store
