@@ -1,0 +1,30 @@
+version: '3'
+
+includes:
+  patchelf: ~/.taskfilehub/hubs/patchelf.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  patch-bin:
+    cmds:
+      - task: patchelf:auto-patch
+        vars:
+          rpath_libnames: libz libjli
+          rpath_env: |
+            libz_path:
+              find_path: /nix/store
+              find_name: libz.so.1
+              grep_option: zlib-1.2.13
+            libjli_path:
+              find_path: $HOME/.sdkman/candidates/java/current/
+              find_name: libjli.so
+              grep_option: '-v grep'
+          bin_path:
+            $HOME/.sdkman/candidates/java/current/bin/java
+          #   $HOME/.sdkman/candidates/java/current/bin/jar
+          # bin_dir: $HOME/.sdkman/candidates/java/current/bin

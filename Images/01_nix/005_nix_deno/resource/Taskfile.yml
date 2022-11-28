@@ -10,3 +10,12 @@ tasks:
   install-deno:
     cmds:
       - nix-env -i deno
+
+  cli-version:
+    cmds:
+      - deno --version
+
+  install-all:
+    cmds:
+      - task: install-deno
+      - task: cli-version

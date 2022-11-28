@@ -21,5 +21,5 @@ tasks:
       - nix-env -i go-task
 
       - nix-env -i
-          which-2.21 gnused unzip
-          glibc patchelf
+          file which-2.21 gnused gawk
+          unzip glibc patchelf

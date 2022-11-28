@@ -22,3 +22,12 @@ tasks:
     cmds:
       - nix-env -i go
       - task: go-env
+
+  cli-version:
+    cmds:
+      - go version
+
+  install-all:
+    cmds:
+      - task: install-go
+      - task: cli-version

@@ -77,3 +77,13 @@ tasks:
       - g install {{.version_go}}
       - g use {{.version_go}}
       - task: go-env
+
+  cli-version:
+    cmds:
+      - g --version
+      - go version
+
+  install-all:
+    cmds:
+      - task: install-go
+      - task: cli-version

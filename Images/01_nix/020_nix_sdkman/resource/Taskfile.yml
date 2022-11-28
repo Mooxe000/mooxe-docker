@@ -1,13 +1,20 @@
 version: '3'
 
-vars:
-  git_host: download.fastgit.org
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
+  patchelf: ~/.taskfilehub/hubs/patchelf.yml
 
-  dl_bin: axel
-  dl_cmd: '{{.dl_bin}}'
+vars:
+  # https://github.com/sdkman/sdkman-cli
+  version_sdkman: 5.16.0
+
+  java_version: 19
+  vm_version: 22.3
+  vm_version_0: '{{.vm_version}}.0'
 
 env:
-  SDK_JAVA_VERSION: 22.3.r19-grl
+  SDK_JAVA_VERSION: '{{.vm_version}}.r{{.java_version}}-grl'
+
   SDK_KOTLIN_VERSION: 1.7.21
   SDK_SBT_VERSION:  1.8.0
   SDK_SCALA_VERSION: 3.2.0
@@ -25,22 +32,23 @@ tasks:
     silent: true
 
   sdkman-env:
-    vars:
-      bash_env: source $HOME/.sdkman/bin/sdkman-init.sh
-      fish_env: |-
-        function sdk
-          bash -c "source $HOME/.sdkman/bin/sdkman-init.sh ; sdk $argv[1..]"
-        end
     cmds:
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+      - task: helper:fn-profile
+        vars:
+          bash_env: source $HOME/.sdkman/bin/sdkman-init.sh
+          fish_env: |-
+            function sdk
+              bash -c "source $HOME/.sdkman/bin/sdkman-init.sh ; sdk $argv[1..]"
+            end
 
   install-post-sdkman:
+    vars:
+      git_host: download.fastgit.org
     # - nix-shell -p gawk axel zip --run 'fish'
     # - -U 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11'
     # | sed -e '/# download binary/ {n; d}'
     cmds:
-      - nix-env -i gawk zip-3.0
+      - nix-env -i file gawk zip-3.0
       - cat $HOME/.sdkman/src/sdkman-install.sh
           | sed -e "\$!N;/\n.*X-Sdkman'/!P;D"
           | sed
@@ -76,21 +84,24 @@ tasks:
       # - rm $HOME/.sdkman/src/sdkman-install.old.sh
       # - rm $HOME/.sdkman/src/sdkman-install.new.sh
 
-  # https://github.com/sdkman/sdkman-cli
   install-sdkman:
-    deps:
-      - sdkman-env
     # https://github.com/sdkman/sdkman-cli/releases/download/5.16.0/sdkman-cli-5.16.0.zip
     vars:
+      # java_version: '{{.java_version}}'
+      # vm_version: '{{.vm_version}}'
       bin_name: sdkman
-      git_proj: '{{.bin_name}}/{{.bin_name}}-cli'
-      bin_version: 5.16.0
+      repo_name: '{{.bin_name}}/{{.bin_name}}-cli'
+      bin_version: '{{.version_sdkman}}'
       dl_file: '{{.bin_name}}-cli-{{.bin_version}}.zip'
       unzip_dir: '{{.bin_name}}-{{.bin_version}}'
-      url_prefix: https://{{.git_host}}/{{.git_proj}}/releases/download
-      url: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
     cmds:
-      - '{{.dl_cmd}} {{.url}}'
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+
       - unzip {{.dl_file}}
       - mv {{.unzip_dir}} $HOME/.sdkman
       - install -d $HOME/.sdkman/ext
@@ -98,59 +109,37 @@ tasks:
       - touch candidates
         ; install -D candidates $HOME/.sdkman/var/candidates
         ; rm candidates
+
+      - task: sdkman-env
       - bash -lc 'sdk offline; sdk update'
+
       - task: install-post-sdkman
 
-  install-sdk:
+  fn-install-sdk:
     vars:
       bash_env: |-
         export {{.upname}}_HOME=$HOME/.sdkman/candidates/{{.lwname}}/current
-        export PATH=$PATH:${ {{.upname}}_HOME }/bin
+        export PATH=$PATH:${{.upname}}_HOME/bin
       fish_env: |-
-        set {{.upname}}_HOME $HOME/.sdkman/candidates/{{.lwname}}/current
-        set PATH $PATH:{${{.upname}}_HOME}/bin
+        set -gx {{.upname}}_HOME $HOME/.sdkman/candidates/{{.lwname}}/current
+        set -gx PATH $PATH:${{.upname}}_HOME/bin
     cmds:
       - bash -lc '{{.precmds}}
           sdk i {{.lwname}} $SDK_{{.upname}}_VERSION'
       - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}'
-        | sed -e 's/${ /${/' -e 's/ }/}/'
-        >> $HOME/.config/fish/config.fish
+      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
 
-  install-sdks:
+  install-java:
     cmds:
 
-      - task: install-sdk
-        vars: {
+      - task: fn-install-sdk
+        vars:
           upname: JAVA
-        , lwname: java
-        }
+          lwname: java
 
+      # ; sdk env init
       - bash -lc '
-          sdk use java $SDK_JAVA_VERSION
-        ; sdk env init'
-
-      - patchelf
-          --set-interpreter $(
-              find /nix/store -name ld-linux-x86-64.so.2
-            | grep 2.35
-            | grep -v debug
-            )
-          --set-rpath $(dirname $(
-              find /nix/store -name libz.so.1
-            | grep 'zlib-1.2.12'
-            | sed -n '1p'
-            ))
-          ~/.sdkman/candidates/java/current/lib/installer/bin/gu
-
-      # - gu install native-image
-      # grallvm native-image
-      # https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/native-image-installable-svm-java19-linux-amd64-22.3.0.jar
-      - export native_image_local_file='native-image-installable-svm-java19-linux-amd64-22.3.0.jar'
-        ; export download_release_url_prefix=https://{{.git_host}}/graalvm/graalvm-ce-builds/releases/download
-        ; axel ${download_release_url_prefix}/vm-22.3.0/${native_image_local_file}
-        ; bash -lc 'gu -L install ${native_image_local_file}'
-        ; rm ${native_image_local_file}
+          sdk use java $SDK_JAVA_VERSION'
 
       # - task: install-sdk
       #   vars: {
@@ -167,7 +156,7 @@ tasks:
       #   vars: {
       #     upname: SCALA
       #   , lwname: scala
-      #   , precmds: sdk use $SDK_SBT_VERSION
+      #   , precmds: sdk use $SDK_SBT_VERSION;
       #   }
 
       # - task: install-sdk
@@ -200,7 +189,57 @@ tasks:
       #   , lwname: quarkus
       #   }
 
+  install-native-image:
+    vars:
+
+      os_platform: linux-amd64
+      dl_file: native-image-installable-svm-java{{.java_version}}-{{.os_platform}}-{{.vm_version_0}}.jar
+      repo_name: 'graalvm/graalvm-ce-builds'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/vm-{{.vm_version_0}}/{{.dl_file}}'
+
+    cmds:
+      # - gu install native-image
+      # grallvm native-image
+      # https://github.com/graalvm/graalvm-ce-builds/releases
+      # https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/native-image-installable-svm-java19-linux-amd64-22.3.0.jar
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+      - bash -lc 'gu -L install {{.dl_file}}'
+      - rm {{.dl_file}}
+
+  patch-bin:
+    cmds:
+      - task: patchelf:auto-patch
+        vars:
+          rpath_libnames: libz libjli
+          rpath_env: |
+            libz_path:
+              find_path: /nix/store
+              find_name: libz.so.1
+              grep_option: zlib-1.2.13
+            libjli_path:
+              find_path: $HOME/.sdkman/candidates/java/current/
+              find_name: libjli.so
+              grep_option: '-v grep'
+          # bin_path:
+          bin_dir: $HOME/.sdkman/candidates/java/current/bin
+
+  install-java-post:
+    cmds:
+      - task: patch-bin
+      - task: install-native-image
+
+  cli-version:
+    cmds:
+      - sdk version
+      - gu --version
+      - java --version
+
   install-all:
     cmds:
       - task: install-sdkman
-      - task: install-sdks
+      - task: install-java
+      - task: install-java-post

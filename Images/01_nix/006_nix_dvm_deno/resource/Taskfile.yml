@@ -64,3 +64,13 @@ tasks:
 
       - dvm use {{.version_deno}}
       - task: dvm-env
+
+  cli-version:
+    cmds:
+      - dvm --version
+      - deno --version
+
+  install-all:
+    cmds:
+      - task: install-deno
+      - task: cli-version

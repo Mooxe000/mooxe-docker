@@ -69,6 +69,14 @@ tasks:
           env_key: PATH
           env_value: '{{.PATH}}'
 
+  cli-version:
+    cmds:
+      - echo "node $(node --version)"
+      - echo "npm $(npm --version)"
+      - echo "yarn $(yarn --version)"
+      - echo "pnpm $(pnpm --version)"
+      - echo "bun $(bun --version)"
+
   install-all:
     cmds:
       - nix-env -i nodejs bun
