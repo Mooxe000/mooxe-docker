@@ -60,10 +60,11 @@ tasks:
           env_key: G_MIRROR
           env_value: '{{.G_MIRROR}}'
 
-      - export PATH={{.PATH}}
-        ; go env -w GO111MODULE=on
+      - bash -lc '
+          go env -w GO111MODULE=on
         ; go env -w GOPROXY=https://goproxy.cn,direct
         ; go env | grep GOPROXY
+        '
 
   install-go:
     deps:
@@ -80,10 +81,14 @@ tasks:
   cli-version:
     cmds:
       - g --version
-      - go version
+        | sed -n '1p'
+      - bash -lc '
+          go version
+        '
 
   install-all:
     cmds:
       - task: install-go
-      # - task: go-env
-      # - task: cli-version
+      - task: patch-go
+      - task: go-env
+      - task: cli-version
