@@ -3,6 +3,7 @@ version: '3'
 includes:
   apps: ~/.taskfilehub/hubs/apps.yml
   helper: ~/.taskfilehub/hubs/helper.yml
+  patchelf: ~/.taskfilehub/hubs/patchelf.yml
 
 tasks:
 
@@ -73,10 +74,15 @@ tasks:
       # - patchelf --print-needed /usr/local/bin/static-web-server
       # - patchelf --print-rpath /usr/local/bin/static-web-server
       # - ldd /usr/local/bin/static-web-server
-
-      - task: helper:fn-patchelf-ld
+      - task: patchelf:auto-patch
         vars:
-          patch_target: /usr/local/bin/static-web-server
+          bin_path: /usr/local/bin/static-web-server
+
+  cli-version:
+    cmds:
+      - vi --version | sed -n '1p'
+      - axel --version | sed -n '1p'
+      - sws --version
 
   install-all:
     cmds:
@@ -89,3 +95,5 @@ tasks:
       - task: install-dltool
 
       - task: install-sws
+
+      - task: cli-version

@@ -2,11 +2,14 @@ version: '3'
 
 includes:
   helper: ~/.taskfilehub/hubs/helper.yml
+  patchelf: ~/.taskfilehub/hubs/patchelf.yml
 
 vars:
   # https://github.com/voidint/g/releases
   version_g: 1.4.0
   version_go: 1.19.3
+
+  GOROOT: $HOME/.g/go
 
 tasks:
 
@@ -33,15 +36,16 @@ tasks:
       - mv g /usr/local/bin
       - rm -rf {{.dl_file}}
 
+  patch-go:
+    cmds:
+      - task: patchelf:auto-patch
+        vars:
+          bin_dir: '{{.GOROOT}}/bin'
+
   go-env:
     vars:
-      GOROOT: $HOME/.g/go
       PATH: $PATH:{{.GOROOT}}/bin
       G_MIRROR: https://golang.google.cn/dl/
-      go_env:
-        GOROOT={{.GOROOT}}
-        PATH={{.PATH}}
-        G_MIRROR={{.G_MIRROR}}
     cmds:
       - task: helper:fn-env-kv
         vars:
@@ -56,11 +60,7 @@ tasks:
           env_key: G_MIRROR
           env_value: '{{.G_MIRROR}}'
 
-      - task: helper:fn-patchelf-ld
-        vars:
-          patch_target: '{{.GOROOT}}/bin/go'
-
-      - export {{.go_env}}
+      - export PATH={{.PATH}}
         ; go env -w GO111MODULE=on
         ; go env -w GOPROXY=https://goproxy.cn,direct
         ; go env | grep GOPROXY
@@ -76,7 +76,6 @@ tasks:
     cmds:
       - g install {{.version_go}}
       - g use {{.version_go}}
-      - task: go-env
 
   cli-version:
     cmds:
@@ -86,4 +85,5 @@ tasks:
   install-all:
     cmds:
       - task: install-go
-      - task: cli-version
+      # - task: go-env
+      # - task: cli-version
