@@ -73,15 +73,20 @@ tasks:
     cmds:
       - echo "node $(node --version)"
       - echo "npm $(npm --version)"
-      - echo "yarn $(yarn --version)"
+      - bash -lc '
+          echo "yarn $(yarn --version)"
+        '
       - echo "pnpm $(pnpm --version)"
       - echo "bun $(bun --version)"
 
   install-all:
     cmds:
       - nix-env -i nodejs bun
+
       - task: update-npm
       - task: node-global-env
 
       - task: install-use-nnrm
       - task: install-yarn
+
+      - task: cli-version

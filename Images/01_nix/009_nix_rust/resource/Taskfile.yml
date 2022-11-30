@@ -47,6 +47,7 @@ tasks:
   cli-version:
     cmds:
       - rustup --version
+        | sed -n '1p'
       - rustc --version
 
   install-all:

@@ -2,11 +2,12 @@ version: '3'
 
 includes:
   helper: ~/.taskfilehub/hubs/helper.yml
+  patchelf: ~/.taskfilehub/hubs/patchelf.yml
 
 vars:
   # https://github.com/justjavac/dvm/releases
   version_dvm: 1.8.6
-  version_deno: 1.28.1
+  version_deno: 1.28.2
 
 tasks:
 
@@ -34,9 +35,9 @@ tasks:
       - unzip {{.dl_file}}
       - chmod +x {{.bin_name}}
 
-      - task: helper:fn-patchelf-ld
+      - task: patchelf:auto-patch
         vars:
-          patch_target: '{{.bin_name}}'
+          bin_path: './{{.bin_name}}'
 
       - mv {{.bin_name}} /usr/local/bin
       - rm -rf {{.dl_file}}
@@ -58,19 +59,21 @@ tasks:
     cmds:
       - dvm install --no-use {{.version_deno}}
 
-      - task: helper:fn-patchelf-ld
+      - task: patchelf:auto-patch
         vars:
-          patch_target: $HOME/.dvm/versions/{{.version_deno}}/deno
+          bin_path: $HOME/.dvm/versions/{{.version_deno}}/deno
 
       - dvm use {{.version_deno}}
-      - task: dvm-env
 
   cli-version:
     cmds:
       - dvm --version
-      - deno --version
+      - bash -lc '
+          deno --version
+        '
 
   install-all:
     cmds:
       - task: install-deno
+      - task: dvm-env
       - task: cli-version

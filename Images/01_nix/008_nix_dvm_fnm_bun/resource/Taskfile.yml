@@ -2,16 +2,17 @@ version: '3'
 
 includes:
   helper: ~/.taskfilehub/hubs/helper.yml
+  patchelf: ~/.taskfilehub/hubs/patchelf.yml
 
 vars:
   # https://github.com/Schniz/fnm/releases
-  version_fnm: 1.31.1
+  version_fnm: 1.32.0
   version_node: 18.12.1
   # https://github.com/oven-sh/bun/releases
   version_bun: 0.2.2
 
   FNM_NODE_DIST_MIRROR: https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
-  reistry_mirror: https://registry.npm.taobao.org
+  registry_mirror: https://registry.npm.taobao.org
 
 tasks:
 
@@ -54,31 +55,34 @@ tasks:
       - fnm-env
     env:
       FNM_NODE_DIST_MIRROR: '{{.FNM_NODE_DIST_MIRROR}}'
-    vars:
-      node_path: $HOME/.local/share/fnm/aliases/default/bin/node
     cmds:
       - fnm install {{.version_node}}
 
+  node-env:
+    cmds:
       # - fnm env --shell bash >> $HOME/.bashrc
       # - fnm env --shell zsh >> $HOME/.zshrc
       # - fnm env --shell fish >> $HOME/.config/fish/config.fish
-
-      - echo 'eval "$(fnm env --shell bash --use-on-cd)"'
+      # --use-on-cd
+      - echo 'eval "$(fnm env --shell bash)"'
           >> $HOME/.bashrc
-      - echo 'eval "$(fnm env --shell zsh --use-on-cd)"'
+      - echo 'eval "$(fnm env --shell zsh)"'
           >> $HOME/.zshrc
-      - echo 'fnm env --shell fish --use-on-cd | source'
+      - echo 'fnm env --shell fish | source'
           >> $HOME/.config/fish/config.fish
 
-      - task: helper:fn-patchelf-ld
+  patch-node:
+    vars:
+      node_path: $HOME/.local/share/fnm/aliases/default/bin
+    cmds:
+      - task: patchelf:auto-patch
         vars:
-          patch_target: '{{.node_path}}'
-
-      - task: helper:fn-patchelf-rpath
-        vars:
-          patch_lib: libstdc++.so.6
-          grep_option: gcc-11.3.0-lib
-          patch_target: '{{.node_path}}'
+          rpath_env: |
+            libstdc_path:
+              find_path: /nix/store
+              find_name: libstdc++.so.6
+              grep_option: gcc-11.3.0-lib
+          bin_dir: '{{.node_path}}'
 
   install-bun:
     vars:
@@ -100,15 +104,14 @@ tasks:
       - unzip {{.dl_file}}
       - chmod +x {{.dl_file_dir}}/{{.bin_name}}
 
-      - task: helper:fn-patchelf-ld
+      - task: patchelf:auto-patch
         vars:
-          patch_target: '{{.dl_file_dir}}/{{.bin_name}}'
+          bin_path: '{{.dl_file_dir}}/{{.bin_name}}'
 
       - mv {{.dl_file_dir}}/{{.bin_name}} /usr/local/bin
 
       - rm -rf {{.dl_file_dir}}
       - rm -rf {{.dl_file}}
-
 
   update-npm:
     cmds:
@@ -155,9 +158,14 @@ tasks:
   install-all:
     cmds:
       - task: install-node
-      - task: install-bun
+      - task: patch-node
+
+      - task: node-env
       - task: update-npm
+
       - task: install-use-nnrm
       - task: install-yarn
+
+      - task: install-bun
 
       - task: cli-version

@@ -7,8 +7,7 @@ RUN set -eux \
 
 RUN set -eux \
 ; cd /root/build \
-; task install-wasm \
-; task install-wapm
+; task install-all
 
 RUN set -eux \
 ; rm -rf /root/build \

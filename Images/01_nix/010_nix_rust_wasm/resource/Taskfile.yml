@@ -2,6 +2,7 @@ version: '3'
 
 includes:
   helper: ~/.taskfilehub/hubs/helper.yml
+  patchelf: ~/.taskfilehub/hubs/patchelf.yml
 
 vars:
   # https://github.com/wasmerio/wapm-cli
@@ -14,7 +15,7 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  install-febore:
+  install-before:
     cmds:
       - rustup target add wasm32-wasi
       - rustup target add wasm32-unknown-unknown
@@ -56,9 +57,9 @@ tasks:
             -i '1s/^.*$/#!\/usr\/bin\/env bash/'
             bin/wax
 
-      - task: helper:fn-patchelf-ld
+      - task: patchelf:auto-patch
         vars:
-          patch_target: '{{.bin_name}}/bin/{{.bin_name}}'
+          bin_path: '{{.bin_name}}/bin/{{.bin_name}}'
 
       - mv {{.bin_name}}/bin/wa* /usr/local/bin
       - rm -rf {{.bin_name}}
