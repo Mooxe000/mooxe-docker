@@ -15,14 +15,12 @@ vars:
 env:
   SDK_JAVA_VERSION: '{{.vm_version}}.r{{.java_version}}-grl'
 
-  SDK_KOTLIN_VERSION: 1.7.21
-  SDK_SBT_VERSION:  1.8.0
-  SDK_SCALA_VERSION: 3.2.0
-  SDK_LEININGEN_VERSION: 2.9.10-2
-  SDK_MAVEN_VERSION: 3.8.6
-  SDK_GRADLE_VERSION: 7.6-rc-3
-  SDK_SPRINGBOOT_VERSION: 2.7.5
-  SDK_QUARKUS_VERSION: 2.14.0.Final
+  # SDK_KOTLIN_VERSION: 1.7.21
+  # SDK_SBT_VERSION:  1.8.0
+  # SDK_SCALA_VERSION: 3.2.0
+  # SDK_LEININGEN_VERSION: 2.9.10-2
+  # SDK_SPRINGBOOT_VERSION: 2.7.5
+  # SDK_QUARKUS_VERSION: 2.14.0.Final
 
 tasks:
 
@@ -163,18 +161,6 @@ tasks:
       #   vars: {
       #     upname: LEININGEN
       #   , lwname: leiningen
-      #   }
-
-      # - task: install-sdk
-      #   vars: {
-      #     upname: MAVEN
-      #   , lwname: maven
-      #   }
-
-      # - task: install-sdk
-      #   vars: {
-      #     upname: GRADLE
-      #   , lwname: gradle
       #   }
 
       # - task: install-sdk

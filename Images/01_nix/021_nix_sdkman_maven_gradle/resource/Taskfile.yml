@@ -1,0 +1,57 @@
+version: '3'
+
+env:
+  SDK_MAVEN_VERSION: 3.8.6
+  SDK_GRADLE_VERSION: 7.6
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  fn-install-sdk:
+    vars:
+      bash_env: |-
+        export {{.upname}}_HOME=$HOME/.sdkman/candidates/{{.lwname}}/current
+        export PATH=$PATH:${{.upname}}_HOME/bin
+      fish_env: |-
+        set -gx {{.upname}}_HOME $HOME/.sdkman/candidates/{{.lwname}}/current
+        set -gx PATH $PATH:${{.upname}}_HOME/bin
+    cmds:
+      - bash -lc '{{.precmds}}
+          sdk i {{.lwname}} $SDK_{{.upname}}_VERSION'
+      - echo '{{.bash_env}}' >> $HOME/.profile
+      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+
+  install-maven:
+    cmds:
+      - task: fn-install-sdk
+        vars:
+          upname: MAVEN
+          lwname: maven
+
+  install-gradle:
+    cmds:
+      - task: fn-install-sdk
+        vars:
+          upname: GRADLE
+          lwname: gradle
+
+  cli-version:
+    cmds:
+      - bash -lc "
+          mvn --version
+          | sed -n '1p'
+          | awk '{print \$1 \" \" \$2 \" \" \$3}'
+        ; gradle --version
+          | sed -n '3p'
+        "
+
+  install-all:
+    cmds:
+      - task: install-maven
+      - task: install-gradle
+
+      - task: cli-version
