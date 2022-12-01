@@ -3,6 +3,7 @@ version: '3'
 includes:
   helper: ~/.taskfilehub/hubs/helper.yml
   patchelf: ~/.taskfilehub/hubs/patchelf.yml
+  sdkman: ~/.taskfilehub/hubs/sdkman.yml
 
 vars:
   # https://github.com/sdkman/sdkman-cli
@@ -15,9 +16,6 @@ vars:
 env:
   SDK_JAVA_VERSION: '{{.vm_version}}.r{{.java_version}}-grl'
 
-  # SDK_KOTLIN_VERSION: 1.7.21
-  # SDK_SBT_VERSION:  1.8.0
-  # SDK_SCALA_VERSION: 3.2.0
   # SDK_LEININGEN_VERSION: 2.9.10-2
   # SDK_SPRINGBOOT_VERSION: 2.7.5
   # SDK_QUARKUS_VERSION: 2.14.0.Final
@@ -113,24 +111,10 @@ tasks:
 
       - task: install-post-sdkman
 
-  fn-install-sdk:
-    vars:
-      bash_env: |-
-        export {{.upname}}_HOME=$HOME/.sdkman/candidates/{{.lwname}}/current
-        export PATH=$PATH:${{.upname}}_HOME/bin
-      fish_env: |-
-        set -gx {{.upname}}_HOME $HOME/.sdkman/candidates/{{.lwname}}/current
-        set -gx PATH $PATH:${{.upname}}_HOME/bin
-    cmds:
-      - bash -lc '{{.precmds}}
-          sdk i {{.lwname}} $SDK_{{.upname}}_VERSION'
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
-
   install-java:
     cmds:
 
-      - task: fn-install-sdk
+      - task: sdkman:fn-install-sdk
         vars:
           upname: JAVA
           lwname: java
@@ -138,24 +122,6 @@ tasks:
       # ; sdk env init
       - bash -lc '
           sdk use java $SDK_JAVA_VERSION'
-
-      # - task: install-sdk
-      #   vars: {
-      #     upname: KOTLIN
-      #   , lwname: kotlin
-      #   }
-
-      # - task: install-sdk
-      #   vars: {
-      #     upname: SBT
-      #   , lwname: sbt
-      #   }
-      # - task: install-sdk
-      #   vars: {
-      #     upname: SCALA
-      #   , lwname: scala
-      #   , precmds: sdk use $SDK_SBT_VERSION;
-      #   }
 
       # - task: install-sdk
       #   vars: {

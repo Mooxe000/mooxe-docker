@@ -1,0 +1,70 @@
+version: '3'
+
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
+  sdkman: ~/.taskfilehub/hubs/sdkman.yml
+
+env:
+  SDK_SBT_VERSION:  1.8.0
+  SDK_SCALA_VERSION: 3.2.1
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-sbt:
+    cmds:
+      - task: sdkman:fn-install-sdk
+        vars:
+          upname: SBT
+          lwname: sbt
+
+  install-scala:
+    cmds:
+      - task: sdkman:fn-install-sdk
+        vars:
+          upname: SCALA
+          lwname: scala
+
+  # https://zhuanlan.zhihu.com/p/82727108
+  scala-mirror:
+    vars:
+      repositories: |
+        [repositories]
+        local
+        huaweicloud-maven: https://repo.huaweicloud.com/repository/maven/
+        maven-central: https://repo1.maven.org/maven2/
+        sbt-plugin-repo: https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases, [organization]/[module]/(scala_[scalaVersion]/)(sbt_[sbtVersion]/)[revision]/[type]s/[artifact](-[classifier]).[ext]
+    cmds:
+      - mkdir -p $HOME/.sbt
+      - echo '{{.repositories}}'
+        > $HOME/.sbt/repositories
+
+  # https://docs.scala-lang.org/zh-cn/scala3/book/tools-sbt.html
+  scala-env:
+    cmds:
+      - task: helper:fn-env-kv
+        vars:
+          env_key: SBT_OPTS
+          env_value: -Dsbt.override.build.repos=true
+
+  cli-version:
+    cmds:
+      - bash -lc "
+          sbt --version
+        ; scala --version
+        ; rm -rf ./target
+        "
+
+  install-all:
+    cmds:
+      - task: install-sbt
+      - task: install-scala
+
+      - task: scala-mirror
+      - task: scala-env
+
+      - task: cli-version

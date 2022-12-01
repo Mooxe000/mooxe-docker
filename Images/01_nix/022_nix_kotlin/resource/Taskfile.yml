@@ -1,0 +1,34 @@
+version: '3'
+
+includes:
+  sdkman: ~/.taskfilehub/hubs/sdkman.yml
+
+env:
+  SDK_KOTLIN_VERSION: 1.7.21
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-kotlin:
+    cmds:
+      - task: sdkman:fn-install-sdk
+        vars:
+          upname: KOTLIN
+          lwname: kotlin
+
+  cli-version:
+    cmds:
+      - bash -lc "
+          kotlin -version
+          | awk '{print \$1 \" \" \$2 \" \" \$3}'
+        "
+
+  install-all:
+    cmds:
+      - task: install-kotlin
+
+      - task: cli-version
