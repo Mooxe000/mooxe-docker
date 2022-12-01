@@ -84,6 +84,15 @@ tasks:
       # axel -o %{out}% %{url}%
       # opam install --download-only -y dune
 
+  install-pkgs:
+    cmds:
+      # ; opam install -y js_of_ocaml js_of_ocaml-compiler js_of_ocaml-lwt js_of_ocaml-ppx
+      - bash -lc '
+        opam option --global depext=false
+        ; opam install -y dune utop ocamlfind ocaml-lsp-server
+        ; opam install -y base core stdio
+        '
+
   install-all:
     deps:
       - install-pre
@@ -92,3 +101,5 @@ tasks:
       - task: init-opam
       - task: opam-env
       - task: opam-download-command
+
+      - task: install-pkgs
