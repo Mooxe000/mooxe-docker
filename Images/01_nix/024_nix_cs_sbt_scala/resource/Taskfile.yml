@@ -102,15 +102,17 @@ tasks:
 
   cache-download-jdk:
     vars:
-      repo_name: adoptium/temurin19-binaries
-      bin_version_tag: 19.0.1
-      bin_version: jdk-{{.bin_version_tag}}%2B10
-      bin_os: x64_linux
-      dl_file: OpenJDK19U-jdk_{{.bin_os}}_hotspot_{{.bin_version_tag}}_10.tar.gz
+      repo_name: graalvm/graalvm-ce-builds
+      bin_version_tag: 22.3.0
+      bin_version: vm-{{.bin_version_tag}}
+      bin_os: linux-amd64
+      dl_file: graalvm-ce-java17-{{.bin_os}}-{{.bin_version_tag}}.tar.gz
       url_prefix: '/releases/download'
     cmds:
       # - mkdir -p $HOME/.cache/coursier/v1/https/github.com/adoptium/temurin19-binaries/releases/download/jdk-19.0.1%252B10
       # - https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19.0.1%2B10/OpenJDK19U-jdk_x64_linux_hotspot_19.0.1_10.tar.gz
+      # - mkdir -p $HOME/.cache/coursier/v1/https/github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0
+      # - https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java17-linux-amd64-22.3.0.tar.gz
       - task: fn-cache-download
         vars:
           repo_name: '{{.repo_name}}'
@@ -118,8 +120,8 @@ tasks:
           dl_file: '{{.dl_file}}'
           url_prefix: '{{.url_prefix}}'
           url_postfix: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
-          cache_dir_fix:
-            sh: echo {{.bin_version}} | sed 's/%/%25/'
+          # cache_dir_fix:
+          #   sh: echo {{.bin_version}} | sed 's/%/%25/'
 
   cache-download-sbt:
     vars:
@@ -149,7 +151,7 @@ tasks:
       - axel https://raw.fastgit.org/coursier/jvm-index/master/index.json
       - cs setup
           --yes
-          --jvm 19
+          --jvm graalvm-java17:22.3.0
           --jvm-index ./index.json
       - rm ./index.json
 
@@ -163,17 +165,18 @@ tasks:
         >> $HOME/.config/fish/config.fish
 
   patchelf-java:
+    # $HOME/.cache/coursier/arc/https/github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java17-linux-amd64-22.3.0.tar.gz/graalvm-ce-java17-22.3.0
     vars:
       cache_dir_root: $HOME/.cache/coursier/arc
       gihub_cache_dir: '{{.cache_dir_root}}/https/github.com'
-      repo_name: adoptium/temurin19-binaries
+      repo_name: graalvm/graalvm-ce-builds
       url_prefix: /releases/download
-      bin_version_tag: 19.0.1
-      bin_os: x64_linux
-      dl_file: OpenJDK19U-jdk_{{.bin_os}}_hotspot_{{.bin_version_tag}}_10.tar.gz
-      bin_version: jdk-{{.bin_version_tag}}%252B10/{{.dl_file}}/jdk-{{.bin_version_tag}}+10
-      cache_dir: '{{.cache_dir_root}}/https/github.com/{{.repo_name}}{{.url_prefix}}/{{.bin_version}}'
-      JAVA_HOME: '{{.cache_dir}}'
+      bin_version_tag: 22.3.0
+      bin_version: vm-{{.bin_version_tag}}
+      bin_os: linux-amd64
+      dl_file: graalvm-ce-java17-{{.bin_os}}-{{.bin_version_tag}}.tar.gz
+      cache_dir: graalvm-ce-java17-{{.bin_version_tag}}
+      JAVA_HOME: '{{.cache_dir_root}}/https/github.com/{{.repo_name}}{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}/{{.cache_dir}}'
     cmds:
       - task: patchelf:auto-patch
         vars:
