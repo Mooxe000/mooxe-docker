@@ -1,4 +1,4 @@
-FROM mooxe/nix_maven_gradle
+FROM mooxe/nix_dev
 
 ADD resource /root/build
 

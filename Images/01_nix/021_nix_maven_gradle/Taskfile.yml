@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  ContainerName: nix_sdkman_maven_gradle
+  ContainerName: nix_maven_gradle
   ImageName: mooxe/{{.ContainerName}}
 
 includes:
