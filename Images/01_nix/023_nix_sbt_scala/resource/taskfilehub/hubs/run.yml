@@ -1,0 +1,32 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  run-dev:
+    cmds:
+      - podman run --rm -ti
+          --name {{.ContainerName}}
+          -v $(pwd):/root/{{.ContainerName}}
+          {{.run_option}}
+          {{.port}}
+          {{.ImageName}}
+            bash
+
+  run:
+    cmds:
+      - podman run --rm -ti
+          --name {{.ContainerName}}
+          {{.ImageName}}
+          {{.port}}
+            bash
+
+  exec:
+    cmds:
+      - podman exec -ti
+          {{.ContainerName}}
+          bash

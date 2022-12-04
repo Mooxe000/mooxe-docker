@@ -3,6 +3,7 @@ version: '3'
 includes:
   helper: ~/.taskfilehub/hubs/helper.yml
   patchelf: ~/.taskfilehub/hubs/patchelf.yml
+  scala: ~/.taskfilehub/hubs/language/scala.yml
 
 tasks:
 
@@ -222,5 +223,8 @@ tasks:
 
       - task: patchelf-java
       - task: patchelf-coursier
+
+      - task: scala:scala-mirror
+      - task: scala:scala-env
 
       - task: cli-version

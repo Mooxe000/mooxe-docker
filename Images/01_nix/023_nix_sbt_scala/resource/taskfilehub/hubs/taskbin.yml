@@ -1,0 +1,48 @@
+version: '3'
+
+includes:
+  helper: ./helper.yml
+
+vars:
+  # https://github.com/go-task/task/releases
+  task_version: 3.18.0
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  taskbin-clean:
+    vars:
+      bin_name: task
+    cmds:
+      - if [[ ! -z ./resource/{{.bin_name}} ]]
+        ; then
+            rm -f ./resource/{{.bin_name}}
+        ; fi
+
+  taskbin:
+    deps:
+      - taskbin-clean
+    vars:
+      bin_name: task
+      repo_name: go-{{.bin_name}}/{{.bin_name}}
+      bin_version: '{{.task_version}}'
+      bin_os: linux_amd64
+      dl_file: '{{.bin_name}}_{{.bin_os}}.tar.gz'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
+    cmds:
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+
+      - mkdir -p ./build
+      - mv {{.dl_file}} ./build
+      - cd ./build
+        ; tar xvf {{.dl_file}}
+      - mv ./build/{{.bin_name}} ./resource/
+      - rm -rf ./build
