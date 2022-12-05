@@ -5,6 +5,8 @@ includes:
   patchelf: ~/.taskfilehub/hubs/patchelf.yml
   scala: ~/.taskfilehub/hubs/language/scala.yml
 
+  mill: ./mill.yml
+
 tasks:
 
   default:
@@ -157,13 +159,6 @@ tasks:
           --jvm-index ./index.json
       - rm ./index.json
 
-  install-mill:
-    cmds:
-      - cs install
-          --no-default
-          -r https://repo.huaweicloud.com/repository/maven/
-          mill
-
   coursier-env:
     cmds:
       - echo $(grep JAVA_HOME ~/.profile | sed -e 's/export/set -gx/' -e 's/=/ /')
@@ -220,6 +215,8 @@ tasks:
         ; sbt --version
         ; scala --version
         ; rm -rf ./target
+        ; mill -v
+        ; rm -rf ./out
         "
 
   install-all:
@@ -227,7 +224,6 @@ tasks:
       - task: install-coursier
       - task: patch-coursier
       - task: setup-coursier
-      - task: install-mill
 
       - task: coursier-env
 
@@ -236,5 +232,7 @@ tasks:
 
       - task: scala:scala-mirror
       - task: scala:scala-env
+
+      - task: mill:install-all
 
       - task: cli-version

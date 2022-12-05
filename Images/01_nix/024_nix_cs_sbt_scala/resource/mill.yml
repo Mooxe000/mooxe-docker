@@ -1,0 +1,55 @@
+version: '3'
+
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
+  # patchelf: ~/.taskfilehub/hubs/patchelf.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-mill:
+    cmds:
+      - cs install
+          --no-default
+          -r https://repo.huaweicloud.com/repository/maven/
+          mill
+
+  install-adoptopenjdk-jre:
+    cmds:
+      - nix-env -i adoptopenjdk-jre-hotspot-bin
+
+  mill-alias:
+    vars:
+      bash_alias: |-
+        function mill {
+          JAVA_HOME=/nix/store/$( \
+            ls /nix/store | grep adoptopenjdk-jre | grep -v 'drv$' \
+          ) \
+          eval $(echo $( \
+            find $HOME/.local/share/coursier -name mill \
+          )) $@
+        }
+      fish_alias: |-
+        function mill
+          JAVA_HOME=/nix/store/( \
+            ls /nix/store | grep adoptopenjdk-jre | grep -v 'drv$' \
+          ) \
+          eval (echo ( \
+            find $HOME/.local/share/coursier -name mill \
+          )) $argv[1..]
+        end
+    cmds:
+      - task: helper:fn-profile
+        vars:
+          bash_env: '{{.bash_alias}}'
+          fish_env: '{{.fish_alias}}'
+
+  install-all:
+    cmds:
+      - task: install-mill
+      - task: install-adoptopenjdk-jre
+      - task: mill-alias
