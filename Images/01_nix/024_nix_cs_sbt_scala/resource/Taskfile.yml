@@ -150,11 +150,19 @@ tasks:
       - cache-download-sbt
     cmds:
       - axel https://raw.fastgit.org/coursier/jvm-index/master/index.json
+      # - cs java --available --jvm-index ./index.json
       - cs setup
           --yes
           --jvm graalvm-java17:22.3.0
           --jvm-index ./index.json
       - rm ./index.json
+
+  install-mill:
+    cmds:
+      - cs install
+          --no-default
+          -r https://repo.huaweicloud.com/repository/maven/
+          mill
 
   coursier-env:
     cmds:
@@ -219,6 +227,8 @@ tasks:
       - task: install-coursier
       - task: patch-coursier
       - task: setup-coursier
+      - task: install-mill
+
       - task: coursier-env
 
       - task: patchelf-java
