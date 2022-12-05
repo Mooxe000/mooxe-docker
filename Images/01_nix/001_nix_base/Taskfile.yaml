@@ -11,6 +11,7 @@ includes:
       ContainerName: '{{.ContainerName}}'
       ImageName: '{{.ImageName}}'
   taskbin: ~/.taskfilehub/hubs/taskbin.yml
+  taskhub: ~/.taskfilehub/hubs/taskfilehub.yml
 
 tasks:
 
@@ -21,12 +22,9 @@ tasks:
 
   build:
     cmds:
-      - if [[ -d ./resource/.taskfilehub ]]
-        ; then
-          rm -rf ./resource/.taskfilehub
-        ; fi
-      - cp -R ~/.taskfilehub ./resource
+      - task: taskhub:files
       - task: image:build:build
+      # - task: image:build:build-with-cache
 
   run-dev:
     cmds:
@@ -40,9 +38,11 @@ tasks:
 
   # https://hydra.nixos.org/build/190743960
   base-img:
+    vars:
+      build_id: 200500142
     cmds:
       - aria2c
           -o nix.tar.gz
-          https://hydra.nixos.org/build/190743960/download/1/image.tar.gz
+          https://hydra.nixos.org/build/{{.build_id}}/download/1/image.tar.gz
       - podman load -i ./nix.tar.gz
       - rm ./nix.tar.gz

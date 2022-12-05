@@ -1,4 +1,4 @@
-FROM localhost/nix:2.11.2
+FROM localhost/nix:2.12.0pre20221202_b4b1338
 
 WORKDIR /root
 
@@ -7,7 +7,7 @@ ENV PATH $PATH:/usr/local/bin
 ADD resource /root/build
 
 RUN set -eux \
-; ln -s /root/build/.taskfilehub /root/.taskfilehub
+; ln -s /root/build/taskfilehub /root/.taskfilehub
 
 RUN set -eux \
 ; cd /root/build \
