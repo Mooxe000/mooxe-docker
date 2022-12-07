@@ -19,47 +19,96 @@ tasks:
           fish ncurses
           zsh
           nushell
+
+      - touch $HOME/.profile
       - install -d $HOME/.config/fish
+
+      - task: helper:fn-echo-in-file
+        vars:
+          raws: set fish_greeting ""
+          profile_path: $HOME/.config/fish/config.fish
+
       - cp -r ./nushell $HOME/.config
 
   install-starship:
     cmds:
       - nix-env -i starship
-      - echo 'eval "$(starship init bash)"'
-        >> $HOME/.bashrc
-      - echo 'eval "$(starship init zsh)"'
-        >> $HOME/.zshrc
-      - echo 'set fish_greeting '''
-        >> $HOME/.config/fish/config.fish
-      - echo 'starship init fish | source'
-        >> $HOME/.config/fish/config.fish
+
+      - task: helper:fn-echo-in-bash
+        vars:
+          raws: eval "$(starship init bash)"
+      - task: helper:fn-echo-in-zsh
+        vars:
+          raws: eval "$(starship init zsh)"
+      - task: helper:fn-echo-in-fish
+        vars:
+          raws: starship init fish | source
+
       - install -d $HOME/.cache/starship
-      - echo 'mkdir ~/.cache/starship'
-        >> $HOME/.config/nushell/env.nu
-      - echo 'starship init nu | save ~/.cache/starship/init.nu'
-        >> $HOME/.config/nushell/env.nu
-      - echo 'source ~/.cache/starship/init.nu'
-        >> $HOME/.config/nushell/config.nu
+
+      - task: helper:fn-echo-in-file
+        vars:
+          raws: |-
+            mkdir -p ~/.cache/starship
+            starship init nu | save ~/.cache/starship/init.nu
+          profile_path: $HOME/.config/nushell/env.nu
+
+      - task: helper:fn-echo-in-file
+        vars:
+          raws: source ~/.cache/starship/init.nu
+          profile_path: $HOME/.config/nushell/config.nu
 
   profile-path:
+    vars:
+      # fn_fish: |-
+      #   function fish {
+      #     exec -l fish -l "$@"
+      #   }
+      source_profile:
+        source $HOME/.profile
     cmds:
-      - echo '' > ~/.profile
-      - echo 'source ~/.profile' >> ~/.bashrc
-      - echo 'source ~/.profile' >> ~/.zshrc
+      - task: helper:fn-echo-in-bash
+        vars:
+          raws: '{{.source_profile}}'
+      - task: helper:fn-echo-in-zsh
+        vars:
+          raws: '{{.source_profile}}'
+      - task: helper:fn-echo-in-fish
+        vars:
+          raws: '{{.source_profile}}'
 
       - mkdir -p $HOME/.local/bin
-
       - task: helper:fn-env-kv
         vars:
           env_key: PATH
           env_value: $PATH:$HOME/.local/bin
 
+      # - task: helper:fn-echo-in-bash
+      #   vars:
+      #     raws: '{{.fn_fish}}'
+      # - task: helper:fn-echo-in-zsh
+      #   vars:
+      #     raws: '{{.fn_fish}}'
+      # - task: helper:fn-echo-in-fish
+      #   vars:
+      #     raws:
+      #       sh:
+      #         echo '{{.fn_fish}}'
+      #         | sed
+      #             -e "s/ {$//g"
+      #             -e "s/^}$/end/g"
+      #             -e "s/\"\$@\"/\$argv\[1\.\.\]/g"
+
   install-editor:
     cmds:
-      - nix-env -i neovim
+      - nix-env -i neovim helix
       # helix
-      - ln -s $(which nvim) /usr/local/bin/vi
-      - ln -s $(which nvim) /usr/local/bin/vim
+      - task: helper:fn-echo-in-profile
+        vars:
+          raws: |-
+            alias vi=nvim
+            alias vim=nvim
+            alias hi=hx
 
   install-dltool:
     cmds:

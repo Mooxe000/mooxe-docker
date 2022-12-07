@@ -10,6 +10,30 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
+  # https://github.com/joseluisq/static-web-server/releases
+  install-sws:
+    vars:
+      bin_rename: sws
+      bin_name: static-web-server
+      repo_name: '{{.bin_name}}/{{.bin_name}}'
+      bin_version: 2.14.1
+      bin_os: x86_64-unknown-linux-gnu
+      file_dir: '{{.bin_name}}-v{{.bin_version}}-{{.bin_os}}'
+      dl_file: '{{.file_dir}}.tar.gz'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
+    cmds:
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+
+      - tar xvf {{.dl_file}}
+      - chmod +x ./{{.file_dir}}/{{.bin_name}}
+      - cp ./{{.file_dir}}/{{.bin_name}} /usr/local/bin
+      - ln -s /usr/local/bin/{{.bin_name}} /usr/local/bin/{{.bin_rename}}
+      - rm -rf ./{{.file_dir}}*
+
   install-fswatch-before:
     cmds:
       - apt install -y make
@@ -68,30 +92,6 @@ tasks:
       - mv {{.dl_file}} {{.bin_rename}}
       - chmod +x {{.bin_rename}}
       - mv {{.bin_rename}} /usr/local/bin
-
-  # https://github.com/joseluisq/static-web-server/releases
-  install-sws:
-    vars:
-      bin_rename: sws
-      bin_name: static-web-server
-      repo_name: '{{.bin_name}}/{{.bin_name}}'
-      bin_version: 2.14.0
-      bin_os: x86_64-unknown-linux-gnu
-      file_dir: '{{.bin_name}}-v{{.bin_version}}-{{.bin_os}}'
-      dl_file: '{{.file_dir}}.tar.gz'
-      url_prefix: '/releases/download'
-      url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
-    cmds:
-      - task: helper:fn-download
-        vars:
-          git_repo: '{{.repo_name}}'
-          url_postfix: '{{.url_postfix}}'
-
-      - tar xvf {{.dl_file}}
-      - chmod +x ./{{.file_dir}}/{{.bin_name}}
-      - cp ./{{.file_dir}}/{{.bin_name}} /usr/local/bin
-      - ln -s /usr/local/bin/{{.bin_name}} /usr/local/bin/{{.bin_rename}}
-      - rm -rf ./{{.file_dir}}*
 
   # https://github.com/Nukesor/pueue/releases
   install-pueued-base:

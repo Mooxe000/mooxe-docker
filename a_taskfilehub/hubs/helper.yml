@@ -7,20 +7,47 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  fn-profile:
+  fn-echo-in-file:
     cmds:
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+      - echo '{{.raws}}'
+        >> {{.profile_path}}
+
+  fn-echo-in-profile:
+    cmds:
+      - task: fn-echo-in-file
+        vars:
+          raws: '{{.raws}}'
+          profile_path: $HOME/.profile
+
+  fn-echo-in-bash:
+    cmds:
+      - task: fn-echo-in-file
+        vars:
+          raws: '{{.raws}}'
+          profile_path: $HOME/.bashrc
+
+  fn-echo-in-zsh:
+    cmds:
+      - task: fn-echo-in-file
+        vars:
+          raws: '{{.raws}}'
+          profile_path: $HOME/.zshrc
+
+  fn-echo-in-fish:
+    cmds:
+      - task: fn-echo-in-file
+        vars:
+          raws: '{{.raws}}'
+          profile_path: $HOME/.config/fish/config.fish
 
   fn-env-kv:
     vars:
       env_key: '{{.env_key}}'
       env_value: '{{.env_value}}'
     cmds:
-      - task: fn-profile
+      - task: fn-echo-in-profile
         vars:
-          bash_env: export {{.env_key}}="{{.env_value}}"
-          fish_env: set -gx {{.env_key}} "{{.env_value}}"
+          raws: export {{.env_key}}="{{.env_value}}"
 
   fn-download:
     vars:

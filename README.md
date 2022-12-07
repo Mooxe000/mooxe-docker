@@ -1,28 +1,64 @@
-# Mooxe docker images
+# Dev-Containers
 
-### Images
+Dev-Containers 是一个跨平台、开箱即用、支持多钟编程语言的编程学习和开发环境的容器镜像群
 
-- mooxe/nix_base
-- mooxe/nix_dev
+### 特点
 
-- mooxe/nix_go
-- mooxe/nix_g_go
-- mooxe/nix_deno
-- mooxe/nix_dvm_deno
-- mooxe/nix_deno_node_bun
-- mooxe/nix_dvm_fnm_bun
-- mooxe/nix_rust
-- mooxe/nix_rust_wasm
-- mooxe/nix_ocaml
+- 支持主流桌面(Windows+WSL/Linux/MacOS)
+- 基于 NixOS，使用 taskfile + dockerfile 构建
+- 内置 taskfile 支持
+- 支持大多数主流编程语言及相关生态
+- 无需做特殊的网络处理
+- 编程语言及生态保持尽可能的使用更新的稳定版本
+- 可以链接主流 IDE 镜像（如：vscode 容器版），实现云编码
 
-- mooxe/nix_sdkman
-- mooxe/nix_maven_gradle
-- mooxe/nix_kotlin
-- mooxe/nix_sbt_scala
+### 镜像群
 
-### Usage
+#### DONE 已完工镜像群及依赖关系
 
-#### docker:pull
+- nix:2.12.0pre20221202_b4b1338
+  - mooxe/nix_base
+    - mooxe/nix_dev
+
+      - mooxe/nix_go
+      - mooxe/nix_g_go
+      - mooxe/nix_deno
+        - mooxe/nix_deno_node_bun
+      - mooxe/nix_dvm_deno
+        - mooxe/nix_dvm_fnm_bun
+      - mooxe/nix_rust
+        - mooxe/nix_rust_wasm
+      - mooxe/nix_ocaml
+
+      - mooxe/nix_sdkman # JAVA - GraalVM JDK
+        - mooxe/nix_maven_gradle
+          - mooxe/nix_kotlin
+          - mooxe/nix_sbt_scala
+      - mooxe/nix_cs_sbt_scala
+
+#### TODO 待制作镜像群
+
+      - mooxe/Clojure
+
+      - mooxe/haskell
+      - mooxe/rescript
+      - mooxe/purescript
+      - mooxe/newlisp
+
+      - mooxe/nim
+      - mooxe/zig
+      - mooxe/vlang
+
+      - mooxe/dart
+      - mooxe/flutter
+
+      - mooxe/python
+      - mooxe/ruby
+      - mooxe/perl
+
+## Usage 使用方式
+
+#### container:pull 拉取镜像
 
 pull mooxe-docker images from docker.io
 
@@ -30,25 +66,11 @@ pull mooxe-docker images from docker.io
 >> docker/podman pull mooxe/nix_dev
 ```
 
-#### TODO build Images
+#### container:run 运行容器
 
-- clojure
-- dart
-- flutter
+-----------------------------------
 
-- haskell
-- rescript
-- purescript
-
-- newlisp
-
-- nim
-- vlang
-- zig
-
-- python
-- ruby
-- perl
+## Legacy
 
 ### Earthly
 

@@ -10,8 +10,8 @@ includes:
     vars:
       ContainerName: '{{.ContainerName}}'
       ImageName: '{{.ImageName}}'
-  taskbin: ~/.taskfilehub/hubs/taskbin.yml
   taskhub: ~/.taskfilehub/hubs/taskfilehub.yml
+  taskbin: ~/.taskfilehub/hubs/taskbin.yml
 
 tasks:
 
