@@ -1,6 +1,6 @@
-# Dev-Containers
+# Dev-Images
 
-Dev-Containers 是一个跨平台、开箱即用、支持多钟编程语言的编程学习和开发环境的容器镜像群
+Dev-Images 是一个跨平台、开箱即用、支持多钟编程语言的编程学习和开发环境的容器镜像群
 
 ### 特点
 
@@ -66,7 +66,7 @@ pull mooxe-docker images from docker.io
 >> docker/podman pull mooxe/nix_dev
 ```
 
-#### container:run 运行容器
+#### container:run 运行镜像
 
 -----------------------------------
 

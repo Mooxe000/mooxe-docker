@@ -1,6 +1,7 @@
 version: '3'
 
 includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
   opam-package-proxy: ./opam-package-proxy.yml
 
 tasks:
@@ -46,12 +47,10 @@ tasks:
           -y default ~/.opam-repository
 
   opam-env:
-    vars:
-      bash_env: eval $(opam env --switch=default)
-      fish_env: eval (opam env --switch=default)
     cmds:
-      - echo '{{.bash_env}}' >> $HOME/.profile
-      - echo '{{.fish_env}}' >> $HOME/.config/fish/config.fish
+      - task: helper:fn-echo-in-profile
+        vars:
+          raws: eval $(opam env --switch=default)
 
   # opam-package-proxy-before:
   #   cmds:
@@ -67,10 +66,10 @@ tasks:
 
   opam-download-command:
     cmds:
-      - cp ./download_command ~/.local/bin
+      - cp ./opam_download_command ~/.local/bin
       - '
         sed -i "/download-jobs/adownload-command: [
-        \n  \"download_command\"
+        \n  \"opam_download_command\"
         \n  \"%{out}%\"
         \n  \"%{url}%\"
         \n]" ~/.opam/config
@@ -86,11 +85,12 @@ tasks:
 
   install-pkgs:
     cmds:
-      # ; opam install -y js_of_ocaml js_of_ocaml-compiler js_of_ocaml-lwt js_of_ocaml-ppx
+      # js_of_ocaml js_of_ocaml-compiler js_of_ocaml-lwt js_of_ocaml-ppx
       - bash -lc '
         opam option --global depext=false
-        ; opam install -y dune utop ocamlfind ocaml-lsp-server
-        ; opam install -y base core stdio
+        ; opam install -y
+            dune utop ocamlfind ocaml-lsp-server
+            base core stdio
         '
 
   install-all:

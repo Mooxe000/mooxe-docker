@@ -6,7 +6,7 @@ includes:
 
 vars:
   # https://github.com/Schniz/fnm/releases
-  version_fnm: 1.32.0
+  version_fnm: 1.33.1
   version_node: 18.12.1
   # https://github.com/oven-sh/bun/releases
   version_bun: 0.2.2

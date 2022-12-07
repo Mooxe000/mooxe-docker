@@ -38,11 +38,10 @@ tasks:
   install-cargo-update:
     cmds:
       - nix-shell
-          -p clang pkg-config openssl
-          --run 'cargo install cargo-update'
-      - nix-shell
-          -p clang perl openssl
-          --run 'cargo install cargo-generate'
+          -p clang pkg-config openssl perl
+          --run '
+            cargo install cargo-update cargo-generate
+          '
 
   cli-version:
     cmds:

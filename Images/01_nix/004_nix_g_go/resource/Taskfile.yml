@@ -7,7 +7,7 @@ includes:
 vars:
   # https://github.com/voidint/g/releases
   version_g: 1.4.0
-  version_go: 1.19.3
+  version_go: 1.19.4
 
   GOROOT: $HOME/.g/go
 

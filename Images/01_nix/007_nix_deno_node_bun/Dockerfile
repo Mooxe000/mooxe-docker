@@ -3,7 +3,7 @@ FROM mooxe/nix_deno
 ADD resource /root/build
 
 RUN set -eux \
-; ln -s /root/build/.taskfilehub /root/.taskfilehub
+; ln -s /root/build/taskfilehub /root/.taskfilehub
 
 RUN set -eux \
 ; cd /root/build \

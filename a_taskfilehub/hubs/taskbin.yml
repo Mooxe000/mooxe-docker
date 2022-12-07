@@ -5,7 +5,7 @@ includes:
 
 vars:
   # https://github.com/go-task/task/releases
-  task_version: 3.18.0
+  task_version: 3.19.0
 
 tasks:
 
