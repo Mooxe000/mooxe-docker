@@ -10,6 +10,7 @@ includes:
     vars:
       ContainerName: '{{.ContainerName}}'
       ImageName: '{{.ImageName}}'
+  taskhub: ~/.taskfilehub/hubs/taskfilehub.yml
 
 tasks:
 
@@ -20,11 +21,7 @@ tasks:
 
   build:
     cmds:
-      - if [ -d './resource/.taskfilehub' ]
-        ; then
-          rm -rf ./resource/.taskfilehub
-        ; fi
-      - cp -R ~/.taskfilehub ./resource
+      - task: taskhub:files
       # - task: image:build:build
       - task: image:build:build-with-cache
 

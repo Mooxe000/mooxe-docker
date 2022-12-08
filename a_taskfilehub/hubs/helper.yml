@@ -49,6 +49,10 @@ tasks:
         vars:
           raws: export {{.env_key}}="{{.env_value}}"
 
+  fn-bash-lc:
+    cmds:
+      - bash -c 'source $HOME/.bashrc; {{.commands}}'
+
   fn-download:
     vars:
       git_host: download.fastgit.org

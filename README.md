@@ -1,6 +1,6 @@
 # Dev-Images
 
-Dev-Images 是一个跨平台、开箱即用、支持多钟编程语言的编程学习和开发环境的容器镜像群
+Dev-Images 是一个跨平台、开箱即用、支持多种编程语言的编程学习和开发环境的容器镜像群
 
 ### 特点
 
@@ -38,25 +38,25 @@ Dev-Images 是一个跨平台、开箱即用、支持多钟编程语言的编程
 
 #### TODO 待制作镜像群
 
-      - mooxe/Clojure
+- mooxe/Clojure
 
-      - mooxe/haskell
-      - mooxe/rescript
-      - mooxe/purescript
-      - mooxe/newlisp
+- mooxe/haskell
+- mooxe/rescript
+- mooxe/purescript
+- mooxe/newlisp
 
-      - mooxe/nim
-      - mooxe/zig
-      - mooxe/vlang
+- mooxe/nim
+- mooxe/zig
+- mooxe/vlang
 
-      - mooxe/dart
-      - mooxe/flutter
+- mooxe/dart
+- mooxe/flutter
 
-      - mooxe/python
-      - mooxe/ruby
-      - mooxe/perl
+- mooxe/python
+- mooxe/ruby
+- mooxe/perl
 
-## Usage 使用方式
+### Usage 使用方式
 
 #### container:pull 拉取镜像
 

@@ -28,19 +28,27 @@ tasks:
     silent: true
 
   sdkman-env:
+    vars:
+      no_fish: source $HOME/.sdkman/bin/sdkman-init.sh
+      fn_fish:  |-
+        function sdk
+          bash -c "source $HOME/.sdkman/bin/sdkman-init.sh ; sdk $argv[1..]"
+        end
     cmds:
-      - task: helper:fn-profile
+      - task: helper:fn-echo-in-bash
         vars:
-          bash_env: source $HOME/.sdkman/bin/sdkman-init.sh
-          fish_env: |-
-            function sdk
-              bash -c "source $HOME/.sdkman/bin/sdkman-init.sh ; sdk $argv[1..]"
-            end
+          raws: '{{.no_fish}}'
+      - task: helper:fn-echo-in-zsh
+        vars:
+          raws: '{{.no_fish}}'
+      - task: helper:fn-echo-in-fish
+        vars:
+          raws: '{{.fn_fish}}'
 
   install-post-sdkman:
     vars:
       git_host: download.fastgit.org
-    # - nix-shell -p gawk axel zip --run 'fish'
+    # - nix-shell -p zip --run 'fish'
     # - -U 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11'
     # | sed -e '/# download binary/ {n; d}'
     cmds:
@@ -81,6 +89,8 @@ tasks:
       # - rm $HOME/.sdkman/src/sdkman-install.new.sh
 
   install-sdkman:
+    deps:
+      - sdkman-env
     # https://github.com/sdkman/sdkman-cli/releases/download/5.16.0/sdkman-cli-5.16.0.zip
     vars:
       # java_version: '{{.java_version}}'
@@ -106,8 +116,9 @@ tasks:
         ; install -D candidates $HOME/.sdkman/var/candidates
         ; rm candidates
 
-      - task: sdkman-env
-      - bash -lc 'sdk offline; sdk update'
+      - task: helper:fn-bash-lc
+        vars:
+          commands: sdk offline; sdk update
 
       - task: install-post-sdkman
 
@@ -120,8 +131,10 @@ tasks:
           lwname: java
 
       # ; sdk env init
-      - bash -lc '
-          sdk use java $SDK_JAVA_VERSION'
+      - task: helper:fn-bash-lc
+        vars:
+          commands:
+            sdk use java $SDK_JAVA_VERSION
 
       # - task: install-sdk
       #   vars: {
@@ -159,7 +172,11 @@ tasks:
         vars:
           git_repo: '{{.repo_name}}'
           url_postfix: '{{.url_postfix}}'
-      - bash -lc 'gu -L install {{.dl_file}}'
+
+      - task: helper:fn-bash-lc
+        vars:
+          commands:
+            gu -L install {{.dl_file}}
       - rm {{.dl_file}}
 
   patch-bin:
