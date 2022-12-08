@@ -111,11 +111,17 @@ tasks:
     cmds:
       - java --version
       - cs version
-      - sbt --version
-      - scala --version
+
+      - task: helper:fn-bash-lc
+        vars:
+          commands: sbt --version
+      - task: helper:fn-bash-lc
+        vars:
+          commands: scala --version
       - task: helper:fn-bash-lc
         vars:
           commands: mill -v
+
       - rm -rf ./target
       - rm -rf ./out
 
