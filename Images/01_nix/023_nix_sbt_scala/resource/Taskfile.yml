@@ -36,12 +36,13 @@ tasks:
 
   cli-version:
     cmds:
-      - bash -lc "
-          sbt --version
-        ; scala --version
-        ; mill -v
-        ; rm -rf ./target
-        "
+      - task: helper:fn-bash-lc
+        vars:
+          commands:
+            sbt --version
+            ; scala --version
+            ; mill -v
+      - rm -rf ./target
 
   install-all:
     cmds:

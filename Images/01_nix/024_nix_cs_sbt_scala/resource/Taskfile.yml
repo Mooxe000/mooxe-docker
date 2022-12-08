@@ -6,6 +6,7 @@ includes:
   scala: ~/.taskfilehub/hubs/language/scala.yml
 
   mill: ./mill.yml
+  cs-cache: ./cs-cache.yml
 
 tasks:
 
@@ -46,110 +47,9 @@ tasks:
               grep_option: zlib-1.2.13
           bin_path: /usr/local/bin/cs
 
-  fn-cache-download:
-    vars:
-      cache_dir_root: $HOME/.cache/coursier/v1
-      gihub_cache_dir: '{{.cache_dir_root}}/https/github.com'
-      cache_dir: '{{.cache_dir_root}}/https/github.com/{{.repo_name}}{{.url_prefix}}/{{.bin_version}}'
-    cmds:
-      - mkdir -p {{.cache_dir}}
-      - task: helper:fn-download
-        vars:
-          git_repo: '{{.repo_name}}'
-          url_postfix: '{{.url_postfix}}'
-      - mv {{.dl_file}} {{.cache_dir}}
-      - if [[ '{{.cache_dir_fix}}' != '' ]]
-        ; then
-          cd {{.cache_dir}}/..
-          ; mv {{.bin_version}} {{.cache_dir_fix}}
-        ; fi
-
-  cache-download-coursier:
-    vars:
-      bin_name: cs
-      repo_name: coursier/coursier
-      bin_version: v2.1.0-RC2
-      bin_os: x86_64-pc-linux
-      dl_file: '{{.bin_name}}-{{.bin_os}}.gz'
-      url_prefix: '/releases/download'
-    cmds:
-      # - mkdir -p $HOME/.cache/coursier/v1/https/github.com/coursier/coursier/releases/download/v2.1.0-RC2/
-      # - https://github.com/coursier/coursier/releases/download/v2.1.0-RC2/cs-x86_64-pc-linux.gz
-      - task: fn-cache-download
-        vars:
-          repo_name: '{{.repo_name}}'
-          bin_version: '{{.bin_version}}'
-          dl_file: '{{.dl_file}}'
-          url_prefix: '{{.url_prefix}}'
-          url_postfix: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
-
-
-  cache-download-scalacli:
-    vars:
-      bin_name: scala-cli
-      repo_name: VirtusLab/{{.bin_name}}
-      bin_version: v0.1.18
-      bin_os: x86_64-pc-linux
-      dl_file: '{{.bin_name}}-{{.bin_os}}.gz'
-      url_prefix: '/releases/download'
-    cmds:
-      # - mkdir -p $HOME/.cache/coursier/v1/https/github.com/VirtusLab/scala-cli/releases/download/v0.1.18
-      # - https://github.com/VirtusLab/scala-cli/releases/download/v0.1.18/scala-cli-x86_64-pc-linux.gz
-      - task: fn-cache-download
-        vars:
-          repo_name: '{{.repo_name}}'
-          bin_version: '{{.bin_version}}'
-          dl_file: '{{.dl_file}}'
-          url_prefix: '{{.url_prefix}}'
-          url_postfix: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
-
-  cache-download-jdk:
-    vars:
-      repo_name: graalvm/graalvm-ce-builds
-      bin_version_tag: 22.3.0
-      bin_version: vm-{{.bin_version_tag}}
-      bin_os: linux-amd64
-      dl_file: graalvm-ce-java17-{{.bin_os}}-{{.bin_version_tag}}.tar.gz
-      url_prefix: '/releases/download'
-    cmds:
-      # - mkdir -p $HOME/.cache/coursier/v1/https/github.com/adoptium/temurin19-binaries/releases/download/jdk-19.0.1%252B10
-      # - https://github.com/adoptium/temurin19-binaries/releases/download/jdk-19.0.1%2B10/OpenJDK19U-jdk_x64_linux_hotspot_19.0.1_10.tar.gz
-      # - mkdir -p $HOME/.cache/coursier/v1/https/github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0
-      # - https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-22.3.0/graalvm-ce-java17-linux-amd64-22.3.0.tar.gz
-      - task: fn-cache-download
-        vars:
-          repo_name: '{{.repo_name}}'
-          bin_version: '{{.bin_version}}'
-          dl_file: '{{.dl_file}}'
-          url_prefix: '{{.url_prefix}}'
-          url_postfix: '{{.url_prefix}}/{{.bin_version}}/{{.dl_file}}'
-          # cache_dir_fix:
-          #   sh: echo {{.bin_version}} | sed 's/%/%25/'
-
-  cache-download-sbt:
-    vars:
-      bin_name: sbt
-      repo_name: '{{.bin_name}}/{{.bin_name}}'
-      bin_version: 1.8.0
-      dl_file: '{{.bin_name}}-{{.bin_version}}.zip'
-      url_prefix: '/releases/download'
-    cmds:
-      # - mkdir -p $HOME/.cache/coursier/v1/https/github.com/sbt/sbt/releases/download/v1.8.0
-      # - https://github.com/sbt/sbt/releases/download/v1.8.0/sbt-1.8.0.zip
-      - task: fn-cache-download
-        vars:
-          repo_name: '{{.repo_name}}'
-          bin_version: '{{.bin_version}}'
-          dl_file: '{{.dl_file}}'
-          url_prefix: '{{.url_prefix}}'
-          url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
-
   setup-coursier:
     deps:
-      - cache-download-coursier
-      - cache-download-scalacli
-      - cache-download-jdk
-      - cache-download-sbt
+      - cs-cache:cache-all
     cmds:
       - axel https://raw.fastgit.org/coursier/jvm-index/master/index.json
       # - cs java --available --jvm-index ./index.json
@@ -209,22 +109,21 @@ tasks:
 
   cli-version:
     cmds:
-      - bash -lc "
-          java --version
-        ; cs version
-        ; sbt --version
-        ; scala --version
-        ; rm -rf ./target
-        ; mill -v
-        ; rm -rf ./out
-        "
+      - java --version
+      - cs version
+      - sbt --version
+      - scala --version
+      - task: helper:fn-bash-lc
+        vars:
+          commands: mill -v
+      - rm -rf ./target
+      - rm -rf ./out
 
   install-all:
     cmds:
       - task: install-coursier
       - task: patch-coursier
       - task: setup-coursier
-
       - task: coursier-env
 
       - task: patchelf-java

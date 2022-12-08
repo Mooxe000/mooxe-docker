@@ -1,6 +1,7 @@
 version: '3'
 
 includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
   sdkman: ~/.taskfilehub/hubs/sdkman.yml
 
 env:
@@ -22,10 +23,11 @@ tasks:
 
   cli-version:
     cmds:
-      - bash -lc "
-          kotlin -version
-          | awk '{print \$1 \" \" \$2 \" \" \$3}'
-        "
+      - task: helper:fn-bash-lc
+        vars:
+          commands:
+            kotlin -version
+            | awk "{print \$1 \" \" \$2 \" \" \$3}"
 
   install-all:
     cmds:

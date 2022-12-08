@@ -1,6 +1,7 @@
 version: '3'
 
 includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
   sdkman: ~/.taskfilehub/hubs/sdkman.yml
 
 env:
@@ -30,13 +31,14 @@ tasks:
 
   cli-version:
     cmds:
-      - bash -lc "
-          mvn --version
-          | sed -n '1p'
-          | awk '{print \$1 \" \" \$2 \" \" \$3}'
-        ; gradle --version
-          | sed -n '3p'
-        "
+      - task: helper:fn-bash-lc
+        vars:
+          commands:
+            mvn --version
+              | sed -n "1p"
+              | awk "{print \$1 \" \" \$2 \" \" \$3}"
+            ; gradle --version
+              | sed -n "3p"
 
   install-all:
     cmds:

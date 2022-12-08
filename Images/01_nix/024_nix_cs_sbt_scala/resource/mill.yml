@@ -24,7 +24,7 @@ tasks:
 
   mill-alias:
     vars:
-      bash_alias: |-
+      no_fish: |-
         function mill {
           JAVA_HOME=/nix/store/$( \
             ls /nix/store | grep adoptopenjdk-jre | grep -v 'drv$' \
@@ -33,7 +33,7 @@ tasks:
             find $HOME/.local/share/coursier -name mill \
           )) $@
         }
-      fish_alias: |-
+      fn_fish: |-
         function mill
           JAVA_HOME=/nix/store/( \
             ls /nix/store | grep adoptopenjdk-jre | grep -v 'drv$' \
@@ -43,10 +43,15 @@ tasks:
           )) $argv[1..]
         end
     cmds:
-      - task: helper:fn-profile
+      - task: helper:fn-echo-in-bash
         vars:
-          bash_env: '{{.bash_alias}}'
-          fish_env: '{{.fish_alias}}'
+          raws: '{{.no_fish}}'
+      - task: helper:fn-echo-in-zsh
+        vars:
+          raws: '{{.no_fish}}'
+      - task: helper:fn-echo-in-fish
+        vars:
+          raws: '{{.fn_fish}}'
 
   install-all:
     cmds:
