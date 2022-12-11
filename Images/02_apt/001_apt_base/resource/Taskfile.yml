@@ -1,0 +1,18 @@
+version: '3'
+
+includes:
+  apt: ~/.taskfilehub/hubs/apt.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-all:
+    deps:
+      - apt:apt-init
+    cmds:
+      - apt install -y fish git
+      - mkdir -p $HOME/.config/fish

@@ -1,0 +1,37 @@
+version: '3'
+
+vars:
+  ContainerName: apt_base
+  ImageName: mooxe/{{.ContainerName}}
+
+includes:
+  image:
+    taskfile: ~/.taskfilehub/hubs/image.yml
+    vars:
+      ContainerName: '{{.ContainerName}}'
+      ImageName: '{{.ImageName}}'
+  taskhub: ~/.taskfilehub/hubs/taskfilehub.yml
+  taskbin: ~/.taskfilehub/hubs/taskbin.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  build:
+    cmds:
+      - task: taskhub:files
+      # - task: image:build:build
+      - task: image:build:build-with-cache
+
+  run-dev:
+    cmds:
+      - task: image:run:run-dev
+        vars:
+          run_option: '-v ~/.taskfilehub:/root/.taskfilehub'
+
+  run:
+    cmds:
+      - task: image:run:run

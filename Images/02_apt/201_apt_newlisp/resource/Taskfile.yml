@@ -1,0 +1,41 @@
+version: '3'
+
+includes:
+  apt: ~/.taskfilehub/hubs/apt.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-before:
+    cmds:
+      - apt install -y gcc make axel
+      - apt install -y libffi-dev libreadline-dev
+
+  install-after:
+    cmds:
+      - apt autoremove -y gcc make axel
+      - apt autoremove -y libffi-dev libreadline-dev
+
+  cli-version:
+    cmds:
+      - newlisp -v
+
+  install-all:
+    deps:
+      - install-before
+    cmds:
+      # - task: install-before
+      # - apt install -y newlisp
+
+      - axel http://www.newlisp.org/downloads/newlisp-10.7.5.tgz
+      - tar xvf newlisp-10.7.5.tgz
+      - cd newlisp-10.7.5
+        ; ./configure
+        ; make
+        ; make install
+
+      - task: cli-version
