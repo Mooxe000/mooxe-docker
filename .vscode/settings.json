@@ -5,5 +5,6 @@
   "workbench.colorTheme": "Shades of Purple",
   "editor.fontFamily": "'Maple Mono NF', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace",
   "terminal.integrated.fontSize": 16,
-  "terminal.integrated.fontFamily": "'Maple Mono NF', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace"
+  "terminal.integrated.fontFamily": "'Maple Mono NF', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace",
+  "git-graph.maxDepthOfRepoSearch": 1
 }
