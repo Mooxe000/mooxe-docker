@@ -1,0 +1,9 @@
+{
+  "editor.fontSize": 16,
+  "editor.tabSize": 2,
+  "workbench.iconTheme": "vscode-great-icons",
+  "workbench.colorTheme": "Shades of Purple",
+  "editor.fontFamily": "'Maple Mono NF', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace",
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontFamily": "'Maple Mono NF', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace"
+}

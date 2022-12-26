@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "vscodevim.vim",
+        "aaron-bond.better-comments",
+        "naumovs.color-highlight",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "oderwat.indent-rainbow",
+        "slbtty.lisp-syntax",
+        "xyz.local-history",
+        "ahmadawais.shades-of-purple",
+        "gruntfuggly.todo-tree",
+        "shardulm94.trailing-spaces",
+        "emmanuelbeziat.vscode-great-icons"
+    ]
+}

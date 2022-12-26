@@ -1,0 +1,75 @@
+version: '3'
+
+includes:
+  apt: ~/.taskfilehub/hubs/apt.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-before:
+    cmds:
+      - apt install -y gcc make axel
+      - apt install -y libffi-dev libreadline-dev
+
+  install-after:
+    cmds:
+      - apt autoremove -y gcc make axel
+      - apt autoremove -y libffi-dev libreadline-dev
+
+
+  install-newlisp:
+    # deps:
+    #   - install-before
+    cmds:
+      # - task: install-before
+      - apt install -y newlisp
+
+      # - apt install -y apt-file
+      # - apt-file update
+      # - apt-file list newlisp
+
+      # - axel http://www.newlisp.org/downloads/newlisp-10.7.5.tgz
+      # - tar xvf newlisp-10.7.5.tgz
+      # - cd newlisp-10.7.5
+      #   ; ./configure
+      #   ; make
+      #   ; make install
+
+  install-commonlisp:
+    cmds:
+      - apt install -y dialog sbcl cl-asdf cl-quicklisp buildapp
+
+  init-quicklisp:
+    cmds:
+      - sbcl
+          --load /usr/share/common-lisp/source/quicklisp/quicklisp.lisp
+          --eval "(quicklisp-quickstart:install)"
+          --eval "(exit)"
+      - mv $HOME/quicklisp $HOME/.quicklisp
+
+  update-quicklisp:
+    cmds:
+      - sbcl
+          --noinform
+          --load ~/.quicklisp/setup.lisp
+          --eval "(ql:update-dist \"quicklisp\")"
+          --eval "(ql:update-client)"
+          --eval "(exit)"
+
+  cli-version:
+    cmds:
+      - newlisp -v
+
+  install-all:
+    cmds:
+      - task: install-newlisp
+
+      - task: install-commonlisp
+      - task: init-quicklisp
+      - task: update-quicklisp
+
+      - task: cli-version

@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  coder:
+    cmds:
+      # -e PASSWORD=netserver
+      - docker run
+          --rm
+          --name=code-server
+          -e PUID=1000
+          -e PGID=1000
+          -e SUDO_PASSWORD=netserver
+          -p 8443:8443
+          -v $HOME/.coder/config/extensions:/config/extensions
+          -v $HOME/.local/share/fonts:/config/.local/share/fonts
+          -v $HOME/.gitconfig:/config/.gitconfig
+          -v $HOME/.local/bin/hx:/usr/local/bin/hx
+          -v $(pwd):/config/workspace/mooxe-docker
+          -v $(pwd)/.vscode:/config/workspace/.vscode
+            linuxserver/code-server
