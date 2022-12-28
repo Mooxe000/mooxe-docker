@@ -4,6 +4,10 @@ includes:
   helper: ~/.taskfilehub/hubs/helper.yml
   opam-package-proxy: ./opam-package-proxy.yml
 
+vars:
+  # default
+  ocaml_version: 5.0.0
+
 tasks:
 
   default:
@@ -21,7 +25,8 @@ tasks:
 
   install-opam-ocaml:
     cmds:
-      - nix-env -i opam ocaml
+      - nix-env -i opam
+      # ocaml
 
   clone-opam-repo:
     vars:
@@ -45,12 +50,19 @@ tasks:
       - opam init
           --disable-sandboxing
           -y default ~/.opam-repository
+      # - opam switch create {{.ocaml_version}}
+      - opam update
+      - opam switch create {{.ocaml_version}}+flambda+nffa
+          ocaml-variants.{{.ocaml_version}}+options
+          ocaml-option-flambda
+          ocaml-option-no-flat-float-array
 
   opam-env:
     cmds:
       - task: helper:fn-echo-in-profile
         vars:
-          raws: eval $(opam env --switch=default)
+          # raws: eval $(opam env --switch=default)
+          raws: eval $(opam env --switch={{.ocaml_version}}+flambda+nffa)
 
   # opam-package-proxy-before:
   #   cmds:
@@ -91,6 +103,7 @@ tasks:
         ; opam install -y
             dune utop ocamlfind ocaml-lsp-server
             base core stdio
+            domainslib
         '
 
   install-all:

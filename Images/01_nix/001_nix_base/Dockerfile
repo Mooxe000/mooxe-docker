@@ -1,4 +1,4 @@
-FROM localhost/nix:2.12.0pre20221202_b4b1338
+FROM localhost/nix:2.12.0
 
 WORKDIR /root
 

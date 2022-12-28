@@ -36,10 +36,10 @@ tasks:
     cmds:
       - task: image:run:run
 
-  # https://hydra.nixos.org/build/190743960
+  # https://hydra.nixos.org/build/201045031
   base-img:
     vars:
-      build_id: 200500142
+      build_id: 201045031
     cmds:
       - aria2c
           -o nix.tar.gz
