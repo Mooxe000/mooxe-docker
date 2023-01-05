@@ -1,5 +1,8 @@
 version: '3'
 
+vars:
+  proj_name: mooxe-docker
+
 tasks:
 
   default:
@@ -21,6 +24,6 @@ tasks:
           -v $HOME/.local/share/fonts:/config/.local/share/fonts
           -v $HOME/.gitconfig:/config/.gitconfig
           -v $HOME/.local/bin/hx:/usr/local/bin/hx
-          -v $(pwd):/config/workspace/mooxe-docker
+          -v $(pwd):/config/workspace/{{.proj_name}}
           -v $(pwd)/.vscode:/config/workspace/.vscode
             linuxserver/code-server

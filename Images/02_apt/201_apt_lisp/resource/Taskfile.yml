@@ -1,8 +1,5 @@
 version: '3'
 
-includes:
-  apt: ~/.taskfilehub/hubs/apt.yml
-
 tasks:
 
   default:
@@ -44,12 +41,16 @@ tasks:
       - apt install -y dialog sbcl cl-asdf cl-quicklisp buildapp
 
   init-quicklisp:
+    vars:
+      quicklisp_home: /usr/share/common-lisp/source/quicklisp
+      lispsource_home: $HOME/.local/share/common-lisp/source
     cmds:
       - sbcl
-          --load /usr/share/common-lisp/source/quicklisp/quicklisp.lisp
+          --load {{.quicklisp_home}}/quicklisp.lisp
           --eval "(quicklisp-quickstart:install)"
           --eval "(exit)"
       - mv $HOME/quicklisp $HOME/.quicklisp
+      - mkdir -p {{.lispsource_home}}
 
   update-quicklisp:
     cmds:
