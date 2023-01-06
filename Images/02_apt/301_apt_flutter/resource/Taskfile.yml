@@ -4,6 +4,10 @@ includes:
   helper: ~/.taskfilehub/hubs/helper.yml
   apt: ~/.taskfilehub/hubs/apt.yml
 
+env:
+  PUB_HOSTED_URL: https://mirrors.tuna.tsinghua.edu.cn/dart-pub
+  FLUTTER_STORAGE_BASE_URL: https://mirrors.tuna.tsinghua.edu.cn/flutter
+
 tasks:
 
   default:
@@ -25,8 +29,8 @@ tasks:
 
   install-flutter:
     env:
-      PUB_HOSTED_URL: https://mirrors.tuna.tsinghua.edu.cn/dart-pub
-      FLUTTER_STORAGE_BASE_URL: https://mirrors.tuna.tsinghua.edu.cn/flutter
+      PUB_HOSTED_URL: '{{.PUB_HOSTED_URL}}'
+      FLUTTER_STORAGE_BASE_URL: '{{.FLUTTER_STORAGE_BASE_URL}}'
       TAR_OPTIONS: '--no-same-owner'
       FLUTTER_GIT_URL: https://ghproxy.com/github.com/flutter/flutter.git
       REPO_OS_OVERRIDE: linux
@@ -70,8 +74,8 @@ tasks:
         ; yes | sdkmanager
           --sdk_root=$ANDROID_SDK_ROOT
           --install
-            'platforms;android-29'
-            'build-tools;28.0.3'
+            'platforms;android-31'
+            'build-tools;30.0.3'
             'platform-tools'
 
       # --no-https
@@ -98,10 +102,21 @@ tasks:
     vars:
       PATH: '$PATH:$HOME/.flutter/bin:$HOME/.sdk_root/cmdline-tools/latest/bin'
     cmds:
+
       - echo 'export PATH={{.PATH}}'
           >> $HOME/.bashrc
+      - echo 'export PUB_HOSTED_URL={{.PUB_HOSTED_URL}}'
+          >> $HOME/.bashrc
+      - echo 'export FLUTTER_STORAGE_BASE_URL={{.FLUTTER_STORAGE_BASE_URL}}'
+          >> $HOME/.bashrc
+
       - mkdir -p $HOME/.config/fish
-      - echo 'set PATH {{.PATH}}'
+
+      - echo 'set -gx PATH {{.PATH}}'
+        | tee $HOME/.config/fish/config.fish
+      - echo 'set -gx PUB_HOSTED_URL {{.PUB_HOSTED_URL}}'
+        | tee $HOME/.config/fish/config.fish
+      - echo 'set -gx FLUTTER_STORAGE_BASE_URL {{.FLUTTER_STORAGE_BASE_URL}}'
         | tee $HOME/.config/fish/config.fish
 
   flutter-status:
@@ -111,7 +126,7 @@ tasks:
       - export PATH=$PATH:$HOME/.flutter/bin
         ; flutter doctor
         ; flutter --version
-      - dart --version
+        ; dart --version
 
   install-all:
     deps:

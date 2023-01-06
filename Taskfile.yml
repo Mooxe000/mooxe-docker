@@ -12,6 +12,8 @@ tasks:
 
   coder:
     cmds:
+      - install -d $HOME/.coder/config/extensions
+      - install -d $HOME/.local/share/fonts
       # -e PASSWORD=netserver
       - docker run
           --rm
