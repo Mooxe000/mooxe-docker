@@ -10,22 +10,44 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
-  coder:
+  coder-old:
     cmds:
       - install -d $HOME/.coder/config/extensions
       - install -d $HOME/.local/share/fonts
       # -e PASSWORD=netserver
+      # -e PUID=1000
+      # -e PGID=1000
+      # --userns=auto
+      # --security-opt label=disable
+      # -u 1000:1000
+      # --uidmap 0:1000:10999
+      # --gidmap 0:1000:10999
       - docker run
           --rm
           --name=code-server
           -e PUID=1000
           -e PGID=1000
+          --privileged=true
           -e SUDO_PASSWORD=netserver
           -p 8443:8443
-          -v $HOME/.coder/config/extensions:/config/extensions
-          -v $HOME/.local/share/fonts:/config/.local/share/fonts
-          -v $HOME/.gitconfig:/config/.gitconfig
-          -v $HOME/.local/bin/hx:/usr/local/bin/hx
-          -v $(pwd):/config/workspace/{{.proj_name}}
-          -v $(pwd)/.vscode:/config/workspace/.vscode
+          -v $HOME/.coder/config/extensions:/config/extensions:Z
+          -v $HOME/.local/share/fonts:/config/.local/share/fonts:Z
+          -v $HOME/.gitconfig:/config/.gitconfig:Z
+          -v $HOME/.local/bin/hx:/usr/local/bin/hx:Z
+          -v $(pwd):/config/workspace/{{.proj_name}}:Z
+          -v $(pwd)/.vscode:/config/workspace/.vscode:Z
             linuxserver/code-server
+
+  coder:
+    cmds:
+      - podman run
+          -ti --rm
+          --name=code-server
+          -p 8456:8456
+          -v ~/.coder/config/extensions:/root/.local/share/code-server/extensions:Z
+          -v ~/.local/share/fonts:/root/.local/share/fonts:Z
+          -v ~/.gitconfig:/root/.gitconfig:Z
+          -v ~/.local/bin/hx:/usr/local/bin/hx:Z
+          -v $(pwd):/root/WorkSpace/{{.proj_name}}:Z
+          -v $(pwd)/.vscode:/root/WorkSpace/.vscode:Z
+            mooxe/apt_coder

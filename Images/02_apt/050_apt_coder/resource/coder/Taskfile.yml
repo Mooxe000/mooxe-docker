@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  start:
+    cmds:
+      - cd $HOME/.coder
+        ; folders_base=$( for i in $(ls -d /root/WorkSpace/*/) ; do echo {\\\"path\\\":\\\"$i\\\"\\}, ; done)
+        ; folders=$(echo $folders_base | sed -e "s/\ //g" -e "s/\,$//")
+        ; commander="sed
+            -e \"$(echo 's@//folders@'"$folders"'@' )\"
+            ./coder.code-workspace.sample"
+        ; echo $(eval $commander) | jq > /root/WorkSpace/coder.code-workspace
+      - /opt/code-server/bin/code-server /root/WorkSpace/coder.code-workspace
+      # - /opt/code-server/bin/code-server /root/WorkSpace

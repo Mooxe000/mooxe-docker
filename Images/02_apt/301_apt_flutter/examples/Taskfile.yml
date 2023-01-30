@@ -29,6 +29,6 @@ tasks:
 
   release:
     cmds:
-      - mkdir -p /mnt/d/flutter-release/{{.proj_name}}
+      - mkdir -p ./release/{{.proj_name}}
       - cp ./{{.proj_name}}/build/app/outputs/flutter-apk/app-release.apk
-          /mnt/d/flutter-release/{{.proj_name}}
+          ./release/{{.proj_name}}/app-release.apk

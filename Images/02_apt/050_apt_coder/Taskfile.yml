@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  ContainerName: apt_base
+  ContainerName: apt_coder
   ImageName: mooxe/{{.ContainerName}}
 
 includes:
@@ -32,7 +32,13 @@ tasks:
         vars:
           run_option: '
             -v ~/.taskfilehub:/root/.taskfilehub
-            -p 8080:8080
+            -v ~/.coder/config/extensions:/root/.local/share/code-server/extensions:Z
+            -v ~/.local/share/fonts:/root/.local/share/fonts:Z
+            -v ~/.gitconfig:/root/.gitconfig:Z
+            -v ~/.local/bin/hx:/usr/local/bin/hx:Z
+            -v $(pwd):/root/WorkSpace/apt_coder
+            -v $(pwd)/.vscode:/root/WorkSpace/.vscode
+            -p 8456:8456
           '
 
   run:

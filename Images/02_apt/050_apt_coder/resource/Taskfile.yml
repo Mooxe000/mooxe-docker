@@ -1,0 +1,59 @@
+version: '3'
+
+includes:
+  helper: ~/.taskfilehub/hubs/helper.yml
+
+tasks:
+
+  default:
+    cmds:
+      - echo 'Hello World from Task!'
+    silent: true
+
+  install-before:
+    cmds:
+      - apt install -y axel neovim jq
+
+      - ln -s $(which neovim) /usr/local/bin/vi
+      - ln -s $(which neovim) /usr/local/bin/vim
+
+  install-coder:
+    deps:
+      - install-before
+    # https://github.com/coder/code-server/releases/download/v4.9.1/code-server-4.9.1-linux-amd64.tar.gz
+    vars:
+      bin_name: code
+      repo_name: '{{.bin_name}}r/{{.bin_name}}-server'
+      bin_version: 4.9.1
+      bin_os: linux-amd64
+      dl_file_dir: '{{.bin_name}}-server-{{.bin_version}}-{{.bin_os}}'
+      dl_file: '{{.dl_file_dir}}.tar.gz'
+      url_prefix: '/releases/download'
+      url_postfix: '{{.url_prefix}}/v{{.bin_version}}/{{.dl_file}}'
+    cmds:
+      - task: helper:fn-download
+        vars:
+          git_repo: '{{.repo_name}}'
+          url_postfix: '{{.url_postfix}}'
+
+      - tar xvf {{.dl_file}}
+      - mv {{.dl_file_dir}} /opt/{{.bin_name}}-server
+
+      - install -D ./config.yaml
+          $HOME/.config/code-server/config.yaml
+
+      - rm -rf {{.dl_file}}
+
+  after-install-coder:
+    cmds:
+      - mkdir -p $HOME/.local/share/code-server/extensions
+      - mkdir -p $HOME/.local/share/fonts
+      - mkdir -p $HOME/.coder
+      - mkdir -p $HOME/WorkSpace
+
+      - cp -R ./coder/* $HOME/.coder
+
+  install-all:
+    cmds:
+      - task: install-coder
+      - task: after-install-coder

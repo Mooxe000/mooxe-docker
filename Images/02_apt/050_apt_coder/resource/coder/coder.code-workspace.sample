@@ -1,0 +1,15 @@
+{
+	"folders": [
+		//folders
+	],
+	"settings": {
+		"editor.fontSize": 16,
+		"editor.tabSize": 2,
+		"editor.fontFamily": "'Maple Mono NF', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace",
+		"workbench.iconTheme": "vscode-great-icons",
+		"workbench.colorTheme": "Shades of Purple",
+		"terminal.integrated.fontSize": 16,
+		"terminal.integrated.fontFamily": "'Maple Mono NF', 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace",
+		"git-graph.maxDepthOfRepoSearch": 1
+	}
+}

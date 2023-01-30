@@ -1,7 +1,6 @@
 version: '3'
 
 includes:
-  helper: ~/.taskfilehub/hubs/helper.yml
   apt: ~/.taskfilehub/hubs/apt.yml
 
 env:
@@ -22,7 +21,7 @@ tasks:
           clang cmake
           pkg-config
           ninja-build
-          openjdk-17-jre
+          openjdk-11-jre
       # generate-ninja
       # sdkmanager
       # android-sdk
@@ -32,9 +31,9 @@ tasks:
       PUB_HOSTED_URL: '{{.PUB_HOSTED_URL}}'
       FLUTTER_STORAGE_BASE_URL: '{{.FLUTTER_STORAGE_BASE_URL}}'
       TAR_OPTIONS: '--no-same-owner'
-      FLUTTER_GIT_URL: https://ghproxy.com/github.com/flutter/flutter.git
+      FLUTTER_GIT_URL: https://gitclone.com/github.com/flutter/flutter.git
       REPO_OS_OVERRIDE: linux
-      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
       ANDROID_SDK_ROOT: $HOME/.sdk_root
     vars:
       # https://developer.android.com/studio#command-tools

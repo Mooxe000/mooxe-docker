@@ -14,10 +14,11 @@
         "aaron-bond.better-comments",
         "gruntfuggly.todo-tree",
 
-        "vscodevim.vim",
+        // "vscodevim.vim",
+        "asvetliakov.vscode-neovim",
 
-        "mathiasfrohlich.kotlin",
         // "slbtty.lisp-syntax",
         // "scala-lang.scala",
+        // "mathiasfrohlich.Kotlin",
     ]
 }

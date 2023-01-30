@@ -6,8 +6,8 @@ npm-debug.log
 .tmp
 trash
 
-/.drake.cache.json
-
 .pnpm*
 
+/.drake.cache.json
+.history
 /Task
