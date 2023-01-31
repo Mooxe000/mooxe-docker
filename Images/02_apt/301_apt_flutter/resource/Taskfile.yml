@@ -2,6 +2,7 @@ version: '3'
 
 includes:
   apt: ~/.taskfilehub/hubs/apt.yml
+  apps: ~/.taskfilehub/hubs/apps.yml
 
 env:
   PUB_HOSTED_URL: https://mirrors.tuna.tsinghua.edu.cn/dart-pub
@@ -21,7 +22,7 @@ tasks:
           clang cmake
           pkg-config
           ninja-build
-          openjdk-11-jre
+          openjdk-17-jre
       # generate-ninja
       # sdkmanager
       # android-sdk
@@ -31,23 +32,24 @@ tasks:
       PUB_HOSTED_URL: '{{.PUB_HOSTED_URL}}'
       FLUTTER_STORAGE_BASE_URL: '{{.FLUTTER_STORAGE_BASE_URL}}'
       TAR_OPTIONS: '--no-same-owner'
-      FLUTTER_GIT_URL: https://gitclone.com/github.com/flutter/flutter.git
+      # FLUTTER_GIT_URL: https://gitclone.com/github.com/flutter/flutter.git
+      FLUTTER_GIT_URL: https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git
       REPO_OS_OVERRIDE: linux
-      JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
       ANDROID_SDK_ROOT: $HOME/.sdk_root
     vars:
       # https://developer.android.com/studio#command-tools
-      cmdline_tools_zip: commandlinetools-linux-9123335_latest.zip
-      cmdline_tools_url: '
-        https://dl.google.com/android/repository/{{.cmdline_tools_zip}}?hl=zh-cn
-      '
+      cmdline_tools_version: 9477386
+      cmdline_tools_zip: commandlinetools-linux-{{.cmdline_tools_version}}_latest.zip
+      cmdline_tools_url: https://dl.google.com/android/repository/{{.cmdline_tools_zip}}?hl=zh-cn
     cmds:
       # - set -gx PATH $PATH:$HOME/.flutter/bin
       - git clone
-          -b dev --depth=1
+          -b flutter-3.7-candidate.29
+          --depth=1
           $FLUTTER_GIT_URL
           ~/.flutter
-      - axel {{.cmdline_tools_url}}
+      - axel '{{.cmdline_tools_url}}'
         ; unzip {{.cmdline_tools_zip}}
         ; rm -rf {{.cmdline_tools_zip}}
         ; mv cmdline-tools $HOME/.cmdline-tools
@@ -62,10 +64,10 @@ tasks:
         ; yes | sdkmanager
           --sdk_root=$ANDROID_SDK_ROOT
           --install 'cmdline-tools;latest'
-        ; rm -rf $HOME/.cmdline-tools
+
+      - rm -rf $HOME/.cmdline-tools
 
       # - set -gx PATH $PATH:$HOME/.sdk_root/cmdline-tools/latest/bin
-
       - export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
         ; sdkmanager
           --sdk_root=$ANDROID_SDK_ROOT
@@ -73,9 +75,9 @@ tasks:
         ; yes | sdkmanager
           --sdk_root=$ANDROID_SDK_ROOT
           --install
-            'platforms;android-31'
-            'build-tools;30.0.3'
+            'platforms;android-33'
             'platform-tools'
+            'build-tools;30.0.3'
 
       # --no-https
       # --proxy_host
@@ -118,6 +120,11 @@ tasks:
       - echo 'set -gx FLUTTER_STORAGE_BASE_URL {{.FLUTTER_STORAGE_BASE_URL}}'
         | tee $HOME/.config/fish/config.fish
 
+  init-gradle:
+    cmds:
+      - mkdir -p $HOME/.gradle
+      - cp ./init.gradle $HOME/.gradle
+
   flutter-status:
     deps:
       - apt:apt-clean
@@ -133,4 +140,8 @@ tasks:
     cmds:
       - task: install-flutter
       - task: flutter-path
+
+      - task: apps:install-sws
+      - task: init-gradle
+
       - task: flutter-status

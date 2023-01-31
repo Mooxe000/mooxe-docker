@@ -18,10 +18,23 @@ tasks:
     cmds:
       - cp -r ./source/* ./{{.proj_name}}
 
-  build:
+  build-apk:
     cmds:
       - cd {{.proj_name}}
         ; flutter build apk
+    # ; flutter build -v apk
+
+  build-web:
+    cmds:
+      - cd {{.proj_name}}
+        ; flutter build web
+
+  run-web:
+    cmds:
+      - cd {{.proj_name}}/build/web
+        ; sws -d .
+            -a 0.0.0.0
+            -p 8000
 
   rm:
     cmds:

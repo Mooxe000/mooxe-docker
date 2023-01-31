@@ -10,10 +10,11 @@ RUN set -eux \
 ENV PUB_HOSTED_URL https://pub.flutter-io.cn
 ENV FLUTTER_STORAGE_BASE_URL https://storage.flutter-io.cn
 ENV TAR_OPTIONS=--no-same-owner
-ENV FLUTTER_GIT_URL https://gitclone.com/github.com/flutter/flutter.git
+# ENV FLUTTER_GIT_URL https://gitclone.com/github.com/flutter/flutter.git
+ENV FLUTTER_GIT_URL https://mirrors.tuna.tsinghua.edu.cn/git/flutter-sdk.git
 ENV REPO_OS_OVERRIDE linux
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
-ENV ANDROID_SDK_ROOT $HOME/.sdk_root
+ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64
+ENV ANDROID_SDK_ROOT /root/.sdk_root
 
 RUN set -eux \
 ; cd /root/build \

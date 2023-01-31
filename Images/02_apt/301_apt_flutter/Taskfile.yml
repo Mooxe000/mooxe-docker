@@ -29,7 +29,10 @@ tasks:
     cmds:
       - task: image:run:run-dev
         vars:
-          run_option: '-v ~/.taskfilehub:/root/.taskfilehub'
+          run_option: '
+            -v ~/.taskfilehub:/root/.taskfilehub
+            -p 8000:8000
+          '
       # --privileged
       # apt install -y curl unzip pkg-config clang cmake ninja
       # export TAR_OPTIONS=--no-same-owner
